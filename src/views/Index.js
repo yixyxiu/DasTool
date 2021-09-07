@@ -313,19 +313,21 @@ export default class AddShop extends React.Component {
                     });
                     setTimeout(() => {
                         resolve();
-                    }, 2000);
+                    }, 10000);
                 })
         });
     }
 
+    /*
     isReadyList = async (list) => {
         let strArr = ['晴天', '阴天', '雨天', '彩虹', '海底'];
         for (var i = 0; i < list.length; i++) {
             let item = list[i];
-            /* 等待0.2s */
+            
             await this.sleep(item.name, i);
         }
     }
+    */
 
     changeLanguage = (language) => {
         //把用户的语言写入缓存，供下次获取使用
@@ -398,7 +400,7 @@ export default class AddShop extends React.Component {
                             centerMode
                             emulateTouch
                             swipeable
-                            centerSlidePercentage={75}
+                            centerSlidePercentage={33.3333}
                             onClickItem={onClickCarouselItem}
                         >
                             {this.state.banners.map((value, index) => {
