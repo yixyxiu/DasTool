@@ -1,12 +1,17 @@
 import React from 'react';
-import { Card, Space, Input, Button, Table, Alert, Avatar, Menu, Dropdown, Divider, Layout } from 'antd';
-import { SearchOutlined, RedoOutlined, DownOutlined } from '@ant-design/icons';
-import { Carousel } from "react-responsive-carousel";
+import {Card, Space, Input, Button, Table, Alert, Avatar, Menu, Dropdown, Divider, Layout} from 'antd';
+import {SearchOutlined, RedoOutlined, DownOutlined} from '@ant-design/icons';
+import {Carousel} from "react-responsive-carousel";
 import https from '../api/https';
 import TextArea from 'antd/lib/input/TextArea';
 import "react-responsive-carousel/lib/styles/carousel.min.css"
+// import { polyfill } from 'spritejs/lib/platform/node-canvas'
+import * as spritejs from 'spritejs';
+import md5 from 'blueimp-md5'
+import img from "../img/logo.png"
+import {POSITIONS, FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths} from "../mock/constant"
 
-const { Footer } = Layout
+const {Footer} = Layout
 
 
 var blake2b = require('blake2b');
@@ -21,19 +26,13 @@ das.description = "DAS is a cross-chain decentralized account system with a .bit
 
 let localeConfig = require('../mock/lang.json');
 
-
 export default class AddShop extends React.Component {
-
-
     state = {
         snsArr: [],
         keyword: '',
         locale: 'zh_CN',
-        list: [
-        ],
-        recommendList: [
-
-        ],
+        list: [],
+        recommendList: [],
         banners: das.banners,
         keywordList: [],
         animationClass: 'dasAnimation',
@@ -42,9 +41,14 @@ export default class AddShop extends React.Component {
                 dataIndex: 'avatar',
                 key: 'name',
                 width: 50,
-                render: (text, record, index) => (
-                    <Avatar src={"https://identicons.da.systems/identicon/" + record.name} />
-                ),
+                render: (text, record, index) => {
+                    let id = `img${index}`
+                    let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
+                    setTimeout(() => {
+                        this.getImg(id, record.name)
+                    }, 100)
+                    return dom
+                },
             },
             {
                 title: '可选账号',
@@ -64,16 +68,81 @@ export default class AddShop extends React.Component {
                 width: 100,
                 key: 'action',
                 align: 'right',
-                render: record => (
-                    <Space size="middle">
-                        <Button type="primary" size={'normal'} shape="round" onClick={() => this.add(record)}>{this.langConfig('register-btn')}</Button>
+                render: record => {
+
+                    return <Space size="middle">
+                        <Button type="primary" size={'normal'} shape="round"
+                                onClick={() => this.add(record)}>{this.langConfig('register-btn')}</Button>
                     </Space>
-                ),
+                },
             },
 
         ]
     };
 
+    async getImg(id, name) {
+        const {Scene, Sprite, Rect, Ring, Path} = spritejs;
+        const nameMd5 = md5(name)
+        const _colors = getColors(nameMd5)
+        const _positions = getPositions(nameMd5)
+        const _figurePaths = getFigurePaths(nameMd5)
+        const _size = 60
+        const _center = 30
+        let container = document.getElementById(id)
+        const scene = new Scene({
+            container,
+            width: _size,
+            height: _size,
+            displayRatio: 2,
+        })
+        const layer = scene.layer()
+        // background
+        const rect = new Rect({
+            normalize: true,
+            pos: [_center, _center],
+            size: [_size, _size],
+            fillColor: COLORS[_colors[8]]
+        })
+        layer.append(rect)
+        // figure
+        for (let i = 0; i <= 8; i++) {
+            const p = new Path()
+            const pos = _positions[nameMd5.substr(i * 3, 3)]
+            const d = FIGURE_PATHS[_figurePaths[i]]
+            const fillColor = COLORS[_colors[i + 1]]
+            p.attr({
+                pos,
+                d,
+                fillColor
+            })
+            layer.appendChild(p)
+        }
+        // logo
+        const logoSprite = new Sprite(img);
+        logoSprite.attr({
+            pos: [0, 0],
+            size: [_size, _size]
+        })
+        layer.appendChild(logoSprite)
+        // ring background
+        const ringBg = new Ring({
+            pos: [_center, _center],
+            innerRadius: 29,
+            outerRadius: 45,
+            fillColor: '#FFFFFF'
+        })
+        layer.append(ringBg)
+        //
+        // ring
+        const ring = new Ring({
+            pos: [_center, _center],
+            innerRadius: 29,
+            outerRadius: _center,
+            fillColor: COLORS[_colors[0]],
+            opacity: 0.2
+        })
+        layer.append(ring)
+    }
 
     textAreaChange = e => {
         let article = e.target.value
@@ -85,7 +154,7 @@ export default class AddShop extends React.Component {
             });
         }
 
-        this.setState({ snsArr: (wordList ? wordList : "") });
+        this.setState({snsArr: (wordList ? wordList : "")});
     }
 
     search = () => {
@@ -169,7 +238,7 @@ export default class AddShop extends React.Component {
         snsArr = snsArr.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
         console.log(snsArr)
 
-        this.setState({ keyword: snsArr });
+        this.setState({keyword: snsArr});
     }
 
     keywordSearch = () => {
@@ -235,7 +304,7 @@ export default class AddShop extends React.Component {
     sleep = async (text, idx) => {
         let that = this;
         return new Promise((resolve) => {
-            https.fetchGet("https://autumnfish.cn/search", { 'keywords': text })
+            https.fetchGet("https://autumnfish.cn/search", {'keywords': text})
                 .then(data => {
                     let result = that.state.list;
                     result[idx].status = 1;
@@ -262,15 +331,15 @@ export default class AddShop extends React.Component {
         //把用户的语言写入缓存，供下次获取使用
         localStorage.setItem('locale', language)
 
-        this.setState({ locale: language });
+        this.setState({locale: language});
 
         console.log(this.state.locale);
     }
 
     componentDidMount() {
 
-        let language = localStorage.getItem('locale') || window.navigator.language.toLowerCase() || 'en'; 
-        
+        let language = localStorage.getItem('locale') || window.navigator.language.toLowerCase() || 'en';
+
         //判断用户的语言，跳转到不同的地方
         if (language.indexOf("zh-") !== -1) {
             language = "zh_CN";
@@ -289,6 +358,7 @@ export default class AddShop extends React.Component {
 
         return localeConfig[locale][key];
     }
+
     /*
         onLangMenuClick = ({ key }) => {
             this.state.locale = key;
@@ -297,10 +367,9 @@ export default class AddShop extends React.Component {
 
 
     render() {
-        const { list, recommendList, keywordList, columns } = this.state
+        const {list, recommendList, keywordList, columns} = this.state
 
-
-        const onLangMenuClick = ({ key }) => {
+        const onLangMenuClick = ({key}) => {
             this.changeLanguage(key)
         };
 
@@ -320,7 +389,7 @@ export default class AddShop extends React.Component {
         return (
             <div className={this.state.animationClass}>
                 <div className="content">
-                    <div className="bannerWraper" >
+                    <div className="bannerWraper">
                         <Carousel
                             autoPlay={true}
                             showStatus={false}
@@ -330,52 +399,81 @@ export default class AddShop extends React.Component {
                             emulateTouch
                             swipeable
                             centerSlidePercentage={75}
-                            onClickItem={ onClickCarouselItem }
+                            onClickItem={onClickCarouselItem}
                         >
                             {this.state.banners.map((value, index) => {
-                                return <div><img alt="" src={value.image} /></div>;
+                                return <div><img alt="" src={value.image}/></div>;
                             })}
                         </Carousel>
                     </div>
                     <Card title={this.langConfig('app-name')} bordered={false}>
-                        <div style={{ display: 'inline-block', position: 'absolute', right: 15, top: 18, textAlign: 'right' }}>
-                            <Dropdown overlay={menu} >
+                        <div style={{
+                            display: 'inline-block',
+                            position: 'absolute',
+                            right: 15,
+                            top: 18,
+                            textAlign: 'right'
+                        }}>
+                            <Dropdown overlay={menu}>
                                 <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                                    {this.langConfig('lang')} <DownOutlined />
+                                    {this.langConfig('lang')} <DownOutlined/>
                                 </a>
                             </Dropdown>
-                            <Divider type="vertical" />
-                            <a style={{ color: '#1890ff' }} href="https://da.systems/explorer?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=cryptofans+">{this.langConfig('about-das')}</a>
+                            <Divider type="vertical"/>
+                            <a style={{color: '#1890ff'}}
+                               href="https://da.systems/explorer?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=cryptofans+">{this.langConfig('about-das')}</a>
                         </div>
 
-                        <Alert message={this.langConfig('wordlist-tips')} type="info" />
-                        <br />
-                        <div style={{ position: 'relative', paddingRight: 100 }}>
-                            <TextArea onChange={(e) => this.textAreaChange(e)} allowClear placeholder={das.description} rows={4} />
-                            <div style={{ display: 'inline-block', position: 'absolute', right: 15, top: 0, width: 70, textAlign: 'right' }}>
-                                <Button type="primary" shape="round" icon={<SearchOutlined />} onClick={() => this.search()}>{this.langConfig('wordlist-search')}</Button>
+                        <Alert message={this.langConfig('wordlist-tips')} type="info"/>
+                        <br/>
+                        <div style={{position: 'relative', paddingRight: 100}}>
+                            <TextArea onChange={(e) => this.textAreaChange(e)} allowClear placeholder={das.description}
+                                      rows={4}/>
+                            <div style={{
+                                display: 'inline-block',
+                                position: 'absolute',
+                                right: 15,
+                                top: 0,
+                                width: 70,
+                                textAlign: 'right'
+                            }}>
+                                <Button type="primary" shape="round" icon={<SearchOutlined/>}
+                                        onClick={() => this.search()}>{this.langConfig('wordlist-search')}</Button>
                             </div>
                         </div>
-                        <br />
-                        <Table rowKey={(item) => item.id} dataSource={list} columns={columns} rowClassName='das-account-name' showHeader={false} />
-                        <br />
+                        <br/>
+                        <Table rowKey={(item) => item.id} dataSource={list} columns={columns}
+                               rowClassName='das-account-name' showHeader={false}/>
+                        <br/>
                     </Card>
-                    <br />
+                    <br/>
                     <Card title={this.langConfig('keyword-title')} bordered={false}>
-                        <Alert message={this.langConfig('keyword-tips')} type="info" />
-                        <br />
-                        <div style={{ position: 'relative', paddingRight: 100 }}>
-                            <Input onBlur={(e) => this.keywordChanged(e)} placeholder="defi" allowClear maxLength={10} rows={1} style={{ textAlign: 'right' }} />
-                            <div style={{ display: 'inline-block', position: 'absolute', right: 15, top: 0, width: 70, textAlign: 'right' }}>
-                                <Button type="primary" shape="round" icon={<SearchOutlined />} onClick={() => this.keywordSearch()}>{this.langConfig('keyword-search')}</Button>
+                        <Alert message={this.langConfig('keyword-tips')} type="info"/>
+                        <br/>
+                        <div style={{position: 'relative', paddingRight: 100}}>
+                            <Input onBlur={(e) => this.keywordChanged(e)} placeholder="defi" allowClear maxLength={10}
+                                   rows={1} style={{textAlign: 'right'}}/>
+                            <div style={{
+                                display: 'inline-block',
+                                position: 'absolute',
+                                right: 15,
+                                top: 0,
+                                width: 70,
+                                textAlign: 'right'
+                            }}>
+                                <Button type="primary" shape="round" icon={<SearchOutlined/>}
+                                        onClick={() => this.keywordSearch()}>{this.langConfig('keyword-search')}</Button>
                             </div>
                         </div>
-                        <br />
-                        <Table rowKey={(item) => item.id} dataSource={keywordList} columns={columns} rowClassName='das-account-name' showHeader={false} />
-                        <br />
+                        <br/>
+                        <Table rowKey={(item) => item.id} dataSource={keywordList} columns={columns}
+                               rowClassName='das-account-name' showHeader={false}/>
+                        <br/>
                     </Card>
-                    <br />
-                    <Card title={this.langConfig('recommend-title')} bordered={false} extra={<Button type="primary" shape="round" danger icon={<RedoOutlined />} onClick={() => this.refreshRecommendList()}>{this.langConfig('recommend-change-list')}</Button>}>
+                    <br/>
+                    <Card title={this.langConfig('recommend-title')} bordered={false}
+                          extra={<Button type="primary" shape="round" danger icon={<RedoOutlined/>}
+                                         onClick={() => this.refreshRecommendList()}>{this.langConfig('recommend-change-list')}</Button>}>
                         <Alert
                             message={this.langConfig('recommend-warning')}
                             description={this.langConfig('recommend-tips')}
@@ -383,10 +481,11 @@ export default class AddShop extends React.Component {
                             showIcon
                         />
                         <br></br>
-                        <Table rowKey={(item) => item.id} dataSource={recommendList} columns={columns} rowClassName='das-account-name' showHeader={false} />
-                        <br />
+                        <Table rowKey={(item) => item.id} dataSource={recommendList} columns={columns}
+                               rowClassName='das-account-name' showHeader={false}/>
+                        <br/>
                     </Card>
-                    <br />
+                    <br/>
                 </div>
             </div>
         )
