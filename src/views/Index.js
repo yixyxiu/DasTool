@@ -534,7 +534,7 @@ export default class AddShop extends React.Component {
                     </Card>
                     <br/>
                     <Card title={this.langConfig('recommend-title')} bordered={false}
-                          extra={<Button type="primary" shape="round" danger icon={<RedoOutlined/>}
+                          extra={<Button type="primary" shape="round" danger 
                                          onClick={() => this.refreshRecommendList()}>{this.langConfig('recommend-change-list')}</Button>}>
                         <Alert
                             message={this.langConfig('recommend-warning')}
