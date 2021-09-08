@@ -5,7 +5,7 @@ import {Carousel} from "react-responsive-carousel";
 import https from '../api/https';
 import TextArea from 'antd/lib/input/TextArea';
 import "react-responsive-carousel/lib/styles/carousel.min.css"
-// import { polyfill } from 'spritejs/lib/platform/node-canvas'
+//import { polyfill } from 'spritejs/lib/platform/node-canvas'
 import * as spritejs from 'spritejs';
 import md5 from 'blueimp-md5'
 import img from "../img/logo.png"
@@ -25,6 +25,7 @@ das.banners = require('../mock/banners.json');
 das.description = "DAS is a cross-chain decentralized account system with a .bit suffix, supporting ETH/TRX and other public chain. It can be used in scenes such as crypto transfers, domain name resolution, and identity authentication. "
 
 let localeConfig = require('../mock/lang.json');
+let iconMap = new Map();
 
 export default class AddShop extends React.Component {
     state = {
@@ -36,18 +37,29 @@ export default class AddShop extends React.Component {
         banners: das.banners,
         keywordList: [],
         animationClass: 'dasAnimation',
+        
         columns: [
             {
                 dataIndex: 'avatar',
                 key: 'name',
                 width: 50,
                 render: (text, record, index) => {
-                    let id = `img${index}`
-                    let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
-                    setTimeout(() => {
-                        this.getImg(id, record.name)
-                    }, 100)
-                    return dom
+                    if (false) {
+                        let dom = iconMap.get(record.name);
+                        console.log(dom)
+                        return dom
+                    }
+                    else {
+                        let nameMD5 = md5(record.name)
+                        let id = `img${nameMD5}`
+                        let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
+                        setTimeout(() => {
+                            this.getImg(id, record.name)
+                        }, 100)
+                        
+                        return dom
+                    }
+                    
                 },
             },
             {
@@ -89,6 +101,24 @@ export default class AddShop extends React.Component {
         const _size = 60
         const _center = 30
         let container = document.getElementById(id)
+        console.log(name)
+        if (!container) {
+            console.log('container is null');
+            return;
+        }
+        // 用缓存
+        if (iconMap.has(name)) {
+            let child = container.lastElementChild;
+            while (child) { 
+                container.removeChild(child); 
+                child = container.lastElementChild; 
+            } 
+            
+            container.appendChild(iconMap.get(name));
+ 
+            return;
+        }
+
         const scene = new Scene({
             container,
             width: _size,
@@ -142,6 +172,26 @@ export default class AddShop extends React.Component {
             opacity: 0.2
         })
         layer.append(ring)
+
+        // 先用cavas画出来，然后把canvas的东西转成base64的imgdata，删除canva标签，
+        // 用这个imgdata添加一个img标签。
+        const snapshotCanvas = scene.snapshot()
+        const imgBuffer = snapshotCanvas.toDataURL('image/jpeg');
+        
+        let child = container.lastElementChild;
+        while (child) { 
+            container.removeChild(child); 
+            child = container.lastElementChild; 
+        } 
+        
+        let imgElement = document.createElement('img');
+        imgElement.src = imgBuffer;
+        //imgElement.width = imgElement.height = 32;
+        imgElement.style = 'height: 32px; width: 32px; border-radius: 32px;';
+        container.appendChild(imgElement);
+
+        iconMap.set(name, imgElement);
+        //console.log(iconMap);
     }
 
     textAreaChange = e => {
@@ -154,7 +204,7 @@ export default class AddShop extends React.Component {
             });
         }
 
-        this.setState({snsArr: (wordList ? wordList : "")});
+        this.state.snsArr = (wordList ? wordList : "");
     }
 
     search = () => {
@@ -238,7 +288,8 @@ export default class AddShop extends React.Component {
         snsArr = snsArr.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
         console.log(snsArr)
 
-        this.setState({keyword: snsArr});
+        //this.setState({keyword: snsArr});
+        this.state.keyword = snsArr ? snsArr : "";
     }
 
     keywordSearch = () => {
