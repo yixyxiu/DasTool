@@ -37,6 +37,7 @@ export default class AddShop extends React.Component {
         banners: das.banners,
         keywordList: [],
         animationClass: 'dasAnimation',
+        discordTimerId: 0,
         
         columns: [
             {
@@ -374,16 +375,58 @@ export default class AddShop extends React.Component {
         });
     }
 
-    /*
-    isReadyList = async (list) => {
-        let strArr = ['晴天', '阴天', '雨天', '彩虹', '海底'];
-        for (var i = 0; i < list.length; i++) {
-            let item = list[i];
-            
-            await this.sleep(item.name, i);
+    
+    getMidString = (src, start_str, end_str) => {
+        let start = src.indexOf(start_str)
+        if ( start >= 0 ) {
+            start += start_str.length;
+            let end = src.indexOf(end_str)
+            if (end >= 0 && end > start) {
+                return src.substr(start, end - start);
+            }
         }
+
+        return "";
     }
-    */
+    
+
+    getRegistList = async () => {
+        let that = this;
+        return new Promise((resolve) => {
+            const headers = {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+                'authorization': 'ODY3ODA0ODU1MjMwMDA1MzA4.YPmcVg.iRQmn4cB0o_T6CRsoI-fymQKER0',
+                'cookie': '__dcfduid=4c76a7a70895b91877e29c9534d5fa30; __sdcfduid=b31379a6f3ff11eb96d242010a0a02bc0e534fe0d6b719f4db746cfff96889994a9b543e4bb06bb57942c430e90bd14b'
+            }
+
+            let url = 'https://discord.com/api/v9/channels/831429673115451395/messages?limit=100&after=' + das.lastRegiseredId
+            fetch(url, { headers })
+            .then(function(response){
+                return response.json();  
+              })
+              .then(function(json){
+                  json.forEach(item => {
+                      let account = that.getMidString(item['content'], '** ', ' **');
+                      if (das.registered.indexOf(account) < 0) {
+                        das.registered.push(account);
+                      }
+                      
+                  });
+
+                  if (json.length > 0) {
+                      das.lastRegiseredId = json[0].id;
+                      console.log(das.lastRegiseredId);
+                      // 如果有数据，继续拉取
+                      setTimeout(() => {
+                          that.getRegistList();
+                      }, 1000);
+                  }
+              })
+              .catch(function(err){
+                console.log(err);  
+              });
+        });
+    }
 
     changeLanguage = (language) => {
         //把用户的语言写入缓存，供下次获取使用
@@ -413,7 +456,20 @@ export default class AddShop extends React.Component {
         // 先提前预加载logo。避免使用的时候第一次加载头像失败头像绘制出问题
         const {Sprite} = spritejs;
         const logoSprite = new Sprite(img);
+
+        // 强制执行一次
+        this.getRegistList();
+
+        // 再设置定时器，拉取最新注册账号
+        let timerID = setInterval(this.getRegistList, 5 * 60 * 1000);
+        this.setState({discordTimerId: timerID});
     }
+
+    componentWillUnmount() {
+        // use intervalId from the state to clear the interval
+        if (this.state.discordTimerId > 0)
+            clearInterval(this.state.discordTimerId);
+     }
 
     langConfig = (key) => {
         let locale = this.state.locale;
