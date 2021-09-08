@@ -55,7 +55,7 @@ export default class AddShop extends React.Component {
                         let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
                         setTimeout(() => {
                             this.getImg(id, record.name)
-                        }, 100)
+                        }, 10)
                         
                         return dom
                     }
@@ -93,15 +93,9 @@ export default class AddShop extends React.Component {
     };
 
     async getImg(id, name) {
-        const {Scene, Sprite, Rect, Ring, Path} = spritejs;
-        const nameMd5 = md5(name)
-        const _colors = getColors(nameMd5)
-        const _positions = getPositions(nameMd5)
-        const _figurePaths = getFigurePaths(nameMd5)
-        const _size = 60
-        const _center = 30
+        
         let container = document.getElementById(id)
-        console.log(name)
+        //console.log(name)
         if (!container) {
             console.log('container is null');
             return;
@@ -119,13 +113,23 @@ export default class AddShop extends React.Component {
             return;
         }
 
+        const {Scene, Sprite, Rect, Ring, Path} = spritejs;
+        const nameMd5 = md5(name)
+        const _colors = getColors(nameMd5)
+        const _positions = getPositions(nameMd5)
+        const _figurePaths = getFigurePaths(nameMd5)
+        const _size = 60
+        const _center = 30
+
         const scene = new Scene({
             container,
             width: _size,
             height: _size,
             displayRatio: 2,
         })
+
         const layer = scene.layer()
+
         // background
         const rect = new Rect({
             normalize: true,
@@ -149,6 +153,7 @@ export default class AddShop extends React.Component {
         }
         // logo
         const logoSprite = new Sprite(img);
+   
         logoSprite.attr({
             pos: [0, 0],
             size: [_size, _size]
@@ -404,6 +409,10 @@ export default class AddShop extends React.Component {
         }
 
         this.changeLanguage(language);
+
+        // 先提前预加载logo。避免使用的时候第一次加载头像失败头像绘制出问题
+        const {Sprite} = spritejs;
+        const logoSprite = new Sprite(img);
     }
 
     langConfig = (key) => {
