@@ -1,7 +1,7 @@
 {
     "zh_CN":{
         "lang":"简体中文",
-        "app-name":"DAS 注册小助手",
+        "app-name":"选靓号，就上 DAS 啦！",
         "tips":"提示",
         "about-das":"了解DAS",
         "wordlist-tips":"用法：将你想要的账号列表输入/粘贴到下方的编辑框内，或者粘贴一篇英文文章到编辑框内，查询哪些账号是可注册的。",
@@ -17,7 +17,7 @@
     },
     "en_US":{
         "lang":"English",
-        "app-name":"DAS account registration tool",
+        "app-name":"For your better DAS account",
         "tips":"Tips",
         "about-das":"About DAS",
         "wordlist-tips":"Paste some words or an article，then amazing thing will happen.",

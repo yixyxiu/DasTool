@@ -91,3 +91,30 @@ export function getFigurePaths(domainMd5) {
     })
     return _figurePathArray
 }
+
+export const DASOPENEPOCH = new Array(
+	new Date('2021-09-26 00:00:00 GMT'),
+    new Date('2021-10-03 01:00:00 GMT'),
+    new Date('2021-10-10 02:00:00 GMT'),
+    new Date('2021-10-17 03:00:00 GMT'),
+    new Date('2021-10-24 04:00:00 GMT'),
+    new Date('2021-10-31 05:00:00 GMT'),
+    new Date('2021-11-07 06:00:00 GMT'),
+    new Date('2021-11-14 07:00:00 GMT'),
+    new Date('2021-11-21 08:00:00 GMT'),
+    new Date('2021-11-28 09:00:00 GMT'),
+    new Date('2021-12-05 10:00:00 GMT'),
+    new Date('2021-12-12 11:00:00 GMT'),
+    new Date('2021-12-19 12:00:00 GMT'),
+    new Date('2021-12-26 13:00:00 GMT'),
+    new Date('2022-01-02 14:00:00 GMT'),
+    new Date('2022-01-09 15:00:00 GMT'),
+    new Date('2022-01-16 16:00:00 GMT'),
+    new Date('2022-01-23 17:00:00 GMT'),
+    new Date('2022-01-30 18:00:00 GMT'),
+    new Date('2022-02-06 19:00:00 GMT'),
+    new Date('2022-02-13 20:00:00 GMT'),
+    new Date('2022-02-20 21:00:00 GMT'),
+    new Date('2022-02-27 22:00:00 GMT'),
+    new Date('2022-03-06 23:00:00 GMT')
+);

@@ -9,7 +9,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"
 import * as spritejs from 'spritejs';
 import md5 from 'blueimp-md5'
 import img from "../img/logo.png"
-import {POSITIONS, FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths} from "../mock/constant"
+import {POSITIONS, FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH} from "../mock/constant"
 
 const {Footer} = Layout
 
@@ -251,10 +251,98 @@ export default class AddShop extends React.Component {
         });
     }
 
+    // 数组转化成uint32
+    toBeUint32 = (byteArray) => {
+        if (!byteArray)
+            return 0;
+            
+        let value = 0;
+    //    for (var i = 0; i < byteArray.length; i++) {
+    //        value = (value << 8) | byteArray[i];
+    //    }
+        for (var i = byteArray.length - 1; i >= 0; i--) {
+            value = (value * 256) + byteArray[i];
+        }
+
+        return value;
+    }
+
+    // 获取当前时间可注册的值（前4字节转换成Uint32后）
+    getCanRegistValue = (localTime) => {
+        // let localTime = new Date();
+
+        // 第一波之前，小于
+        if (localTime < DASOPENEPOCH[0])
+    	    return 1503238553;
+        
+        // 最后一波开放完之后
+        if (localTime >= DASOPENEPOCH[DASOPENEPOCH.length-1])
+            return 4294967295;
+
+        let index = 0;
+        // 处于中间的区间
+        for (var j = 0; j < DASOPENEPOCH.length; j++) {
+            var tmp = DASOPENEPOCH[j].toUTCString();
+            //console.log(tmp)
+            
+            if ((j < DASOPENEPOCH.length -1 ) && (localTime >= DASOPENEPOCH[j]) && (localTime < DASOPENEPOCH[j+1])) {
+            	console.log('find' + j)
+                index = j;
+                break;
+            }
+        }
+		
+        let value = 1503238553 + 4294967295*(65/24)*0.01*index
+		//console.log(localTime + ' need:' + value)
+
+        return value;
+    }
+
+    // 校验一个账号是否已开放注册，0917版本北京时间上午10点上线
+    // 4-9 位，9 月 17 日 2:00 (UTC+0) 随机开放至 35 %；
+    // 剩余的 65% 将在 24 周内逐步开放。
+    // 逐步开放规则如下：
+    // 从 9 月 26 日起，每周日的 00:00 (UTC+0) 开始开放，周日当天每整点开放一批，24 周后释放完毕。（即每周日 00:00、01:00、02:00、...、23:00 会有一批 DAS 账户开放）
+    canRegister0917 = text => {
+
+        if (text.length < 4)
+            return false;
+
+        // 虽然 > 10 < 47 位都可以注册，但考虑到太长的账号没意义，在此只用15个字符以内的
+        if (text.length > 9 && text.length < 15)
+            return true;
+
+        // 4-9 位的，算法决定
+        text += '.bit';
+        var hash = blake2b(32, null, null, Buffer.from('2021-07-22 12:00'));
+        hash = hash.update(Buffer.from(text));
+        var output = new Uint8Array(32)
+        var out = hash.digest(output);
+        console.log(out);
+        
+        
+        let arr = out.slice(0,4);
+        let uintValue = this.toBeUint32(arr);
+
+        // 测试0917功能, 之后用 new Date 替换
+        //let localTime = new Date('2021-09-17 10:00');
+        let localTime = new Date()
+
+        if (uintValue <= this.getCanRegistValue(localTime)) {
+        //    console.log(text, arr, uintValue);
+            return true;
+        }
+
+        return false
+    }
+
 
     // 校验一个账号是否已开放注册，用于 5- 9 位账号
     // 5-9 位，只开放 5 % 采用 blake2b 算法对账户名(包含 .bit 后缀)进行 hash ，取 hash 结果的第 1 个字节作为一个 u8 整数，当该整数小于等于 12 时，即可注册。
     canRegister = text => {
+        // 9/17 时放开
+        //return this.canRegister0917(text);
+
 
         if (text.length < 5)
             return false;
@@ -442,7 +530,7 @@ export default class AddShop extends React.Component {
         let language = localStorage.getItem('locale') || window.navigator.language.toLowerCase() || 'en';
 
         //判断用户的语言，跳转到不同的地方
-        if (language.indexOf("zh-") !== -1) {
+        if (language.indexOf("zh") !== -1) {
             language = "zh_CN";
         } else if (language.indexOf('en') !== -1) {
             language = "en_US";
@@ -492,8 +580,9 @@ export default class AddShop extends React.Component {
         };
 
         const onClickCarouselItem = (index, item) => {
-            console.log(this.state.banners[index].link);
-            window.open(this.state.banners[index].link);
+            let lang = this.state.locale;
+            if (this.state.banners[lang][index].link.length > 0)
+                window.open(this.state.banners[lang][index].link);
         };
 
         const menu = (
@@ -516,10 +605,10 @@ export default class AddShop extends React.Component {
                             centerMode
                             emulateTouch
                             swipeable
-                            centerSlidePercentage={33.3333}
+                            centerSlidePercentage={50}
                             onClickItem={onClickCarouselItem}
                         >
-                            {this.state.banners.map((value, index) => {
+                            {this.state.banners[this.state.locale].map((value, index) => {
                                 return <div><img alt="" src={value.image}/></div>;
                             })}
                         </Carousel>

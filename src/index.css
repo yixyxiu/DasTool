@@ -50,7 +50,7 @@ display: -ms-flexbox;
 display: flex;
 */
 .content {
-    max-width: 1172px;
+    max-width: 1000px;
     width: 100%;
     -ms-flex-direction: column;
     flex-direction: column;
