@@ -23,6 +23,23 @@ code {
     word-break: break-all;
 }
 
+.registed-account-name {
+  margin-top: 2px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #11142d;
+  word-break: break-all;
+}
+
+.bold_pink {
+  margin-left: 10px;
+  margin-top: 3px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #dd09c1;
+  vertical-align: middle;
+}
+
 .bannerWraper {
     position: relative;
     width: 100%;

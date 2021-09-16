@@ -1,6 +1,6 @@
 import React from 'react';
-import {Card, Space, Input, Button, Table, Alert, Avatar, Menu, Dropdown, Divider, Layout} from 'antd';
-import {SearchOutlined, RedoOutlined, DownOutlined} from '@ant-design/icons';
+import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Divider, message, Layout} from 'antd';
+import {SearchOutlined, DownOutlined} from '@ant-design/icons';
 import {Carousel} from "react-responsive-carousel";
 import https from '../api/https';
 import TextArea from 'antd/lib/input/TextArea';
@@ -9,7 +9,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"
 import * as spritejs from 'spritejs';
 import md5 from 'blueimp-md5'
 import img from "../img/logo.png"
-import {POSITIONS, FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH} from "../mock/constant"
+import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH} from "../mock/constant"
 
 const {Footer} = Layout
 
@@ -22,10 +22,11 @@ das.reserved = require('../mock/reserved.json');
 das.recommendList = require('../mock/recommendList.json');
 das.banners = require('../mock/banners.json');
 
-das.description = "DAS is a cross-chain decentralized account system with a .bit suffix, supporting ETH/TRX and other public chain. It can be used in scenes such as crypto transfers, domain name resolution, and identity authentication. "
-
 let localeConfig = require('../mock/lang.json');
 let iconMap = new Map();
+// 存放新注册且没有显示通知的账号列表
+let newDASBornList = [];
+
 
 export default class AddShop extends React.Component {
     state = {
@@ -38,7 +39,8 @@ export default class AddShop extends React.Component {
         keywordList: [],
         animationClass: 'dasAnimation',
         discordTimerId: 0,
-        
+        showNewDASTimerID: 0,
+        loginTime: new Date(),
         columns: [
             {
                 dataIndex: 'avatar',
@@ -241,7 +243,7 @@ export default class AddShop extends React.Component {
             }
         }
 
-        if (result.length == 0) {
+        if (result.length === 0) {
             this.refreshRecommendList();
         }
 
@@ -282,11 +284,11 @@ export default class AddShop extends React.Component {
         let index = 0;
         // 处于中间的区间
         for (var j = 0; j < DASOPENEPOCH.length; j++) {
-            var tmp = DASOPENEPOCH[j].toUTCString();
+            //var tmp = DASOPENEPOCH[j].toUTCString();
             //console.log(tmp)
             
             if ((j < DASOPENEPOCH.length -1 ) && (localTime >= DASOPENEPOCH[j]) && (localTime < DASOPENEPOCH[j+1])) {
-            	console.log('find' + j)
+            	//console.log('find' + j)
                 index = j;
                 break;
             }
@@ -426,6 +428,9 @@ export default class AddShop extends React.Component {
         while (result.length < 10) {
             let index = this.getRandomInt(0, das.recommendList.length);
             let item = das.recommendList[index];
+            if (item.length > 9)
+                continue;
+                
             if (this.canRegister(item)) {
                 let account = item + '.bit';
                 // 排除
@@ -463,6 +468,30 @@ export default class AddShop extends React.Component {
         });
     }
 
+    onTimeShowNewDASInfo = () => {
+        //console.log(newDASBornList);
+        console.log(das.registered.length);
+        if (newDASBornList.length > 0) {
+            let newDAS = newDASBornList.shift();
+         
+            let nameMD5 = md5(newDAS)
+            let id = `img${nameMD5}`
+            let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
+            message.success({
+                // 考虑换成深色背景，但没调好。
+                content: <div style={{display:'flex'}}><div>{dom}</div><div style={{marginLeft:16, verticalAlign: 'middle', height:'100%', display:'flex'}} ><div className='registed-account-name'>{newDAS}</div> <div className='bold_pink'>{this.langConfig('newdas-registed-tip')}</div></div></div>,
+                //className: 'css-1tkvan3',
+                style: {
+                  marginTop: '3vh',
+                  
+                },
+                icon: <div/>})
+
+            setTimeout(() => {
+                this.getImg(id, newDAS)
+            }, 10)
+        }
+    }
     
     getMidString = (src, start_str, end_str) => {
         let start = src.indexOf(start_str)
@@ -477,12 +506,26 @@ export default class AddShop extends React.Component {
         return "";
     }
     
+    addNewBornDAS = (item, msgTime) => {
+        let account = this.getMidString(item, '** ', ' **')
+        if (das.registered.indexOf(account) < 0) {
+            das.registered.push(account);
+            
+            let now = new Date();
+            let msgTime = new Date(item['timestamp']);
+            let timeInterval = now - msgTime;       // 毫秒间隔
+            // 5 分钟内注册的，可列入提示列表，至少留一个来提醒
+            if (newDASBornList.length === 0 || timeInterval < 5*60*1000)
+                newDASBornList.push(account);
+        }
+        //console.log(account);
+    }
 
     getRegistList = async () => {
         let that = this;
         return new Promise((resolve) => {
             const headers = {
-                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+                //'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
                 'authorization': 'ODY3ODA0ODU1MjMwMDA1MzA4.YPmcVg.iRQmn4cB0o_T6CRsoI-fymQKER0',
                 'cookie': '__dcfduid=4c76a7a70895b91877e29c9534d5fa30; __sdcfduid=b31379a6f3ff11eb96d242010a0a02bc0e534fe0d6b719f4db746cfff96889994a9b543e4bb06bb57942c430e90bd14b'
             }
@@ -494,11 +537,16 @@ export default class AddShop extends React.Component {
               })
               .then(function(json){
                   json.forEach(item => {
-                      let account = that.getMidString(item['content'], '** ', ' **');
-                      if (das.registered.indexOf(account) < 0) {
-                        das.registered.push(account);
+                      // 考虑到一次content里可能会来多笔数据，以\n分割
+                      if (item['content'].indexOf('\n') > 0) {
+                            let accountList = item['content'].split('\n')
+                            for ( let it in accountList) {
+                                that.addNewBornDAS(it, item['timestamp']);
+                            }
                       }
-                      
+                      else {
+                        that.addNewBornDAS(item['content'], item['timestamp']);
+                      }
                   });
 
                   if (json.length > 0) {
@@ -511,7 +559,7 @@ export default class AddShop extends React.Component {
                   }
               })
               .catch(function(err){
-                console.log(err);  
+                console.log(err); 
               });
         });
     }
@@ -548,15 +596,22 @@ export default class AddShop extends React.Component {
         // 强制执行一次
         this.getRegistList();
 
-        // 再设置定时器，拉取最新注册账号
-        let timerID = setInterval(this.getRegistList, 5 * 60 * 1000);
-        this.setState({discordTimerId: timerID});
+        // 再设置定时器，拉取最新注册账号，1分钟跑一次，之后改成 5 分钟 todo
+        let timerID1 = setInterval(this.getRegistList, 1 * 60 * 1000);
+        
+
+        // 4 秒钟执行一次，查看是否有新注册账号，若有，则提示出来
+        let timerID2 = setInterval(this.onTimeShowNewDASInfo, 4 * 1000);
+        this.setState({discordTimerId: timerID1, showNewDASTimerID: timerID2});
     }
 
     componentWillUnmount() {
         // use intervalId from the state to clear the interval
-        if (this.state.discordTimerId > 0)
+        if (this.state.discordTimerId > 0) {
             clearInterval(this.state.discordTimerId);
+        }
+        
+        clearInterval(this.state.showNewDASTimerID);
      }
 
     langConfig = (key) => {
@@ -634,7 +689,7 @@ export default class AddShop extends React.Component {
                         <Alert message={this.langConfig('wordlist-tips')} type="info"/>
                         <br/>
                         <div style={{position: 'relative', paddingRight: 100}}>
-                            <TextArea onChange={(e) => this.textAreaChange(e)} allowClear placeholder={das.description}
+                            <TextArea onChange={(e) => this.textAreaChange(e)} allowClear placeholder={this.langConfig('das-description')}
                                       rows={4}/>
                             <div style={{
                                 display: 'inline-block',
