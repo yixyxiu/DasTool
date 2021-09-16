@@ -2,16 +2,17 @@
     "zh_CN":{
         "lang":"简体中文",
         "app-name":"选靓号，就上 DAS 啦！",
+        "match-all":"批量精确匹配",
         "das-description":"DAS 是基于区块链的去中心化开源账户系统。是第一个具有广泛兼容性的，由用户掌握完整所有权和控制权的账户系统。DAS 账号以.bit结尾，既可以作为数字货币收款账户使用，也可以作为访问一般互联网服务的账户使用。 目前，imToken、火币钱包、TP钱包均已集成 DAS，可通过钱包向 DAS 账号转账。",
         "tips":"提示",
         "about-das":"了解DAS",
-        "wordlist-tips":"用法：将你想要的账号列表输入/粘贴到下方的编辑框内，或者粘贴一篇英文文章到编辑框内，查询哪些账号是可注册的。",
+        "wordlist-tips":"用法：将你想要的账号列表输入/粘贴到下方的编辑框内，或者粘贴一篇英文文章到编辑框内，精准查询到可注册的账号列表。",
         "wordlist-search":"查询",
-        "keyword-title":"按关键字匹配",
-        "keyword-tips":"用法：将你想要的账号前缀输入到编辑框内，查询哪些账号是可注册的。",
+        "keyword-title":"按关键字拼接出可注册账号",
+        "keyword-tips":"用法：将你想要的前缀关键字例如 btc 输入到编辑框内，会拼接出可注册的账号列表。",
         "keyword-search":"搜索",
         "register-btn":"抢注该账号",
-        "recommend-title":"还是没找到心仪的账号？",
+        "recommend-title":"推荐账号列表",
         "recommend-warning":"温馨提示",
         "recommend-tips":"小助手为你推荐了以下账号，请理性注册 DAS 账号",
         "recommend-change-list":"🍀 手气不错",
@@ -20,6 +21,7 @@
     "en_US":{
         "lang":"English",
         "app-name":"For your better DAS account",
+        "match-all":"Batch query",
         "das-description":"DAS is a cross-chain decentralized account system with a .bit suffix, supporting ETH/TRX and other public chain. It can be used in scenes such as crypto transfers, domain name resolution, and identity authentication. Some wallets such as imToken, huobi Wallet, TokenPocket have integrated the DAS solution.",
         "tips":"Tips",
         "about-das":"About DAS",
@@ -33,6 +35,6 @@
         "recommend-warning":"Tips",
         "recommend-tips":"You can select an account to register from the recommended list.",
         "recommend-change-list":"🍀 Good luck",
-        "newdas-registed-tip":"has been registed 🎉🎉"
+        "newdas-registed-tip":"has been registered 🎉🎉"
     }
 }

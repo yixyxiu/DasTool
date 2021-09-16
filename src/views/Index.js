@@ -26,7 +26,10 @@ let localeConfig = require('../mock/lang.json');
 let iconMap = new Map();
 // 存放新注册且没有显示通知的账号列表
 let newDASBornList = [];
+// 自动切换算法的时间
+let updateTime = new Date('Fri Sep 17 2021 02:00:00 GMT+0000');
 
+//let updateTime = new Date('Thu Sep 16 2021 10:17:00 GMT+0000');
 
 export default class AddShop extends React.Component {
     state = {
@@ -262,7 +265,11 @@ export default class AddShop extends React.Component {
     //    for (var i = 0; i < byteArray.length; i++) {
     //        value = (value << 8) | byteArray[i];
     //    }
-        for (var i = byteArray.length - 1; i >= 0; i--) {
+      /*  for (var i = byteArray.length - 1; i >= 0; i--) {
+            value = (value * 256) + byteArray[i];
+        }*/
+    
+        for (var i = 0; i < byteArray.length; i++) {
             value = (value * 256) + byteArray[i];
         }
 
@@ -300,6 +307,32 @@ export default class AddShop extends React.Component {
         return value;
     }
 
+    canRegister0917New = account => {
+        if (account.length < 4)
+            return false;
+
+        // 虽然 > 10 < 47 位都可以注册，但考虑到太长的账号没意义，在此只用15个字符以内的
+        if (account.length > 9 && account.length < 15)
+            return true;
+
+        // 4-9 位的，算法决定
+        account += '.bit';
+        let buf = Buffer.from(account)
+        let personal = Buffer.from('2021-07-22 12:00')
+        let hasher = blake2b(32, null, null, personal)
+        hasher.update(buf)
+        var output = new Uint8Array(32)
+        let hash = hasher.digest(output)
+        
+        let first4Bytes = Buffer.from(hash.slice(0, 4))
+        let lucky_num = first4Bytes.readUInt32BE(0)
+
+        let dst_num = this.getCanRegistValue(new Date());
+        //console.log('new: ' + lucky_num, 'dst:' + dst_num);
+        return (lucky_num <= this.getCanRegistValue(new Date()));
+        
+    }
+
     // 校验一个账号是否已开放注册，0917版本北京时间上午10点上线
     // 4-9 位，9 月 17 日 2:00 (UTC+0) 随机开放至 35 %；
     // 剩余的 65% 将在 24 周内逐步开放。
@@ -329,7 +362,7 @@ export default class AddShop extends React.Component {
         // 测试0917功能, 之后用 new Date 替换
         //let localTime = new Date('2021-09-17 10:00');
         let localTime = new Date()
-
+        // console.log('old: ' + uintValue);
         if (uintValue <= this.getCanRegistValue(localTime)) {
         //    console.log(text, arr, uintValue);
             return true;
@@ -344,6 +377,9 @@ export default class AddShop extends React.Component {
     canRegister = text => {
         // 9/17 时放开
         //return this.canRegister0917(text);
+        //this.canRegister0917(text)
+        if (new Date() >= updateTime)
+            return this.canRegister0917New(text)
 
 
         if (text.length < 5)
@@ -625,7 +661,18 @@ export default class AddShop extends React.Component {
             this.state.locale = key;
           };
     */
+    
+    handleTryKeywordSearchClick = () => {
+        const { input } = this.kewordInput; // 如果是textArea的话，const { textAreaRef } = this.inputRef;
+        input.focus();
+        input.setSelectionRange(0, input.value.length);
+            // input.select(); // 可全部选中
+    };
 
+    handleTryRecommendListClick = () => {
+        window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+        this.refreshRecommendList();
+    }
 
     render() {
         const {list, recommendList, keywordList, columns} = this.state
@@ -648,6 +695,43 @@ export default class AddShop extends React.Component {
         );
         // 修改标题
         document.title = this.langConfig('app-name');
+
+        let localeAllMatch = {
+            emptyText: (
+              <span>
+                  <div><img src='https://oss-cdn1.bihu-static.com/image/20210915/690a7d56c68f4f75872740e94012ea82_GUYDAKRVGAYA.png' height='48px'/></div>
+                <p>
+                  
+                  空空如也～
+                </p>
+                <Button onClick={this.handleTryRecommendListClick}>试试推荐账号？</Button>
+              </span>
+            )
+        };
+        let localeKeywordMatch = {
+            emptyText: (
+              <span>
+                  <div><img src='https://oss-cdn1.bihu-static.com/image/20210915/690a7d56c68f4f75872740e94012ea82_GUYDAKRVGAYA.png' height='48px'/></div>
+                <p>
+                  
+                  空空如也～
+                </p>
+                <Button onClick={this.handleTryKeywordSearchClick}>试试输入关键字？</Button>
+              </span>
+            )
+        };
+        let localeRecommend = {
+            emptyText: (
+              <span>
+                  <div><img src='https://oss-cdn1.bihu-static.com/image/20210915/690a7d56c68f4f75872740e94012ea82_GUYDAKRVGAYA.png' height='48px'/></div>
+                <p>
+                  
+                  空空如也～
+                </p>
+                <Button onClick={this.refreshRecommendList}>试试手气？</Button>
+              </span>
+            )
+        };
         return (
             <div className={this.state.animationClass}>
                 <div className="content">
@@ -668,7 +752,7 @@ export default class AddShop extends React.Component {
                             })}
                         </Carousel>
                     </div>
-                    <Card title={this.langConfig('app-name')} bordered={false}>
+                    <Card title={this.langConfig('match-all')} bordered={false}>
                         <div style={{
                             display: 'inline-block',
                             position: 'absolute',
@@ -704,7 +788,7 @@ export default class AddShop extends React.Component {
                             </div>
                         </div>
                         <br/>
-                        <Table rowKey={(item) => item.id} dataSource={list} columns={columns}
+                        <Table locale={localeAllMatch} rowKey={(item) => item.id} dataSource={list} columns={columns}
                                rowClassName='das-account-name' showHeader={false}/>
                         <br/>
                     </Card>
@@ -713,7 +797,7 @@ export default class AddShop extends React.Component {
                         <Alert message={this.langConfig('keyword-tips')} type="info"/>
                         <br/>
                         <div style={{position: 'relative', paddingRight: 100}}>
-                            <Input onBlur={(e) => this.keywordChanged(e)} placeholder="defi" allowClear maxLength={10}
+                            <Input ref={(input) => { this.kewordInput = input; }} onBlur={(e) => this.keywordChanged(e)} placeholder="defi" allowClear maxLength={10}
                                    rows={1} style={{textAlign: 'right'}}/>
                             <div style={{
                                 display: 'inline-block',
@@ -728,7 +812,7 @@ export default class AddShop extends React.Component {
                             </div>
                         </div>
                         <br/>
-                        <Table rowKey={(item) => item.id} dataSource={keywordList} columns={columns}
+                        <Table locale={localeKeywordMatch} rowKey={(item) => item.id} dataSource={keywordList} columns={columns}
                                rowClassName='das-account-name' showHeader={false}/>
                         <br/>
                     </Card>
@@ -743,7 +827,7 @@ export default class AddShop extends React.Component {
                             showIcon
                         />
                         <br></br>
-                        <Table rowKey={(item) => item.id} dataSource={recommendList} columns={columns}
+                        <Table locale={localeRecommend} rowKey={(item) => item.id} dataSource={recommendList} columns={columns}
                                rowClassName='das-account-name' showHeader={false}/>
                         <br/>
                     </Card>
