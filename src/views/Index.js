@@ -543,6 +543,7 @@ export default class AddShop extends React.Component {
     }
     
     addNewBornDAS = (item, msgTime) => {
+        console.log(item, msgTime)
         let account = this.getMidString(item, '** ', ' **')
         if (das.registered.indexOf(account) < 0) {
             das.registered.push(account);
@@ -551,10 +552,10 @@ export default class AddShop extends React.Component {
             let msgTime = new Date(item['timestamp']);
             let timeInterval = now - msgTime;       // 毫秒间隔
             // 5 分钟内注册的，可列入提示列表，至少留一个来提醒
-            if (newDASBornList.length === 0 || timeInterval < 5*60*1000)
-                newDASBornList.push(account);
+            //if (newDASBornList.length === 0 || timeInterval < 5*60*1000)
+            newDASBornList.push(account);
         }
-        //console.log(account);
+        console.log(account);
     }
 
     getRegistList = async () => {
@@ -573,11 +574,13 @@ export default class AddShop extends React.Component {
               })
               .then(function(json){
                   json.forEach(item => {
+                      console.log(item)
                       // 考虑到一次content里可能会来多笔数据，以\n分割
                       if (item['content'].indexOf('\n') > 0) {
                             let accountList = item['content'].split('\n')
+                            console.log(accountList)
                             for ( let it in accountList) {
-                                that.addNewBornDAS(it, item['timestamp']);
+                                that.addNewBornDAS(accountList[it], item['timestamp']);
                             }
                       }
                       else {
