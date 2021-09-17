@@ -677,6 +677,45 @@ export default class AddShop extends React.Component {
         this.refreshRecommendList();
     }
 
+    loadFrequentWords = () => {
+        let wordList = require('../mock/wordlist.json');
+        console.log(wordList);
+
+        let reserved = das.reserved;
+        let registered = das.registered;
+        let result = [];
+        let arr = [];
+        for (let i = 0; i < wordList.length; i++) {
+            let item = wordList[i];
+
+            //去标点符号并转小写
+            item = item.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+            //过滤非数字和字母组合
+            if (/^[a-zA-Z\d]+$/.test(item)) {
+                if (this.canRegister(item)) {
+                    let account = item + '.bit';
+                    if (!arr.includes(account) && !reserved.includes(account) && !registered.includes(account)) {
+                        arr.push(account);
+                        result.push({
+                            id: result.length + 1,
+                            status: 0,
+                            name: account
+                        })
+                    }
+                }
+            }
+        }
+
+        if (result.length === 0) {
+            this.refreshRecommendList();
+        }
+
+        console.log(result)
+        this.setState({
+            list: result
+        });
+    }
+
     render() {
         const {list, recommendList, keywordList, columns} = this.state
 
@@ -708,6 +747,8 @@ export default class AddShop extends React.Component {
                   空空如也～
                 </p>
                 <Button onClick={this.handleTryRecommendListClick}>试试推荐账号？</Button>
+                <Divider type="vertical"/>
+                <Button onClick={this.loadFrequentWords}>加载常用词汇表</Button>
               </span>
             )
         };
@@ -788,6 +829,7 @@ export default class AddShop extends React.Component {
                             }}>
                                 <Button type="primary" shape="round" icon={<SearchOutlined/>}
                                         onClick={() => this.search()}>{this.langConfig('wordlist-search')}</Button>
+                                
                             </div>
                         </div>
                         <br/>
