@@ -411,7 +411,7 @@ export default class AddShop extends React.Component {
     }
 
     add = record => {
-        window.open("https://app.gogodas.com/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
+        window.open("https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
     }
 
     keywordChanged = e => {
