@@ -93,8 +93,6 @@ export function getFigurePaths(domainMd5) {
 }
 
 export const DASOPENEPOCH = new Array(
-	new Date('2021-09-26 00:00:00 GMT'),
-    new Date('2021-10-03 01:00:00 GMT'),
     new Date('2021-10-10 02:00:00 GMT'),
     new Date('2021-10-17 03:00:00 GMT'),
     new Date('2021-10-24 04:00:00 GMT'),

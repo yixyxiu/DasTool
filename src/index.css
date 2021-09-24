@@ -31,6 +31,43 @@ code {
   word-break: break-all;
 }
 
+
+.statistic-das-count-title {
+  font-size: 32;
+  font-weight: 600;
+  text-align: left;
+  color: #8f8b8b;
+}
+
+.statistic-lastday-das-count {
+  font-size: 56px;
+  font-weight: 600;
+  font-family: Optima,'Helvetica Neue',Arial,Helvetica,sans-serif;
+  text-align: left;
+  color: #7B49F6;
+}
+
+.statistic-das-count {
+  font-size: 56px;
+  font-weight: 600;
+  font-family: Optima,'Helvetica Neue',Arial,Helvetica,sans-serif;
+  text-align: right;
+  color: #c8304e;
+}
+
+.das-wordcloud-wrapper {
+  max-width: 500px;
+  width: 500px;
+}
+
+.group-radio {
+  margin-top: 2px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #11142d;
+  word-break: break-all;
+}
+
 .bold_pink {
   margin-left: 10px;
   margin-top: 3px;
