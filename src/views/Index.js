@@ -1104,10 +1104,9 @@ export default class AddShop extends React.Component {
         };
 
         return (
+            <div>
             <div className={this.state.animationClass}>
-                <div className="content">
-                    
-                    
+                <div className="content">                   
                     <div className="bannerWraper">
                         <Carousel
                             autoPlay={true}
@@ -1269,6 +1268,9 @@ export default class AddShop extends React.Component {
                         
                     </div>
                 </div>
+                
+            </div>
+            
             </div>
         )
 

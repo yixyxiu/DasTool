@@ -1,3 +1,4 @@
+@charset "UTF-8";
 /*
 @font-face {
   font-family: 'TTNormsProVarRoman';
@@ -87,7 +88,7 @@ code {
     border-radius: .4rem;
     margin-bottom: 10px;
 }
-
+/*
 .dasAnimation {
     width: 100wh;
     color: #fff;
@@ -97,6 +98,14 @@ code {
     -webkit-animation: Gradient 15s ease infinite;
     -moz-animation: Gradient 15s ease infinite;
     animation: Gradient 15s ease infinite;
+}*/
+
+.dasAnimation {
+  width: 100wh;
+  color: #fff;
+  padding: 10px;
+  background: #262626;
+  background-size: 400% 400%;
 }
 
 /*
@@ -206,7 +215,7 @@ background-position: 0% 50%
 /*
 Footer
 */
-
+/*
 .site-footer
 {
   background-color:#26272b;
@@ -370,3 +379,4 @@ Footer
     font-weight:600
   }
 }
+*/
