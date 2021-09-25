@@ -10,6 +10,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"
 import * as spritejs from 'spritejs';
 import md5 from 'blueimp-md5'
 import img from "../img/logo.png"
+import DAS_LA_LOGO from '../img/dasla_logo.png';
 import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH} from "../mock/constant"
 
 const {Footer} = Layout
@@ -642,7 +643,6 @@ export default class AddShop extends React.Component {
         let reserved = das.reserved;
         let registered = das.registered;
         let result = [];
-        console.log(this.suffixList);
         for (let i = 0; i < das.suffixList.length; i++) {
             let accountName = keyword + das.suffixList[i];
             // 只在结果集里显示 10 位以下的可注册账号
@@ -670,7 +670,6 @@ export default class AddShop extends React.Component {
         let registered = das.registered;
         let result = [];
 
-        console.log(this.prefixList);
         for (let i = 0; i < das.prefixList.length; i++) {
             let accountName = das.prefixList[i] + keyword;
             // 只在结果集里显示 10 位以下的可注册账号
@@ -974,9 +973,40 @@ export default class AddShop extends React.Component {
         this.refreshRecommendList();
     }
 
+    // 随机加载 10 个账号到精准匹配编辑框中
+    loadRandomFrequentWords = () => {
+        let wordList = require('../mock/wordlist.json');
+
+        let reserved = das.reserved;
+        let registered = das.registered;
+        let result = [];
+
+        let wordString = this.langConfig('wordlist-tips');
+
+        // 最多输出 10个
+        while (result.length < 10) {
+            let index = this.getRandomInt(0, wordList.length);
+            let item = wordList[index];
+            if (item.length > 9)
+                continue;
+                
+            if (this.canRegister(item)) {
+                let account = item + '.bit';
+                // 排除
+                if (!result.includes(account) && !reserved.includes(account) && !registered.includes(account)) {
+                    result.push(item);
+                    wordString = wordString + '\n' + item
+                }
+            }
+        }
+
+        console.log(wordString);
+        return wordString;
+    }
+
     loadFrequentWords = () => {
         let wordList = require('../mock/wordlist.json');
-        console.log(wordList);
+        
 
         let reserved = das.reserved;
         let registered = das.registered;
@@ -1070,7 +1100,7 @@ export default class AddShop extends React.Component {
         let localeAllMatch = {
             emptyText: (
               <span>
-                  <div><img src='https://oss-cdn1.bihu-static.com/image/20210915/690a7d56c68f4f75872740e94012ea82_GUYDAKRVGAYA.png' height='48px'/></div>
+                  <div><img src={DAS_LA_LOGO} height='48px'/></div>
                 <p>
                     {this.langConfig('empty-data')}                  
                 </p>
@@ -1083,7 +1113,7 @@ export default class AddShop extends React.Component {
         let localeKeywordMatch = {
             emptyText: (
               <span>
-                  <div><img src='https://oss-cdn1.bihu-static.com/image/20210915/690a7d56c68f4f75872740e94012ea82_GUYDAKRVGAYA.png' height='48px'/></div>
+                  <div><img src={DAS_LA_LOGO} height='48px'/></div>
                 <p>
                     {this.langConfig('empty-data')}   
                 </p>
@@ -1094,7 +1124,7 @@ export default class AddShop extends React.Component {
         let localeRecommend = {
             emptyText: (
               <span>
-                  <div><img src='https://oss-cdn1.bihu-static.com/image/20210915/690a7d56c68f4f75872740e94012ea82_GUYDAKRVGAYA.png' height='48px'/></div>
+                  <div><img src={DAS_LA_LOGO} height='48px'/></div>
                 <p>
                     {this.langConfig('empty-data')}   
                 </p>
@@ -1158,7 +1188,7 @@ export default class AddShop extends React.Component {
                         <div style={{display: 'flex'}}>
                             
                             <div style={{width:'100%'}}>
-                                <TextArea onChange={(e) => this.textAreaChange(e)} allowClear placeholder={this.langConfig('wordlist-tips')}
+                                <TextArea onChange={(e) => this.textAreaChange(e)} allowClear placeholder={this.langConfig('wordlist-tips')} 
                                         rows={4}/>
                                 
                                 
