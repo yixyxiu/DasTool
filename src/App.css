@@ -1,3 +1,4 @@
+/*
 #root,.ant-layout{
   height: 100%;
 }
@@ -24,7 +25,7 @@
 }
 
 .site-layout-sub-header-background {
-  background: #fff;
+  background: rgb(101, 74, 74);
 }
 
 .site-layout-background {
@@ -60,3 +61,4 @@
   background:url(https://da.systems/images/logo2.svg),linear-gradient(rgba(255,255,255,0.5),rgba(255,255,255,0.5));
   background-blend-mode: overlay;
 }
+*/

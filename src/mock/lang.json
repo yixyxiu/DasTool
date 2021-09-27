@@ -25,14 +25,22 @@
         "empty-try-recommend-again":"试试手气？",
         "newdas-registed-tip":"已被注册 🎉🎉",
         "letters":" 位",
-        "notification":"das.la 已经上线DAS数据看版，请滚动到下方查看，同时，丰富了可注册账号，支持关键字作为前缀、后缀搜索。选靓号，就上das.la！",
+        "notification":"das.la 已经上线DAS数据看版、教程、分享等功能，请滚动到下方查看，同时，丰富了可注册账号，支持关键字作为前缀、后缀搜索。选靓号，就上das.la！",
         "das-big-data":"DAS 大数据",
         "das-registered-count":"DAS全网注册账户数",
         "yesterday-registered-count":"昨日注册账户数",
         "daily-registered-chart-title":"每日新增DAS账号走势",
         "account-length-distribution-title":"账号长度分布",
         "account-word-cloud-title":"更多的人喜欢账号里带这些词",
-        "inviter-rank-title":"TOP10 邀请人榜单"
+        "inviter-rank-title":"TOP10 邀请人榜单",
+        "about-dasla-1":"DASLA 由",
+        "about-dasla-2":" 社区中一群优秀的小伙伴发起。",
+        "share-das-tip":"喜欢DAS.LA吗？赶快分享一下!",
+        "tutorials":"教程",
+        "follow-das":"关注 DAS",
+        "community":"社区",
+        "donate":"赞助das.la",
+        "copy-address":"复制地址"
     },
     "en_US":{
         "lang":"English",
@@ -60,13 +68,22 @@
         "empty-try-recommend-again":"Get recommendation",
         "newdas-registed-tip":"has been registered 🎉🎉",
         "letters":" letters",
-        "notification":"New features：1. DAS big data board. 2. Auto fill a random popular keyword into the textbox.  Scroll to have a look.(das.la, for your better DAS)",
+        "notification":"New features：1. DAS big data board, tutorals. 2. Auto fill a random popular keyword into the textbox.  Scroll to have a look.(das.la, for your better DAS)",
         "das-big-data":"DAS statistic",
         "das-registered-count":"Total DAS Account",
         "yesterday-registered-count":"Lastday registered",
         "daily-registered-chart-title":"Daily registered account trend",
         "account-length-distribution-title":"Account length distribution",
         "account-word-cloud-title":"Popular keywords",
-        "inviter-rank-title":"TOP10 Inviters"
+        "inviter-rank-title":"TOP10 Inviters",
+        "about-dasla-1":"DASLA is created by ",
+        "about-dasla-2":", a team of swell people.",
+        "share-das-tip":"Like das.la? Share it!",
+        "tutorials":"Tutorials",
+        "follow-das":"Follow DAS",
+        "community":"Community",
+        "donate":"Donate das.la",
+        "copy-address":"COPY ADDRESS"
+
     }
 }

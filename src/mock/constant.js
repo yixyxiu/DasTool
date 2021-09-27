@@ -118,3 +118,5 @@ export const DASOPENEPOCH = new Array(
     new Date('2022-02-27 22:00:00 GMT'),
     new Date('2022-03-06 23:00:00 GMT')
 );
+
+export const DONATEADDRESS = 'ckb1qyqv6sge6as66xz2clgd8ffkjwgcaqv8t5asrghkn4';
