@@ -15,6 +15,7 @@ import DAS_LA_LOGO from '../img/dasla_logo.png';
 import CKB_QRCODE from '../img/ckb_qrcode.png';
 import WORDCLOUD_MASK from '../img/wordcloud_mask.png'
 import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH, DONATEADDRESS} from "../mock/constant"
+import { loadConfig } from 'browserslist';
 
 const {Footer} = Layout
 
@@ -309,7 +310,7 @@ class DASTreemap extends React.Component {
     render() {
         let data = {
             name: 'root',
-            children: [{'name': 'other', 'value': 1094}, {'name': '4', 'value': 526}, {'name': '13', 'value': 694}, {'name': '9', 'value': 794}, {'name': '8', 'value': 1085}, {'name': '12', 'value': 1211}, {'name': '7', 'value': 1350}, {'name': '6', 'value': 1869}, {'name': '11', 'value': 2035}, {'name': '5', 'value': 2868}, {'name': '10', 'value': 3675}]
+            children: this.props.dataCallback()
         }
         var config = {
             data: data,
@@ -352,6 +353,21 @@ class DASTreemap extends React.Component {
     }
 };
 
+class DASDailyStat extends React.Component {
+
+    constructor(props) {
+        super(props);
+    }
+
+    componentDidMount() {
+        console.log('DASDailyStat componentDidMount');
+
+    }
+
+    render() {
+        return 
+    }
+}
 
 
 export default class AddShop extends React.Component {
@@ -819,34 +835,6 @@ export default class AddShop extends React.Component {
                 this.mixWithSuffix(keyword);
                 break;
         }
-
-    /*    let reserved = das.reserved;
-        let registered = das.registered;
-        let keyword = this.state.keyword;
-        let result = [];
-
-        keyword = keyword.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
-        for (let i = 0; i < das.suffixList.length; i++) {
-            let accountName = keyword + das.suffixList[i];
-            // 只在结果集里显示 10 位以下的可注册账号
-            if (this.canRegister(accountName) && accountName.length < 10) {
-                let account = accountName + '.bit';
-                // 排除
-                if (!reserved.includes(account) && !registered.includes(account)) {
-                    result.push({
-                        id: result.length + 1,
-                        status: 0,
-                        name: account
-                    })
-                }
-            }
-        }
-
-        //console.log(result)
-        this.setState({
-            keywordList: result
-        });
-    */
         
     }
 
@@ -987,6 +975,7 @@ export default class AddShop extends React.Component {
 
                   if (json.length > 0) {
                       das.lastRegiseredId = json[0].id;
+                      das.lastUpdateTime = json[0].timestamp;
                       console.log(das.lastRegiseredId);
                       // 如果有数据，继续拉取
                       setTimeout(() => {
@@ -1170,6 +1159,10 @@ export default class AddShop extends React.Component {
         return das['dailyRegistered'][len-2]['value']
     }
 
+    getAccountLenStatList = () => {
+        return das['accountLen'];
+    }
+
     getInvitRankList = () => {
         let rankList = [];
         for (let i = 0, dst_len = 0; i < das['invitRank'].length && dst_len < 10; i++) {
@@ -1182,6 +1175,17 @@ export default class AddShop extends React.Component {
         }
 
         return rankList;
+    }
+
+    loadDailyStatUpdatedTime = () => {
+        let defTitle = this.langConfig('dailystat-title');
+        let updateTime = '';
+        if (das.lastUpdateTime) {
+            let time = new Date(das.lastUpdateTime);
+            updateTime = time.toLocaleDateString() + " " + time.toLocaleTimeString();
+        }
+            
+        return defTitle + updateTime;
     }
 
     render() {
@@ -1359,7 +1363,11 @@ export default class AddShop extends React.Component {
                     </Card>
                     <br/>
                     <Card title={this.langConfig('das-big-data')} bordered={false}>
-                        <div style={{display:'flex',width:'100%',justifyContent:'space-around',height:100,flexDirection:'row'}}>
+                        <div className='statistic-das-count-title'>
+                            {this.loadDailyStatUpdatedTime()}
+                        </div>
+                        <br/>
+                        <div style={{display:'flex', flexWrap:'wrap', width:'100%',justifyContent:'space-around',height:100,flexDirection:'row'}}>
                             <div>
                                 <div className='statistic-das-count-title'>
                                     {this.langConfig('yesterday-registered-count')}
@@ -1376,9 +1384,7 @@ export default class AddShop extends React.Component {
                                     {das.registered.length.toLocaleString()}
                                 </div>
                             </div>
-                            <div>
-                                
-                            </div>
+                           
                         </div>
                         <br/>
                         <div className='statistic-das-count-title'>
@@ -1390,7 +1396,7 @@ export default class AddShop extends React.Component {
                         <div className='statistic-das-count-title'>
                             {this.langConfig('account-length-distribution-title')}
                         </div>
-                        <DASTreemap loadConfigCallback={this.langConfig} ></DASTreemap>
+                        <DASTreemap loadConfigCallback={this.langConfig} dataCallback={this.getAccountLenStatList} ></DASTreemap>
                         <br/>
                         <div className='statistic-das-count-title'>
                             {this.langConfig('account-word-cloud-title')}
