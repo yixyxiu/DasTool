@@ -179,6 +179,7 @@ class DASInvitRank extends React.Component {
             yField: 'name',
             seriesField: 'name',
             legend: { position: 'bottom-left' },
+            theme: { "styleSheet": { "brandColor": "#F8D4A4", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
         };
         return <Bar {...config} />;
     }
@@ -233,6 +234,8 @@ class DASWordCloud extends React.Component {
                 fontFamily: 'Verdana',
                 fontSize: [8, this.calcFontSize()],
             },
+            theme: { "styleSheet": { "brandColor": "#F8D4A4", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
+        
         };
         //console.log('config.width' + config.width + 'config.height' + config.height)
         return <WordCloud {...config} />;
