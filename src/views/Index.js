@@ -389,6 +389,7 @@ export default class AddShop extends React.Component {
         discordTimerId: 0,
         showNewDASTimerID: 0,
         loginTime: new Date(),
+        dataUpdateFlag: false,
         columns: [
             {
                 dataIndex: 'avatar',
@@ -929,18 +930,66 @@ export default class AddShop extends React.Component {
 
         return "";
     }
-    
+
+	// 收到新的注册成功通知之后，更新排行榜
+    addOneAccourdToInvitRank = (inviter) => {
+        // 出于效率考虑，只对前30 名进行更新处理
+        for (let i = 0,j = 0; i < das['invitRank'].length && j < 30; i++, j++) {
+            let inviterObj = das['invitRank'][i];
+            if (inviterObj['name'] == inviter) {
+                das['invitRank'][i]['count'] += 1;
+                break;
+            }
+        }
+    }
+
+    // 收到新的注册成功通知之后，更新每日注册数据
+    addOneAccourdToDailyData = (date) => {
+        let find = false;
+        // 出于效率考虑，从后往前处理
+        let dailyObj = {}
+        for (let i = das['dailyRegistered'].length-1; i > 0; i--) {
+            dailyObj = das['dailyRegistered'][i];
+            if (dailyObj['date'] == date) {
+                das['dailyRegistered'][i]['value'] += 1;
+                find = true;
+                break;
+            }
+        }
+
+        if (!find) {
+            dailyObj = {'date': date, 'value': 1};
+            das['dailyRegistered'].push(dailyObj);
+        }
+    }
+
+    // '** vivov.bit ** registed for 1 year(s), invited by cryptofans.bit'
+    getInviterName = (src_str) => {
+        let spliter = 'invited by ';
+        let pos = src_str.indexOf(spliter);
+        if (pos < 0)
+            return ''
+
+        let inviter = src_str.substr(pos + spliter.length);
+        
+        return inviter;
+    }
+
     addNewBornDAS = (item, msgTime) => {
         console.log(item, msgTime)
-        let account = this.getMidString(item, '** ', ' **')
+        let account = this.getMidString(item, '** ', ' **');
+        let inviter = this.getInviterName(item);
         if (das.registered.indexOf(account) < 0) {
             das.registered.push(account);
             
-            let now = new Date();
-            let msgTime = new Date(item['timestamp']);
-            let timeInterval = now - msgTime;       // 毫秒间隔
-            // 5 分钟内注册的，可列入提示列表，至少留一个来提醒
-            //if (newDASBornList.length === 0 || timeInterval < 5*60*1000)
+            // 更新当天的注册数据
+            let date = msgTime.substr(0,10);
+	        this.addOneAccourdToDailyData(date);
+            // 更新词云图
+
+            // 更新邀请榜单
+            this.addOneAccourdToInvitRank(inviter)
+            
             newDASBornList.push(account);
         }
         console.log(account);
@@ -980,6 +1029,7 @@ export default class AddShop extends React.Component {
                       das.lastRegiseredId = json[0].id;
                       das.lastUpdateTime = json[0].timestamp;
                       console.log(das.lastRegiseredId);
+                      that.setState({dataUpdateFlag: true});
                       // 如果有数据，继续拉取
                       setTimeout(() => {
                           that.getRegistList();
@@ -1030,7 +1080,7 @@ export default class AddShop extends React.Component {
         this.getRegistList();
 
         // 再设置定时器，拉取最新注册账号，1分钟跑一次，之后改成 5 分钟 todo
-        let timerID1 = setInterval(this.getRegistList, 1 * 60 * 1000);
+        let timerID1 = setInterval(this.getRegistList, 5 * 60 * 1000);
         
 
         // 4 秒钟执行一次，查看是否有新注册账号，若有，则提示出来
@@ -1057,12 +1107,6 @@ export default class AddShop extends React.Component {
 
         return localeConfig[locale][key];
     }
-
-    /*
-        onLangMenuClick = ({ key }) => {
-            this.state.locale = key;
-          };
-    */
     
     handleTryKeywordSearchClick = () => {
         const { input } = this.kewordInput; // 如果是textArea的话，const { textAreaRef } = this.inputRef;
@@ -1398,6 +1442,7 @@ export default class AddShop extends React.Component {
                         <br/>
                         <div className='statistic-das-count-title'>
                             {this.langConfig('account-length-distribution-title')}
+                            <a href={this.langConfig('das-limit-link')} target="_blank">{this.langConfig('das-limit-info')}</a>
                         </div>
                         <DASTreemap loadConfigCallback={this.langConfig} dataCallback={this.getAccountLenStatList} ></DASTreemap>
                         <br/>
@@ -1413,10 +1458,7 @@ export default class AddShop extends React.Component {
                         <DASInvitRank dataCallback={this.getInvitRankList} ></DASInvitRank>
                         
                     </Card>
-                    <br/>
-                    <div className='ant-card'>
-                        
-                    </div>
+                    
                 </div>
                 
             </div>
