@@ -134,6 +134,12 @@ display: flex;
   text-overflow: ellipsis;
 }
 
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
+  position: relative;
+  padding: 16px 0px 16px 0px;
+  overflow-wrap: break-word;
+}
+
 /*
 .ant-alert-message {
   color: rgba(0, 0, 0, 0.85);
@@ -483,6 +489,202 @@ h6 {
     line-height: 1.05
 }
 
+/* ----begin 注册商选择，style from da.system */
+
+
+.registry-elem {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  height: 44px;
+  padding-right: 0px;
+  padding-left: 10px;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  border-style: solid;
+  border-width: 1px;
+  background-color:#1890ff;
+  border-color: #e8eef4;
+  border-radius: 6px;
+  -webkit-transition: background-color 200ms ease;
+  transition: background-color 200ms ease;
+  color: #000;
+  text-decoration: none;
+  cursor: pointer
+}
+/* 去掉hover效果
+.registry-elem:hover {
+  background-color: #e8eef4
+}
+*/
+
+.registry-elem-inner {
+  max-width: 100%;
+  padding-top: 8px;
+}
+
+.image-5 {
+  padding-right: 0px;
+  height:24px;
+}
+
+.select-registry-btn {
+  font-size: 14px;
+  text-align: center;
+  color: #fff;
+}
+
+.select-registry-tips {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  margin-right: 0.2rem;
+  text-align: right;
+  color: #8f8b8b;
+}
+
+/* 选择、注册账号按钮样式开始 */
+.dasla-btn-select-account {
+  color: #000;
+  background: #FFD814;
+  border-color: #FCD200;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+  -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+}
+
+.dasla-btn-register-account {
+  color: #000;
+  background: #FFA41C;
+  border-color: #FF8F00;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+  -webkit-box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+}
+
+.dasla-btn-select-account > a:only-child {
+  color: currentColor;
+}
+.dasla-btn-select-account > a:only-child::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: transparent;
+  content: '';
+}
+
+.dasla-btn-select-account:hover,
+.dasla-btn-select-account:focus {
+  color: #000;
+  background: #F7CA00;
+  border-color: #F2C200;
+  box-shadow: 0 2px 5px 0 rgba(213,217,217,.5);
+}
+
+.dasla-btn-register-account:hover,
+.dasla-btn-register-account:focus {
+  color: #000;
+  background: #FA8900;
+  border-color: #E3931E;
+  box-shadow: 0 2px 5px 0 rgba(213,217,217,.5);
+}
+
+.dasla-btn-select-account:hover > a:only-child,
+.dasla-btn-select-account:focus > a:only-child {
+  color: currentColor;
+}
+.dasla-btn-select-account:hover > a:only-child::after,
+.dasla-btn-select-account:focus > a:only-child::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: transparent;
+  content: '';
+}
+.dasla-btn-select-account:active {
+  background: #FFF;
+  border-color: #FFD814;
+  box-shadow: 0 2px 5px 0 rgba(213,217,217,.5);
+}
+.dasla-btn-register-account:active {
+  background: #FFF;
+  border-color: #FFA41C;
+  box-shadow: 0 2px 5px 0 rgba(213,217,217,.5);
+}
+
+.dasla-btn-select-account:active > a:only-child {
+  color: currentColor;
+}
+.dasla-btn-select-account:active > a:only-child::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: transparent;
+  content: '';
+}
+.dasla-btn-select-account[disabled],
+.dasla-btn-select-account[disabled]:hover,
+.dasla-btn-select-account[disabled]:focus,
+.dasla-btn-select-account[disabled]:active {
+  color: rgba(0, 0, 0, 0.25);
+  background: #f5f5f5;
+  border-color: #d9d9d9;
+  text-shadow: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.dasla-btn-select-account[disabled] > a:only-child,
+.dasla-btn-select-account[disabled]:hover > a:only-child,
+.dasla-btn-select-account[disabled]:focus > a:only-child,
+.dasla-btn-select-account[disabled]:active > a:only-child {
+  color: currentColor;
+}
+.dasla-btn-select-account[disabled] > a:only-child::after,
+.dasla-btn-select-account[disabled]:hover > a:only-child::after,
+.dasla-btn-select-account[disabled]:focus > a:only-child::after,
+.dasla-btn-select-account[disabled]:active > a:only-child::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: transparent;
+  content: '';
+}
+/* 选择账号按钮样式结束 */
+
+.dasla-button {
+  font-family: MD Primer Bold,Rubik,Lato,Lucida Grande,Lucida Sans Unicode,Tahoma,Sans-Serif;
+  font-style: normal;
+  background-color: #5e5e5e!important;
+  color: #fff!important;
+  border: 0;
+  border-bottom: 1px solid #262626;
+  border-right: 1px solid #262626;
+  box-shadow: inset 1px 1px 0 #777,0 2px 3px rgba(0,0,0,.4);
+  display: inline-block;
+  font-weight: 700;
+  line-height: 1.4;
+  text-transform: uppercase;
+  text-decoration: none!important;
+  border-radius: 4px!important;
+  white-space: nowrap;
+  padding: 10px 10px;
+  text-align: center;
+  transition: .07s;
+  position: relative;
+}
+
+/* ----end 注册商选择，style from da.system */
 
 
 .site-footer {

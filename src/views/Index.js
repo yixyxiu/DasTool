@@ -13,7 +13,9 @@ import md5 from 'blueimp-md5'
 import img from "../img/logo.png"
 import DAS_LA_LOGO from '../img/dasla_logo.png';
 import CKB_QRCODE from '../img/ckb_qrcode.png';
-import WORDCLOUD_MASK from '../img/wordcloud_mask.png'
+import REG_DENAME_LOGO from '../img/ic-registrar-dename.png';
+import REG_DAS_LOGO from '../img/ic-registrar-das.png';
+import WORDCLOUD_MASK from '../img/wordcloud_mask.png';
 import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH, DONATEADDRESS} from "../mock/constant"
 import { loadConfig } from 'browserslist';
 
@@ -226,6 +228,7 @@ class DASWordCloud extends React.Component {
             //padding:[0, -20, 0, -40],
             colorField: 'name',
             height: this.state.clientWidth > 500 ? 500 : this.state.clientWidth,
+            
             //with: this.state.clientWidth > 500? 500 : this.state.clientWidth,
             //renderer:'svg',
 
@@ -390,6 +393,7 @@ export default class AddShop extends React.Component {
         showNewDASTimerID: 0,
         loginTime: new Date(),
         dataUpdateFlag: false,
+        focusItem: '',
         columns: [
             {
                 dataIndex: 'avatar',
@@ -433,11 +437,31 @@ export default class AddShop extends React.Component {
                 key: 'action',
                 align: 'right',
                 render: record => {
-
-                    return <Space size="middle">
-                        <Button type="primary" size={'normal'} shape="round"
-                                onClick={() => this.add(record)}>{this.langConfig('register-btn')}</Button>
-                    </Space>
+                    console.log('record add:' + record.name)
+                    if (this.state.focusItem == record.name) {
+                        return <div>
+                            
+                            <Space size="small">
+                            <Tooltip placement="topRight" title={this.langConfig('registry-dename-supprts')}>
+                                <Button className="dasla-btn-register-account" size={'normal'} shape="round"
+                                onClick={() => this.goDeNameRegister(record)}>{this.langConfig('goto-register-btn')}</Button>
+                                <img src={REG_DENAME_LOGO}  alt="" className="image-5"/>
+                            </Tooltip>
+                            <Tooltip placement="topRight" title={this.langConfig('registry-das-supprts')}>
+                                <Button className="dasla-btn-register-account" size={'normal'} shape="round"
+                                    onClick={() => this.goDASRegister(record)}>{this.langConfig('goto-register-btn')}</Button>
+                                <img src={REG_DAS_LOGO}  alt="" className="image-5"/>
+                            </Tooltip>
+                            </Space></div>
+                    
+                    }
+                    else {
+                        return <Space size="small">
+                        <Button className="dasla-btn-select-account" size={'normal'} shape="round"
+                                onClick={() => this.select(record)}>{this.langConfig('register-btn')}</Button>
+                    
+                        </Space>
+                    }
                 },
             },
 
@@ -756,8 +780,31 @@ export default class AddShop extends React.Component {
         return Math.floor(Math.random() * (max - min)) + min; //不含最大值，含最小值
     }
 
-    add = record => {
-        window.open("https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
+    select = record => {
+       // window.open("https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
+       this.setState({focusItem: record.name})
+    }
+
+    goDASRegister = record => {
+        if (document.body.clientWidth > 640) {
+            console.log('goDASRegister > 640')
+            window.open("https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
+        }
+        else {
+            console.log('goDASRegister <= 640')
+            document.location.href = "https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit";
+        }    
+    }
+
+    goDeNameRegister = record => {
+        if (document.body.clientWidth > 640) {
+            console.log('goDeNameRegister > 640')
+            window.open("https://app.dename.com/register/" + record.name + "?inviter=D2APRJ", "newW")
+        }
+        else {
+            console.log('goDeNameRegister <= 640')
+            document.location.href = "https://app.dename.com/register/" + record.name + "?inviter=D2APRJ";
+        }
     }
 
     keywordChanged = e => {
@@ -897,11 +944,14 @@ export default class AddShop extends React.Component {
         //console.log(newDASBornList);
         console.log(das.registered.length);
         if (newDASBornList.length > 0) {
-            let newDAS = newDASBornList.shift();
+            let tipsInfo = newDASBornList.shift();
+            let newDAS = tipsInfo['account'];
+            let msgTime = tipsInfo['msgTime'];
          
             let nameMD5 = md5(newDAS)
             let id = `img${nameMD5}`
             let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
+
             message.success({
                 // 考虑换成深色背景，但没调好。
                 content: <div style={{display:'flex'}}><div>{dom}</div><div style={{marginLeft:16, verticalAlign: 'middle', height:'100%', display:'flex'}} ><div className='registed-account-name'>{newDAS}</div> <div className='bold_pink'>{this.langConfig('newdas-registed-tip')}</div></div></div>,
@@ -915,6 +965,9 @@ export default class AddShop extends React.Component {
             setTimeout(() => {
                 this.getImg(id, newDAS)
             }, 10)
+
+            // 浏览器缓存里保存显示过的提醒
+            localStorage.setItem('das-born-showed', msgTime);
         }
     }
     
@@ -990,7 +1043,23 @@ export default class AddShop extends React.Component {
             // 更新邀请榜单
             this.addOneAccourdToInvitRank(inviter)
             
-            newDASBornList.push(account);
+            // 只显示新增的，上次本地已经显示过了，就不再显示
+            let lastNewDASTipsTime = localStorage.getItem('das-born-showed')
+            if (lastNewDASTipsTime) {
+                let thisDateTime = new Date(msgTime);
+                if (thisDateTime > new Date(lastNewDASTipsTime)) {
+                    let tipsInfo = {};
+                    tipsInfo['msgTime'] = msgTime;
+                    tipsInfo['account'] = account;
+                    newDASBornList.push(tipsInfo);
+                }
+            }
+            else {
+                let tipsInfo = {};
+                tipsInfo['msgTime'] = msgTime;
+                tipsInfo['account'] = account;
+                newDASBornList.push(tipsInfo);
+            }   
         }
         console.log(account);
     }
