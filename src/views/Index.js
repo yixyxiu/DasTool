@@ -1,14 +1,14 @@
 import React from 'react';
-import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Layout} from 'antd';
+import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select} from 'antd';
 import {SearchOutlined, DownOutlined, QuestionCircleFilled} from '@ant-design/icons';
 import { Treemap, Line, WordCloud, Bar } from '@ant-design/charts';
 import {Carousel} from "react-responsive-carousel";
 import {CopyToClipboard} from 'react-copy-to-clipboard';   // copy 地址用到
-import https from '../api/https';
+import https from '../api/https';   // 请求discord用到
 import TextArea from 'antd/lib/input/TextArea';
 import "react-responsive-carousel/lib/styles/carousel.min.css"
 //import { polyfill } from 'spritejs/lib/platform/node-canvas'
-import * as spritejs from 'spritejs';
+import * as spritejs from 'spritejs';   // 头像用到
 import md5 from 'blueimp-md5'
 import img from "../img/logo.png"
 import DAS_LA_LOGO from '../img/dasla_logo.png';
@@ -16,10 +16,11 @@ import CKB_QRCODE from '../img/ckb_qrcode.png';
 import REG_DENAME_LOGO from '../img/ic-registrar-dename.png';
 import REG_DAS_LOGO from '../img/ic-registrar-das.png';
 import WORDCLOUD_MASK from '../img/wordcloud_mask.png';
-import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH, DONATEADDRESS} from "../mock/constant"
-import { loadConfig } from 'browserslist';
+import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH, DONATEADDRESS, TABLEFILTER} from "../mock/constant"
+//import { loadConfig } from 'browserslist';
 
-const {Footer} = Layout
+//const {Footer} = Layout
+const { Option } = Select;
 
 
 var blake2b = require('blake2b');
@@ -36,10 +37,7 @@ let localeConfig = require('../mock/lang.json');
 let iconMap = new Map();
 // 存放新注册且没有显示通知的账号列表
 let newDASBornList = [];
-// 自动切换算法的时间
-let updateTime = new Date('Fri Sep 17 2021 02:00:00 GMT+0000');
 
-//let updateTime = new Date('Thu Sep 16 2021 10:17:00 GMT+0000');
 let defKeywords = ['btc','eth','ckb','bnb','uni','das','nervos','link','ada','dex',
                     'swap','defi','nft','gamefi','crypto','token','coin','market','finance','exchange',
                     'ex','wallet','fork','hashing','hodl','stake', 'farm','miner','node','block',
@@ -61,6 +59,22 @@ const FIXMETHODS = {
     ASSUFFIX: 2
 }
 
+const DASACCOUNTSTATUS = {
+    Available: '0',
+    Reserved: '1',
+    Registering: '2',
+    Registered: '3',
+    NotOpen: '4',
+}
+
+// 注意，顺序与上面的DASACCOUNTSTATUS保持一致
+let AccountStatusColors = [
+    '#22C493',
+    '#808191',
+    '#FFD717',
+    '#FFA800',
+    '#DF4A46',
+]
 
 class DaslaFooter extends React.Component {
     state = {copied: false};
@@ -83,9 +97,8 @@ class DaslaFooter extends React.Component {
     }
 
     getCopiedFlagText = () => {
-        console.log(this.state.copied);
         if (this.state.copied) {
-            return <i className="fa fa-check"></i>;
+            return <i className="fa fa-check-circle foot-small-icon-flag"></i>;
         }
         
         return ""
@@ -103,7 +116,7 @@ class DaslaFooter extends React.Component {
             
             <div className="footer-form"> 
             <ul className="social">
-                <li><a href="https://twitter.com/intent/tweet?url=das.la&text=%F0%9F%A4%A9%20I%20found%20a%20cool%20DAS%20tool:%20https://das.la,%20lists%20better%20DAS%20accounts%20and%20provides%20professional%20data%20reports,%20you%20need%20it.%0A%0A%F0%9F%9A%80%20Come%20get%20your%20.bit%20now!%0A%0ARegister%20and%20Get%20a%20%E2%9A%A1%EF%B8%8F5%25%20discount.%0A@realDASystems%20@NervosNetwork%20$ckb%20%23das%20%23dasla" target="_blank"><span className="fa fa-twitter"></span></a></li>
+                <li><a href="https://twitter.com/intent/tweet?url=das.la&text=%F0%9F%A4%A9%20I%20found%20a%20cool%20DAS%20tool:%20https://das.la,%20lists%20better%20DAS%20accounts%20and%20provides%20professional%20data%20reports,%20you%20need%20it.%0A%0A%F0%9F%9A%80%20Come%20get%20your%20.bit%20now!%0A%0ARegister%20and%20Get%20a%20%E2%9A%A1%EF%B8%8F5%25%20discount.%0A@realDASystems%20@NervosNetwork%20$ckb%20%23das%20%23dasla" target="_blank" rel="noopener noreferrer"><span className="fa fa-twitter"></span></a></li>
                 
             </ul>
             </div>
@@ -116,7 +129,7 @@ class DaslaFooter extends React.Component {
             <h5> {this.props.langConfig('tutorials')} </h5> 
             <ul>
                 {this.props.linkResources['tutorials'][this.props.locale].map((value, index) => {
-                    return <li><a href={value.link} target="_blank">{value.name}</a></li>
+                    return <li key={index}><a href={value.link} target="_blank" rel="noopener noreferrer">{value.name}</a></li>
                 })}
             </ul> 
            </div> 
@@ -126,7 +139,7 @@ class DaslaFooter extends React.Component {
             <h5>{this.props.langConfig('community')}</h5> 
             <ul> 
                 {this.props.linkResources['community'][this.props.locale].map((value, index) => {
-                    return <li><a href={value.link} target="_blank">{value.name}</a></li>
+                    return <li key={index}><a href={value.link} target="_blank" rel="noopener noreferrer">{value.name}</a></li>
                 })}
             </ul> 
            </div> 
@@ -136,11 +149,9 @@ class DaslaFooter extends React.Component {
            <div> 
             <h5>{this.props.langConfig('follow-das')}</h5> 
             <ul className="follow-das-social">
-                <li><a href="https://twitter.com/realDASystems" target="_blank"><span className="fa fa-twitter"></span>    Twitter</a></li>
-                <li><a href="https://dasystems.medium.com/" target="_blank"><span className="fa fa-medium"></span>    Medium</a></li>
-                <li><a href="https://t.me/DASystemsNews" target="_blank"><span className="fa fa-telegram"></span>    Telegram</a></li>
-                <li><a href="https://discord.gg/WVunwT2hju" target="_blank"><span className="fa fa-discord-alt" aria-hidden="true"></span>    Discord</a></li>
-	    	    
+                {this.props.linkResources['official'][this.props.locale].map((value, index) => {
+                    return <li key={index}><a href={value.link} target="_blank" rel="noopener noreferrer"><span className={value.iconClassName}></span>{value.name}</a></li>
+                })}
             </ul>
            </div> 
           </div> 
@@ -149,12 +160,12 @@ class DaslaFooter extends React.Component {
            <div> 
             <h5>{this.props.langConfig('donate')}</h5> 
             <ul >
-                <li><a href="https://cryptofans.bit.cc" target="_blank">cryptofans.bit</a></li>
-                <img className="foot-ckbaddr-qr" src={CKB_QRCODE}/>
+                <li><a href="https://cryptofans.bit.cc" target="_blank" rel="noopener noreferrer">cryptofans.bit</a></li>
+                <img className="foot-ckbaddr-qr" alt="" src={CKB_QRCODE}/>
 	    	    <li><label>{this.formatCKBAddress(DONATEADDRESS)}</label></li>
                 <li>
-                    <CopyToClipboard onCopy={this.OnCopy} text={DONATEADDRESS}>
-                        <a >{this.props.langConfig('copy-address')} <span className="fa fa-clone fa-fw"></span> {this.getCopiedFlagText()}</a>
+                    <CopyToClipboard onCopy={this.OnCopy} text={DONATEADDRESS} >
+                      <span className="foot-copy-address"> {this.props.langConfig('copy-address')} <span className="fa fa-clone"></span> {this.getCopiedFlagText()}</span>
                     </CopyToClipboard>
                     
                 </li>
@@ -163,7 +174,12 @@ class DaslaFooter extends React.Component {
           </div>
 
          </div> 
-        </div>  
+         <Divider type="horizontal" className="footer-divider"/>
+         <p className="footer-copyright">
+            © 2021 DASLA Limited. All rights reserved.
+         </p> 
+         </div> 
+        
        </footer>;
     }
 }
@@ -378,27 +394,45 @@ class DASDailyStat extends React.Component {
 
 export default class AddShop extends React.Component {
     
+    cacheData = {
+        // 用于判断当前显示尺寸，动态调整一些显示元素。主要是table里面，小尺寸时不显示头像，曾经使用过css的display：none来控制，但还是会有column。
+        clientWidth: document.body.clientWidth,
+        discordTimerId: 0,
+        showNewDASTimerID: 0, 
+    }
+
+    setCache = (dataObject) => {
+        for (let key of Object.keys(dataObject)) {
+            this.cacheData[key] = dataObject[key];
+        }
+
+        console.log(this.cacheData);
+    }
 
     state = {
         snsArr: [],
         keyword: defKeywords[random],
         locale: 'zh_CN',
-        list: [],
+        mainTableDataList: [],  // 主表里全量数据
+        list: [],  // 主表里显示的数据，也即增加过滤条件后显示的数据
         recommendList: [],
         banners: das.banners,
         keywordList: [],
         fix: FIXMETHODS.ASPREFIX,
         animationClass: 'dasAnimation',
-        discordTimerId: 0,
-        showNewDASTimerID: 0,
+        mainTableFilter: DASACCOUNTSTATUS.Available,
+
         loginTime: new Date(),
         dataUpdateFlag: false,
         focusItem: '',
+        isNarrowScreen: document.body.clientWidth < 640,
         columns: [
             {
                 dataIndex: 'avatar',
                 key: 'name',
+            //    className:'das-table-avatar',
                 width: 50,
+                
                 render: (text, record, index) => {
                     if (false) {
                         let dom = iconMap.get(record.name);
@@ -406,6 +440,7 @@ export default class AddShop extends React.Component {
                         return dom
                     }
                     else {
+                        //console.log('avatar drawing')
                         let nameMD5 = md5(record.name)
                         let id = `img${nameMD5}`
                         let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
@@ -438,21 +473,25 @@ export default class AddShop extends React.Component {
                 align: 'right',
                 render: record => {
                     console.log('record add:' + record.name)
-                    if (this.state.focusItem == record.name) {
-                        return <div>
+                    if (this.state.focusItem === record.name) {
+                        return <div className="dasla-register-container">
                             
-                            <Space size="small">
+                            <div className="dasla-btn-register-wraper">
                             <Tooltip placement="topRight" title={this.langConfig('registry-dename-supprts')}>
                                 <Button className="dasla-btn-register-account" size={'normal'} shape="round"
                                 onClick={() => this.goDeNameRegister(record)}>{this.langConfig('goto-register-btn')}</Button>
                                 <img src={REG_DENAME_LOGO}  alt="" className="image-5"/>
                             </Tooltip>
+                            
+                            </div>
+                            <div className="dasla-btn-register-wraper">
                             <Tooltip placement="topRight" title={this.langConfig('registry-das-supprts')}>
                                 <Button className="dasla-btn-register-account" size={'normal'} shape="round"
                                     onClick={() => this.goDASRegister(record)}>{this.langConfig('goto-register-btn')}</Button>
                                 <img src={REG_DAS_LOGO}  alt="" className="image-5"/>
                             </Tooltip>
-                            </Space></div>
+                            </div>
+                            </div>
                     
                     }
                     else {
@@ -602,28 +641,70 @@ export default class AddShop extends React.Component {
             item = item.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
             //过滤非数字和字母组合
             if (/^[a-zA-Z\d]+$/.test(item)) {
+                if (item.length < 4) {
+                    continue;
+                }
+                
+                // 注意，下面的status附值顺序不能乱动
+                let accountStatus = DASACCOUNTSTATUS.NotOpen;
+                let account = item + '.bit';
                 if (this.canRegister(item)) {
-                    let account = item + '.bit';
-                    if (!arr.includes(account) && !reserved.includes(account) && !registered.includes(account)) {
-                        arr.push(account);
-                        result.push({
-                            id: result.length + 1,
-                            status: 0,
-                            name: account
-                        })
-                    }
+                    accountStatus = DASACCOUNTSTATUS.Available;                  
+                }
+
+                if (reserved.includes(account)) {
+                    accountStatus = DASACCOUNTSTATUS.Reserved;
+                }
+
+                if (registered.includes(account)) {
+                    accountStatus = DASACCOUNTSTATUS.Registered;
+                }    
+
+                // 添加到结果中
+                if (!arr.includes(account)) {
+                    arr.push(account);
+                    result.push({
+                        id: result.length + 1,
+                        status: [accountStatus],
+                        name: account
+                    })
                 }
             }
         }
 
-        if (result.length === 0) {
-            this.refreshRecommendList();
-        }
+    //    
+    //    if (result.length === 0) {
+    //        this.refreshRecommendList();
+    //    }
+        //Todo，根据用户当前选择的过滤条件，筛选出符合过滤条件的数据
+        let filterList = this.getAccountListByFilter(result, this.state.mainTableFilter)
 
         //console.log(result)
         this.setState({
-            list: result
+            list: filterList,
+            mainTableDataList: result
         });
+    }
+
+    getAccountListByFilter = (dataSrcList, accountStatus) => {
+        console.log('getAccountListByFilter, accountStatus:' + accountStatus);
+        let result = [];
+        for ( let i in dataSrcList) {
+            let account = dataSrcList[i];
+            //console.log('getAccountListByFilter' ,accountStatus,account)
+            if (account.status[0] === accountStatus) {
+                result.push(account);
+            }
+        }
+
+        // 按字符长度排序
+        if (result.length > 1) {
+            result.sort((a, b) => {
+                return (a.length - b.length)
+             });
+        }
+
+        return result;
     }
 
     // 数组转化成uint32
@@ -682,7 +763,7 @@ export default class AddShop extends React.Component {
             return false;
 
         // 虽然 > 10 < 47 位都可以注册，但考虑到太长的账号没意义，在此只用15个字符以内的
-        if (account.length > 9 && account.length < 15)
+        if (account.length > 9 && account.length < 20)
             return true;
 
         // 4-9 位的，算法决定
@@ -697,7 +778,7 @@ export default class AddShop extends React.Component {
         let first4Bytes = Buffer.from(hash.slice(0, 4))
         let lucky_num = first4Bytes.readUInt32BE(0)
 
-        let dst_num = this.getCanRegistValue(new Date());
+        //let dst_num = this.getCanRegistValue(new Date());
         //console.log('new: ' + lucky_num, 'dst:' + dst_num);
         return (lucky_num <= this.getCanRegistValue(new Date()));
         
@@ -714,7 +795,7 @@ export default class AddShop extends React.Component {
             return false;
 
         // 虽然 > 10 < 47 位都可以注册，但考虑到太长的账号没意义，在此只用15个字符以内的
-        if (text.length > 9 && text.length < 15)
+        if (text.length > 9 && text.length < 20)
             return true;
 
         // 4-9 位的，算法决定
@@ -723,7 +804,7 @@ export default class AddShop extends React.Component {
         hash = hash.update(Buffer.from(text));
         var output = new Uint8Array(32)
         var out = hash.digest(output);
-        console.log(out);
+        //console.log(out);
         
         
         let arr = out.slice(0,4);
@@ -741,36 +822,10 @@ export default class AddShop extends React.Component {
         return false
     }
 
-
-    // 校验一个账号是否已开放注册，用于 5- 9 位账号
-    // 5-9 位，只开放 5 % 采用 blake2b 算法对账户名(包含 .bit 后缀)进行 hash ，取 hash 结果的第 1 个字节作为一个 u8 整数，当该整数小于等于 12 时，即可注册。
+    // 检测是否可以注册
     canRegister = text => {
-        // 9/17 时放开
-        //return this.canRegister0917(text);
-        //this.canRegister0917(text)
-        if (new Date() >= updateTime)
-            return this.canRegister0917New(text)
-
-
-        if (text.length < 5)
-            return false;
-
-        // 虽然 > 10 < 47 位都可以注册，但考虑到太长的账号没意义，在此只用15个字符以内的
-        if (text.length > 9 && text.length < 15)
-            return true;
-
-        // 5-9 位的，算法决定
-        text += '.bit';
-        var hash = blake2b(32, null, null, Buffer.from('2021-07-22 12:00'));
-        hash = hash.update(Buffer.from(text));
-        var output = new Uint8Array(32)
-        var out = hash.digest(output);
-        if (out[0] < 13) {
-            //console.log(text,out[0])
-            return true
-        }
-
-        return false
+        // 0917 之后，规则放开
+        return this.canRegister0917(text);
     }
 
     // 获取min 到 max 之间的随机数，包含min，不含 max
@@ -780,31 +835,58 @@ export default class AddShop extends React.Component {
         return Math.floor(Math.random() * (max - min)) + min; //不含最大值，含最小值
     }
 
+    openLink = (url, windowName) => {
+        if (this.state.isNarrowScreen) {
+            document.location.href = url;
+            document.location.rel = "noopener noreferrer";
+        }
+        else {
+            window.open(url, windowName ? windowName :"newW");
+        }
+    }
     select = record => {
-       // window.open("https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
-       this.setState({focusItem: record.name})
+        // window.open("https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
+        let status = record.status[0];
+        // 如果是窄屏幕（手机），则在本页打开，否则新开窗口。
+        let url = "";
+        switch (status) {
+            case DASACCOUNTSTATUS.Registered: 
+                url = "https://" + record.name + this.langConfig("dascc-host");
+                this.openLink(url);
+                break;
+            case DASACCOUNTSTATUS.Reserved: 
+                this.openLink(this.langConfig("das-claim-link"));
+                break;
+            case DASACCOUNTSTATUS.Registering: 
+                url = "https://app.da.systems/explorer/account/" + record.name;
+                this.openLink(url);
+                break;
+            case DASACCOUNTSTATUS.NotOpen: 
+                this.openLink(this.langConfig("das-limit-link"));
+                break;
+            default:
+                break; 
+        }
+        
+        this.setState({focusItem: record.name})
+    }
+
+    getDASRegisterLink = (account) => {
+        return "https://app.da.systems/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
+    }
+
+    getDeNameRegisterLink = (account) => {
+        return "https://app.dename.com/register/" + account + "?inviter=D2APRJ"
     }
 
     goDASRegister = record => {
-        if (document.body.clientWidth > 640) {
-            console.log('goDASRegister > 640')
-            window.open("https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
-        }
-        else {
-            console.log('goDASRegister <= 640')
-            document.location.href = "https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit";
-        }    
+        let url = this.getDASRegisterLink(record.name);
+        this.openLink(url, "DasReg" + record.name);  
     }
 
     goDeNameRegister = record => {
-        if (document.body.clientWidth > 640) {
-            console.log('goDeNameRegister > 640')
-            window.open("https://app.dename.com/register/" + record.name + "?inviter=D2APRJ", "newW")
-        }
-        else {
-            console.log('goDeNameRegister <= 640')
-            document.location.href = "https://app.dename.com/register/" + record.name + "?inviter=D2APRJ";
-        }
+        let url = this.getDeNameRegisterLink(record.name);
+        this.openLink(url, "DenameReg" + record.name);
     }
 
     keywordChanged = e => {
@@ -989,7 +1071,7 @@ export default class AddShop extends React.Component {
         // 出于效率考虑，只对前30 名进行更新处理
         for (let i = 0,j = 0; i < das['invitRank'].length && j < 30; i++, j++) {
             let inviterObj = das['invitRank'][i];
-            if (inviterObj['name'] == inviter) {
+            if (inviterObj['name'] === inviter) {
                 das['invitRank'][i]['count'] += 1;
                 break;
             }
@@ -1003,7 +1085,7 @@ export default class AddShop extends React.Component {
         let dailyObj = {}
         for (let i = das['dailyRegistered'].length-1; i > 0; i--) {
             dailyObj = das['dailyRegistered'][i];
-            if (dailyObj['date'] == date) {
+            if (dailyObj['date'] === date) {
                 das['dailyRegistered'][i]['value'] += 1;
                 find = true;
                 break;
@@ -1155,20 +1237,38 @@ export default class AddShop extends React.Component {
         // 4 秒钟执行一次，查看是否有新注册账号，若有，则提示出来
         let timerID2 = setInterval(this.onTimeShowNewDASInfo, 4 * 1000);
 
-        this.setState(
+        this.setCache(
             {
                 discordTimerId: timerID1, 
                 showNewDASTimerID: timerID2, 
             });
+            
+        window.addEventListener('resize', this.handleResize.bind(this)) 
+        console.log('main componentWillUnmount end');
+    }
+
+    
+    handleResize = () => {
+        // 只有从小尺寸切换到大尺寸，或从大尺寸切换到小尺寸，才会触发重新计算更新界面
+        let lastWidth = this.cacheData.clientWidth;
+        let newWidth = document.body.clientWidth;
+        if ( (newWidth < 640 && lastWidth > 640 ) || 
+             (newWidth > 640 && lastWidth < 640 )) {
+            this.setState({isNarrowScreen: newWidth < 640})
+        }
+
+        this.setCache({clientWidth: document.body.clientWidth })    
     }
 
     componentWillUnmount() {
         // use intervalId from the state to clear the interval
-        if (this.state.discordTimerId > 0) {
+        if (this.cacheData.discordTimerId > 0) {
             clearInterval(this.state.discordTimerId);
         }
         
-        clearInterval(this.state.showNewDASTimerID);
+        clearInterval(this.cacheData.showNewDASTimerID);
+
+        window.removeEventListener('resize', this.handleResize.bind(this))
      }
 
     langConfig = (key) => {
@@ -1185,7 +1285,10 @@ export default class AddShop extends React.Component {
     };
 
     handleTryRecommendListClick = () => {
-        window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+        let section = document.querySelector('#SuggestedList');
+        if (section) {
+            section.scrollIntoView( { behavior: 'smooth', block: 'start' } );    
+        }
         this.refreshRecommendList();
     }
 
@@ -1241,7 +1344,7 @@ export default class AddShop extends React.Component {
                         arr.push(account);
                         result.push({
                             id: result.length + 1,
-                            status: 0,
+                            status: [DASACCOUNTSTATUS.Available],
                             name: account
                         })
                     }
@@ -1304,6 +1407,185 @@ export default class AddShop extends React.Component {
         return defTitle + updateTime;
     }
 
+    // 显示标签时用到
+    getAccountStatusString = (status) => {
+        let tips = ""
+        switch (status) {
+            case DASACCOUNTSTATUS.Available: tips = this.langConfig("das-account-status-available"); 
+                break;
+            case DASACCOUNTSTATUS.Reserved: tips = this.langConfig("das-account-status-reserved"); 
+                break;
+            case DASACCOUNTSTATUS.Registering: tips = this.langConfig("das-account-status-registering"); 
+                break;
+            case DASACCOUNTSTATUS.Registered: tips = this.langConfig("das-account-status-registered"); 
+                break;
+            case DASACCOUNTSTATUS.NotOpen: tips = this.langConfig("das-account-status-notopen"); 
+                break;
+            default:break;
+        }
+
+        return tips;
+    }
+
+    // 显示标签时用到
+    getResultFilterString = (status) => {
+        let tips = "";
+        for ( let i in TABLEFILTER[this.state.locale]) {
+            
+            let config = TABLEFILTER[this.state.locale][i];
+            //console.log(this.state.locale, config)
+            if (config['key'] === status) {
+                tips = config['name'];
+                break;
+            }
+        }
+        
+        return tips;
+    }
+
+    getAccountStatusLinkTitle = (status) => {
+        let title = ""
+        switch (status) {
+            case DASACCOUNTSTATUS.Available: title = this.langConfig("register-btn"); 
+                break;
+            case DASACCOUNTSTATUS.Reserved: title = this.langConfig("btn-title-claim-reserved"); 
+                break;
+            case DASACCOUNTSTATUS.Registering: title = this.langConfig("btn-title-view-profile"); 
+                break;
+            case DASACCOUNTSTATUS.Registered: title = this.langConfig("btn-title-view-host"); 
+                break;
+            case DASACCOUNTSTATUS.NotOpen: title = this.langConfig("btn-title-release-rules"); 
+                break;
+            default: title = this.langConfig("btn-title-release-rules"); 
+            break;
+        }
+
+        return title;
+    }
+
+    
+    // 考虑到不同状态、不同设备，需要特殊处理列字断
+    getTableColumns = () => {
+        let columns = [];
+        if (!this.state.isNarrowScreen) {
+            columns.push(
+                {
+                    dataIndex: 'avatar',
+                    key: 'name', 
+                    width: 50,                   
+                    render: (text, record, index) => {
+                        if (false) {
+                            let dom = iconMap.get(record.name);
+                            console.log(dom)
+                            return dom
+                        }
+                        else {
+                            console.log('avatar drawing')
+                            let nameMD5 = md5(record.name)
+                            let id = `img${nameMD5}`
+                            let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
+                            setTimeout(() => {
+                                this.getImg(id, record.name)
+                            }, 10)
+                            
+                            return dom
+                        }
+                        
+                    },
+                }
+            )
+        }
+        
+        columns.push(
+            {
+                title: '可选账号',
+                dataIndex: 'name',
+                key: 'name',
+            },
+            {
+                title: '状态',
+                key: 'status',
+                dataIndex: 'status',
+                render: tags => (
+                  <>
+                    {tags.map(status => {
+                      let color = AccountStatusColors[status];
+                      
+                      return (
+                        <Tag color={color} key={status}>
+                          {this.getAccountStatusString(status)}
+                        </Tag>
+                      );
+                    })}
+                  </>
+                ),
+            },
+            {
+                title: '操作',
+                width: 100,
+                key: 'action',
+                align: 'right',
+                render: record => {
+                    //console.log('record add:' + record.name + ',' + this.state.focusItem)
+                    // 状态数组中，第一个状态为注册状态
+                    if (record.status[0] === DASACCOUNTSTATUS.Available) {
+                        //console.log('record:' + record)
+                        // 状态可用，且当前帐号是用户此前选择的账号   
+                        if (this.state.focusItem === record.name) {
+                            return <div className="dasla-register-container">
+                                <div className="dasla-btn-register-wraper">
+                            <Tooltip placement="topRight" title={this.langConfig('registry-dename-supprts')}>
+                                <Button className="dasla-btn-register-account" size={'normal'} shape="round"
+                                onClick={() => this.goDeNameRegister(record)}>{this.langConfig('goto-register-btn')}</Button>
+                                <img src={REG_DENAME_LOGO}  alt="" className="image-5"/>
+                            </Tooltip>
+                            
+                            </div>
+                            <div className="dasla-btn-register-wraper">
+                            <Tooltip placement="topRight" title={this.langConfig('registry-das-supprts')}>
+                                <Button className="dasla-btn-register-account" size={'normal'} shape="round"
+                                    onClick={() => this.goDASRegister(record)}>{this.langConfig('goto-register-btn')}</Button>
+                                <img src={REG_DAS_LOGO}  alt="" className="image-5"/>
+                            </Tooltip>
+                            </div>
+                            </div>        
+                        
+                        }
+                        else {
+                            return <Space size="small">
+                            <Button className="dasla-btn-select-account" size={'normal'} shape="round"
+                                    onClick={() => this.select(record)}>{this.langConfig('register-btn')}</Button>
+                        
+                            </Space>
+                        }
+                    }
+                    else {
+                        return <Space size="small">
+                           <Button type="primary" size={'normal'} shape="round"
+                                    onClick={() => this.select(record)}>{this.getAccountStatusLinkTitle(record.status[0])}</Button>
+                        
+                            </Space>
+                    }
+                },
+            }
+        )
+
+        return columns;
+    }
+
+    handMainTableFilterChange = (value, option) => {
+        // 先根据用户当前选择的过滤条件，筛选出符合过滤条件的数据
+        //console.log(option);
+        let filterList = this.getAccountListByFilter(this.state.mainTableDataList, option.key)
+
+        //console.log('handMainTableFilterChange', filterList.length, value, option.key);
+        // 再设置state 刷新界面
+        this.setState({
+            list: filterList,
+            mainTableFilter: option.key
+        });
+    }
+
     render() {
         const {list, recommendList, keywordList, columns} = this.state
 
@@ -1324,6 +1606,11 @@ export default class AddShop extends React.Component {
             </Menu>
         );
 
+        // 精准匹配搜索结果筛选的下拉菜单
+        const tableFilters = [];
+        TABLEFILTER[this.state.locale].forEach((item) => {
+            tableFilters.push(<Option key={item.key}><span className={item.iconClass}></span>{item.name}</Option>);
+        })
         
         // 修改标题
         document.title = this.langConfig('app-name');
@@ -1331,7 +1618,7 @@ export default class AddShop extends React.Component {
         let localeAllMatch = {
             emptyText: (
               <span>
-                  <div><img src={DAS_LA_LOGO} height='48px'/></div>
+                  <div><img src={DAS_LA_LOGO} height='48px' alt="" /></div>
                 <p>
                     {this.langConfig('empty-data')}                  
                 </p>
@@ -1344,7 +1631,7 @@ export default class AddShop extends React.Component {
         let localeKeywordMatch = {
             emptyText: (
               <span>
-                  <div><img src={DAS_LA_LOGO} height='48px'/></div>
+                  <div><img src={DAS_LA_LOGO} height='48px' alt="" /></div>
                 <p>
                     {this.langConfig('empty-data')}   
                 </p>
@@ -1355,7 +1642,7 @@ export default class AddShop extends React.Component {
         let localeRecommend = {
             emptyText: (
               <span>
-                  <div><img src={DAS_LA_LOGO} height='48px'/></div>
+                  <div><img src={DAS_LA_LOGO} height='48px' alt="" /></div>
                 <p>
                     {this.langConfig('empty-data')}   
                 </p>
@@ -1381,7 +1668,7 @@ export default class AddShop extends React.Component {
                             onClickItem={onClickCarouselItem}
                         >
                             {this.state.banners[this.state.locale].map((value, index) => {
-                                return <div><img alt="" src={value.image}/></div>;
+                                return <div key={index}><img alt="" src={value.image}/></div>;
                             })}
                         </Carousel>
                     </div>
@@ -1412,9 +1699,7 @@ export default class AddShop extends React.Component {
                                     {this.langConfig('lang')} <DownOutlined/>
                                 </a>
                             </Dropdown>
-                            <Divider type="vertical"/>
-                            <a style={{color: '#1890ff'}}
-                               href="https://da.systems/explorer?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=cryptofans+">{this.langConfig('about-das')}</a>
+                            
                         </div>
                         <div style={{display: 'flex'}}>
                             
@@ -1428,13 +1713,18 @@ export default class AddShop extends React.Component {
                         </div>
                         <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', paddingTop:10, height:35}}>
                             <div/>
+                            <Space>
+                            <span className="fa fa-filter"></span>
+                            <Select value={this.getResultFilterString(this.state.mainTableFilter)} onChange={this.handMainTableFilterChange} style={{ width: 190 }}>
+                                {tableFilters}
+                            </Select>
                             <Button type="primary" shape="round" icon={<SearchOutlined/>}
                                 onClick={() => this.search()}>{this.langConfig('wordlist-search')}</Button>
-                            
+                            </Space>
                         </div>
                         <br/>
-                        <Table locale={localeAllMatch} rowKey={(item) => item.id} dataSource={list} columns={columns}
-                               rowClassName='das-account-name' showHeader={false}/>
+                        <Table locale={localeAllMatch} rowKey={(item) => item.id} dataSource={list} columns={this.getTableColumns()}
+                               rowClassName='das-account-name noselect' showHeader={false}/>
                         <br/>
                     </Card>
                     <br/>
@@ -1465,16 +1755,16 @@ export default class AddShop extends React.Component {
                         </div>
                         <br/>
                         <Table locale={localeKeywordMatch} rowKey={(item) => item.id} dataSource={keywordList} columns={columns}
-                               rowClassName='das-account-name' showHeader={false}/>
+                               rowClassName='das-account-name noselect' showHeader={false}/>
                         <br/>
                     </Card>
                     <br/>
-                    <Card title={this.langConfig('recommend-title')} bordered={false}
+                    <Card id="SuggestedList" title={this.langConfig('recommend-title')} bordered={false}
                           extra={<Button type="primary" shape="round" danger 
                                          onClick={() => this.refreshRecommendList()}>{this.langConfig('recommend-change-list')}</Button>}>
                         
                         <Table locale={localeRecommend} rowKey={(item) => item.id} dataSource={recommendList} columns={columns}
-                               rowClassName='das-account-name' showHeader={false}/>
+                               rowClassName='das-account-name noselect' showHeader={false}/>
                         <br/>
                     </Card>
                     <br/>
@@ -1511,7 +1801,7 @@ export default class AddShop extends React.Component {
                         <br/>
                         <div className='statistic-das-count-title'>
                             {this.langConfig('account-length-distribution-title')}
-                            <a href={this.langConfig('das-limit-link')} target="_blank">{this.langConfig('das-limit-info')}</a>
+                            <a href={this.langConfig('das-limit-link')} target="_blank" rel="noopener noreferrer" >{this.langConfig('das-limit-info')}</a>
                         </div>
                         <DASTreemap loadConfigCallback={this.langConfig} dataCallback={this.getAccountLenStatList} ></DASTreemap>
                         <br/>

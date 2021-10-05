@@ -13,7 +13,7 @@ axios.defaults.baseURL = window.ApiUrl;   //配置接口地址
 //POST传参序列化(添加请求拦截器)
 axios.interceptors.request.use((config) => {
     //在发送请求之前做某件事
-    if (config.method === 'post' && config.url != "/serviceAccount/uploadImg" && config.url != "/material/image/upload" && config.url != "/material/video/upload" && config.url != "/material/sound/upload" && config.url != "/serviceAccount/deleteAccounts") {
+    if (config.method === 'post' && config.url !== "/serviceAccount/uploadImg" && config.url !== "/material/image/upload" && config.url !== "/material/video/upload" && config.url !== "/material/sound/upload" && config.url !== "/serviceAccount/deleteAccounts") {
         config.data = JSON.stringify(config.data);
     }
     else if (config.method === 'get') {

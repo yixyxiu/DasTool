@@ -1,11 +1,6 @@
 {
     "zh_CN":[
         {
-            "name":"nervos & gitcoin",
-            "image":"https://oss-cdn1.bihu-static.com/image/20210915/20224cc230f24fe5b3c1e80d8308b854_GEYDQMBKGU2DA.png",
-            "link":"https://gitcoin.co/hackathon/nervos/projects/?org=nervosnetwork"
-        },
-        {
             "name":"das.la",
             "image":"https://oss-cdn1.bihu-static.com/image/20210915/17f828cc0fbb4f839ab2fc6961e4724e_GEYDQMBKGU2DA.png",
             "link":""
@@ -22,11 +17,6 @@
         }
     ],
     "en_US":[
-        {
-            "name":"nervos & gitcoin",
-            "image":"https://oss-cdn1.bihu-static.com/image/20210915/20224cc230f24fe5b3c1e80d8308b854_GEYDQMBKGU2DA.png",
-            "link":"https://gitcoin.co/hackathon/nervos/projects/?org=nervosnetwork"
-        },
         {
             "name":"das.la",
             "image":"https://oss-cdn1.bihu-static.com/image/20210915/17f828cc0fbb4f839ab2fc6961e4724e_GEYDQMBKGU2DA.png",

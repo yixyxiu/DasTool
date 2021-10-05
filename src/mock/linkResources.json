@@ -84,6 +84,10 @@
                 "link":"https://talk.nervos.org"
             },
             {
+                "name":"Everything Nervos",
+                "link":"https://everythingnervos.substack.com/"
+            },
+            {
                 "name":"DAS 论坛",
                 "link":"https://talk.da.systems"
             },
@@ -104,31 +108,91 @@
                 "link":"https://ckb.bihu.com"
             }
         ],
-    "en_US":[
-        {
-            "name":"Nervos Talk",
-            "link":"https://talk.nervos.org"
-        },
-        {
-            "name":"DAS Talk",
-            "link":"https://talk.da.systems"
-        },
-        {
-            "name":"das.la Talk",
-            "link":"https://talk.da.systems/c/e4b8ade69687/dasla/7"
-        },
-        {
-            "name":"List your requirements",
-            "link":"https://talk.da.systems/t/das-la/97"
-        },
-        {
-            "name":"Report a BUG",
-            "link":"https://talk.da.systems/t/das-la-bug/98"
-        },
-        {
-            "name":"CKB bar",
-            "link":"https://ckb.bihu.com"
-        }
-    ]
-}
+        "en_US":[
+            {
+                "name":"Nervos Talk",
+                "link":"https://talk.nervos.org"
+            },
+            {
+                "name":"Everything Nervos",
+                "link":"https://everythingnervos.substack.com/"
+            },
+            {
+                "name":"DAS Talk",
+                "link":"https://talk.da.systems"
+            },
+            {
+                "name":"das.la Talk",
+                "link":"https://talk.da.systems/c/e4b8ade69687/dasla/7"
+            },
+            {
+                "name":"List your requirements",
+                "link":"https://talk.da.systems/t/das-la/97"
+            },
+            {
+                "name":"Report a BUG",
+                "link":"https://talk.da.systems/t/das-la-bug/98"
+            },
+            {
+                "name":"CKB bar",
+                "link":"https://ckb.bihu.com"
+            }
+        ]
+    },    	    
+    "official":{
+        "zh_CN":[
+            {
+                "name":"DAS 官网",
+                "link":"https://da.systems/explorer?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=dasla",
+                "iconClassName":"foot-link-icon-das"
+            },
+            {
+                "name":"推特",
+                "link":"https://twitter.com/realDASystems",
+                "iconClassName":"fa fa-twitter foot-link-icon-fa"
+            },
+            {
+                "name":"Medium",
+                "link":"https://dasystems.medium.com/",
+                "iconClassName":"fa fa-medium foot-link-icon-fa"
+            },
+            {
+                "name":"电报群",
+                "link":"https://t.me/DASystemsNews",
+                "iconClassName":"fa fa-telegram foot-link-icon-fa"
+            },
+            {
+                "name":"Discord群",
+                "link":"https://discord.gg/WVunwT2hju",
+                "iconClassName":"fa fa-discord-alt foot-link-icon-fa"
+            }
+        ],
+        "en_US":[
+            {
+                "name":"DAS Official",
+                "link":"https://da.systems/explorer?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=dasla",
+                "iconClassName":"foot-link-icon-das"
+            },
+            {
+                "name":"Twitter",
+                "link":"https://twitter.com/realDASystems",
+                "iconClassName":"fa fa-twitter foot-link-icon-fa"
+            },
+            {
+                "name":"Medium",
+                "link":"https://dasystems.medium.com/",
+                "iconClassName":"fa fa-medium foot-link-icon-fa"
+            },
+            {
+                "name":"Telegram Group",
+                "link":"https://t.me/DASystemsNews",
+                "iconClassName":"fa fa-telegram foot-link-icon-fa"
+            },
+            {
+                "name":"Discord Group",
+                "link":"https://discord.gg/WVunwT2hju",
+                "iconClassName":"fa fa-discord-alt foot-link-icon-fa"
+            }
+        ]
+    }
 }
