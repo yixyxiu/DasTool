@@ -138,7 +138,7 @@
                 "link":"https://ckb.bihu.com"
             }
         ]
-    },    	    
+    },
     "official":{
         "zh_CN":[
             {
@@ -157,7 +157,7 @@
                 "iconClassName":"fa fa-medium foot-link-icon-fa"
             },
             {
-                "name":"电报群",
+                "name":"电报",
                 "link":"https://t.me/DASystemsNews",
                 "iconClassName":"fa fa-telegram foot-link-icon-fa"
             },
@@ -184,7 +184,7 @@
                 "iconClassName":"fa fa-medium foot-link-icon-fa"
             },
             {
-                "name":"Telegram Group",
+                "name":"Telegram Channel",
                 "link":"https://t.me/DASystemsNews",
                 "iconClassName":"fa fa-telegram foot-link-icon-fa"
             },
@@ -194,5 +194,31 @@
                 "iconClassName":"fa fa-discord-alt foot-link-icon-fa"
             }
         ]
-    }
+    },
+    "social-share":[
+        {
+            "name":"Twitter",
+            "link":"https://twitter.com/intent/tweet?url=das.la&text=%F0%9F%A4%A9%20I%20found%20a%20cool%20DAS%20tool:%20https://das.la,%20lists%20better%20DAS%20accounts%20and%20provides%20professional%20data%20reports,%20you%20need%20it.%0A%0A%F0%9F%9A%80%20Come%20get%20your%20.bit%20now!%0A%0ARegister%20and%20Get%20a%20%E2%9A%A1%EF%B8%8F5%25%20discount.%0A@realDASystems%20@NervosNetwork%20$ckb%20%23das%20%23dasla",
+            "iconClassName":"fa fa-twitter"
+        },
+        {
+            "name":"Linkedin",
+            "link":"https://www.linkedin.com/shareArticle?mini=true&url=https%3A//das.la&title=For%20your%20better%20DAS%20account&summary=A%20better%20DAS%20account%20register%20tool&source=",
+            "iconClassName":"fa fa-linkedin"
+        },
+        {
+            "name":"Facebook",
+            "link":"https://www.facebook.com/sharer/sharer.php?u=https%3A//das.la",
+            "iconClassName":"fa fa-facebook"
+        },
+        {
+            "name":"Reddit",
+            "link":"https://www.reddit.com/submit?url=das.la&title=A%20better%20DAS%20account%20register%20tool",
+            "iconClassName":"fa fa-reddit"
+        },{
+            "name":"Pinterest",
+            "link":"https://pinterest.com/pin/create/button/?url=https%3A//das.la&media=https%3A//aws1.discourse-cdn.com/standard10/uploads/da/original/1X/bbc246b8cd241052c7f58a3598ab242942aafdd4.png&description=A%20better%20DAS%20account%20register%20tool",
+            "iconClassName":"fa fa-pinterest"
+        }
+    ]
 }

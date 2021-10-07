@@ -24,6 +24,12 @@ code {
   }
 }
 
+.das-account-info-wrapper {
+  display: inline-flex;
+  justify-content: center;
+  gap: 12px;
+}
+
 .das-account-name {
     font-size: 18px;
     font-weight: 600;
@@ -39,6 +45,9 @@ code {
   word-break: break-all;
 }
 
+.das-account-status-tag {
+  height: 22px;
+}
 
 .statistic-das-count-title {
   font-size: 32;

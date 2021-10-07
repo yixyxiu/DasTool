@@ -116,8 +116,9 @@ class DaslaFooter extends React.Component {
             
             <div className="footer-form"> 
             <ul className="social">
-                <li><a href="https://twitter.com/intent/tweet?url=das.la&text=%F0%9F%A4%A9%20I%20found%20a%20cool%20DAS%20tool:%20https://das.la,%20lists%20better%20DAS%20accounts%20and%20provides%20professional%20data%20reports,%20you%20need%20it.%0A%0A%F0%9F%9A%80%20Come%20get%20your%20.bit%20now!%0A%0ARegister%20and%20Get%20a%20%E2%9A%A1%EF%B8%8F5%25%20discount.%0A@realDASystems%20@NervosNetwork%20$ckb%20%23das%20%23dasla" target="_blank" rel="noopener noreferrer"><span className="fa fa-twitter"></span></a></li>
-                
+                {this.props.linkResources['social-share'].map((value, index) => {
+                    return <li key={index}><a href={value.link} target="_blank" rel="noopener noreferrer"><span className={value.iconClassName}></span></a></li>
+                })}
             </ul>
             </div>
            </form> 
@@ -186,10 +187,6 @@ class DaslaFooter extends React.Component {
 
 class DASInvitRank extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         var config = {
             data: this.props.dataCallback(),
@@ -204,10 +201,6 @@ class DASInvitRank extends React.Component {
 }
 
 class DASWordCloud extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
 
     state = {
         wordCloudData:[],
@@ -265,11 +258,7 @@ class DASLine extends React.Component {
     state = {
         daily_data : []
     }
-    constructor(props) {
-        super(props);
-        
-    }
-
+    
     loadData = () => {
         return this.props.dataCallback()
     }
@@ -320,10 +309,6 @@ class DASLine extends React.Component {
   };
 
 class DASTreemap extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
     
     langConfig = (key) => {
         return this.props.loadConfigCallback(key)
@@ -376,10 +361,6 @@ class DASTreemap extends React.Component {
 };
 
 class DASDailyStat extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
 
     componentDidMount() {
         console.log('DASDailyStat componentDidMount');
@@ -1228,7 +1209,10 @@ export default class AddShop extends React.Component {
         const logoSprite = new Sprite(img);
 
         // 强制执行一次
-        this.getRegistList();
+        setTimeout(() => {
+            this.getRegistList();
+        }, 1000);
+        //this.getRegistList();
 
         // 再设置定时器，拉取最新注册账号，1分钟跑一次，之后改成 5 分钟 todo
         let timerID1 = setInterval(this.getRegistList, 5 * 60 * 1000);
@@ -1501,6 +1485,22 @@ export default class AddShop extends React.Component {
                 title: '可选账号',
                 dataIndex: 'name',
                 key: 'name',
+                /*
+                render: (text, record, index) =>{
+                    return (
+                        <div className="das-account-info-wrapper">
+                        <div className="das-account-name">{text}</div> 
+                        {record.status.map(status => {
+                        let color = AccountStatusColors[status];
+                      
+                        return (
+                        <Tag color={color} key={status} className="das-account-status-tag">
+                          {this.getAccountStatusString(status)}
+                        </Tag>
+                        );
+                        })}
+                        </div>
+                    )}*/
             },
             {
                 title: '状态',
