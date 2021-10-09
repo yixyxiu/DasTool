@@ -1142,6 +1142,8 @@ export default class AddShop extends React.Component {
                 return response.json();  
               })
               .then(function(json){
+                  // 先排序，顺序，时间最小的在最前面
+                  json.reverse();
                   json.forEach(item => {
                       console.log(item)
                       // 考虑到一次content里可能会来多笔数据，以\n分割
@@ -1158,8 +1160,8 @@ export default class AddShop extends React.Component {
                   });
 
                   if (json.length > 0) {
-                      das.lastRegiseredId = json[0].id;
-                      das.lastUpdateTime = json[0].timestamp;
+                      das.lastRegiseredId = json[json.length-1].id;
+                      das.lastUpdateTime = json[json.length-1].timestamp;
                       console.log(das.lastRegiseredId);
                       that.setState({dataUpdateFlag: true});
                       // 如果有数据，继续拉取

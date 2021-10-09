@@ -215,10 +215,16 @@
             "name":"Reddit",
             "link":"https://www.reddit.com/submit?url=das.la&title=A%20better%20DAS%20account%20register%20tool",
             "iconClassName":"fa fa-reddit"
-        },{
+        },
+        {
             "name":"Pinterest",
             "link":"https://pinterest.com/pin/create/button/?url=https%3A//das.la&media=https%3A//aws1.discourse-cdn.com/standard10/uploads/da/original/1X/bbc246b8cd241052c7f58a3598ab242942aafdd4.png&description=A%20better%20DAS%20account%20register%20tool",
             "iconClassName":"fa fa-pinterest"
+        },
+        {
+            "name":"WeiBo",
+            "link":"https://service.weibo.com/share/share.php?title=我发现了一个很好用的DAS选靓号工具，推荐给你！&url=https://das.la&pic=https://oss-cdn1.bihu-static.com/image/20210915/2b82aa764c1146b4bcd5b4265cf378e4_GMYDAKRTGAYA.png",
+            "iconClassName":"fa fa-weibo"
         }
     ]
 }
