@@ -123,19 +123,24 @@ export const TABLEFILTER =
 {
     "zh_CN":[
         {
+            "name":"全部账号",
+            "key":'-1',
+            "iconClass":"fa fa-list-ul dropdown-icon-fa"
+        },
+        {
             "name":"可注册账号",
             "key":'0',
             "iconClass":"fa fa-check-circle dropdown-icon-fa"
         },
         {
-            "name":"系统保留账号",
+            "name":"在售账号",
             "key":'1',
-            "iconClass":"fa fa-certificate dropdown-icon-fa"
+            "iconClass":"fa fa-usd dropdown-icon-fa"
         },
         {
-            "name":"注册中的账号",
+            "name":"未开放的账号",
             "key":'2',
-            "iconClass":"fa fa-exclamation-circle dropdown-icon-fa"
+            "iconClass":"fa fa-lock dropdown-icon-fa"
         },
         {
             "name":"已注册账号",
@@ -143,31 +148,37 @@ export const TABLEFILTER =
             "iconClass":"fa fa-registered dropdown-icon-fa"
         },
         {
-            "name":"未开放的账号",
+            "name":"系统保留账号",
             "key":'4',
-            "iconClass":"fa fa-lock dropdown-icon-fa"
+            "iconClass":"fa fa-certificate dropdown-icon-fa"
         },
         {
-            "name":"在售账号",
+            "name":"注册中的账号",
             "key":'5',
-            "iconClass":"fa fa-usd dropdown-icon-fa"
+            "iconClass":"fa fa-exclamation-circle dropdown-icon-fa"
         }
+        
     ],
     "en_US":[
+        {
+            "name":"All Account",
+            "key":'-1',
+            "iconClass":"fa fa-list-ul dropdown-icon-fa"
+        },
         {
             "name":"Available",
             "key":'0',
             "iconClass":"fa fa-check-circle dropdown-icon-fa"
         },
         {
-            "name":"Reserved Account",
+            "name":"On Sale",
             "key":'1',
-            "iconClass":"fa fa-certificate dropdown-icon-fa"
+            "iconClass":"fa fa-usd dropdown-icon-fa"
         },
         {
-            "name":"Rigistering",
+            "name":"Not yet Open Account",
             "key":'2',
-            "iconClass":"fa fa-exclamation-circle dropdown-icon-fa"
+            "iconClass":"fa fa-lock dropdown-icon-fa"
         },
         {
             "name":"Rigistered",
@@ -175,14 +186,14 @@ export const TABLEFILTER =
             "iconClass":"fa fa-registered dropdown-icon-fa"
         },
         {
-            "name":"Not yet Open Account",
+            "name":"Reserved Account",
             "key":'4',
-            "iconClass":"fa fa-lock dropdown-icon-fa"
+            "iconClass":"fa fa-certificate dropdown-icon-fa"
         },
         {
-            "name":"On Sale",
+            "name":"Rigistering",
             "key":'5',
-            "iconClass":"fa fa-usd dropdown-icon-fa"
+            "iconClass":"fa fa-exclamation-circle dropdown-icon-fa"
         }
     ]
 };

@@ -61,20 +61,38 @@ const FIXMETHODS = {
 
 const DASACCOUNTSTATUS = {
     Available: '0',
+    OnSale:'1',
+    NotOpen: '2',
+    Registered: '3',
+    Reserved: '4',
+    Registering: '5',
+}
+
+// 注意，顺序与上面的DASACCOUNTSTATUS保持一致
+/*let AccountStatusColors = [
+    Available: '0',
     Reserved: '1',
     Registering: '2',
     Registered: '3',
     NotOpen: '4',
-}
 
-// 注意，顺序与上面的DASACCOUNTSTATUS保持一致
-let AccountStatusColors = [
     '#22C493',
     '#808191',
     '#FFD717',
     '#FFA800',
     '#DF4A46',
-]
+]*/
+
+let AccountStatusColors = {
+    '0':'#22C493',
+    '1':'#808191',
+    '2':'#DF4A46',
+    '3':'#FFA800',
+    '4':'#808191',
+    '5':'#FFD717',
+}
+    
+
 
 class DaslaFooter extends React.Component {
     state = {copied: false};
@@ -401,7 +419,7 @@ export default class AddShop extends React.Component {
         keywordList: [],
         fix: FIXMETHODS.ASPREFIX,
         animationClass: 'dasAnimation',
-        mainTableFilter: DASACCOUNTSTATUS.Available,
+        mainTableFilter: '-1',  // 显示全部
 
         loginTime: new Date(),
         dataUpdateFlag: false,
@@ -658,6 +676,12 @@ export default class AddShop extends React.Component {
     //        this.refreshRecommendList();
     //    }
         //Todo，根据用户当前选择的过滤条件，筛选出符合过滤条件的数据
+        // 按字符长度排序
+        if (result.length > 1) {
+            result.sort((a, b) => {
+                return (a.status[0]-b.status[0] || (a.name.length - b.name.length))
+             });
+        }
         let filterList = this.getAccountListByFilter(result, this.state.mainTableFilter)
 
         //console.log(result)
@@ -669,6 +693,9 @@ export default class AddShop extends React.Component {
 
     getAccountListByFilter = (dataSrcList, accountStatus) => {
         console.log('getAccountListByFilter, accountStatus:' + accountStatus);
+        if (accountStatus === "-1")
+            return dataSrcList;
+
         let result = [];
         for ( let i in dataSrcList) {
             let account = dataSrcList[i];
@@ -681,7 +708,7 @@ export default class AddShop extends React.Component {
         // 按字符长度排序
         if (result.length > 1) {
             result.sort((a, b) => {
-                return (a.length - b.length)
+                return (a.name.length - b.name.length)
              });
         }
 
