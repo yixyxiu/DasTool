@@ -860,7 +860,7 @@ export default class AddShop extends React.Component {
         switch (status) {
             case DASACCOUNTSTATUS.Registered: 
                 url = "https://" + record.name + this.langConfig("dascc-host");
-                this.openLink(url);
+                this.openLink(url, 'view_host_'+record.name);
                 break;
             case DASACCOUNTSTATUS.Reserved: 
                 this.openLink(this.langConfig("das-claim-link"));
