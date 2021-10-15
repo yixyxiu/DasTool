@@ -278,7 +278,24 @@ class DASLine extends React.Component {
     }
     
     loadData = () => {
-        return this.props.dataCallback()
+        let dailydata = this.props.dataCallback();
+        let totaldata = [];
+        let sum = 0;
+        for (let index = 0; index < dailydata.length; index++) {
+            dailydata[index].category = "daily"
+            let total = {};
+            total["date"] = dailydata[index].date;
+            if (index > 0) {
+                sum = totaldata[index - 1].value;
+            }
+            total["value"] = dailydata[index].value + sum;
+            total["category"] = "sum";
+            totaldata.push(total);
+        }
+
+        let showdata = dailydata.concat(totaldata);
+
+        return totaldata;
     }
 
     render() {
@@ -288,11 +305,13 @@ class DASLine extends React.Component {
         padding:[40, 8, 32, 48],
         xField: "date",
         yField: "value",
+    //    seriesField: "category",
         smooth: "true",
-        
+    //    color: ['#7B49F6', '#C7304F', '#FAA219'],
+        color: ['#C7304F'],
         lineStyle: {
             fillOpacity: 0.5,
-            stroke: "red",
+            stroke: "#C7304F",
             lineWidth: 3,
             strokeOpacity: 0.7,
             shadowColor: "black",
@@ -307,7 +326,17 @@ class DASLine extends React.Component {
                 lineWidth: 0
                 }
             }
-            }
+            },
+            label: {
+                formatter: function formatter(v) {
+                  let value = ""
+                    .concat(v)
+                    .replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+                      return "".concat(s, ",");
+                    });
+                  return value;
+                }
+              }
         },
     
         annotations: [
