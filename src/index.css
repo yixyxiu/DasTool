@@ -49,15 +49,43 @@ code {
   height: 22px;
 }
 
-.statistic-das-count-title {
-  font-size: 32;
+.statistic-summary-wrapper {
+  display:flex;
+  flex-wrap: wrap;
+  width:100%;
+  justify-content: space-around;
+  flex-direction:row;
+  background-color: black;
+  border-radius: 0.5rem;
+}
+
+.statistic-info-item {
+  margin: 1rem 1rem 0.2rem;
+  width: 130px;
+}
+
+.statistic-data-updatetime {
   font-weight: 600;
   text-align: left;
   color: #8f8b8b;
 }
 
-.statistic-lastday-das-count {
-  font-size: 56px;
+.statistic-das-count-title {
+  font-weight: 600;
+  text-align: left;
+  color: #8f8b8b;
+  height: 44px;
+  padding: 10px 0;
+}
+
+.total-das-count {
+  font-weight: 600;
+  text-align: left;
+  color: #8f8b8b;
+}
+
+.statistic-owner-count {
+  font-size: 40px;
   font-weight: 600;
   font-family: Optima,'Helvetica Neue',Arial,Helvetica,sans-serif;
   text-align: left;
@@ -65,10 +93,10 @@ code {
 }
 
 .statistic-das-count {
-  font-size: 56px;
+  font-size: 40px;
   font-weight: 600;
   font-family: Optima,'Helvetica Neue',Arial,Helvetica,sans-serif;
-  text-align: right;
+  text-align: left;
   color: #c8304e;
 }
 
@@ -709,6 +737,7 @@ h6 {
 }
 /* 选择账号按钮样式结束 */
 
+/* 改样式已被弃用*/
 .dasla-button {
   font-family: MD Primer Bold,Rubik,Lato,Lucida Grande,Lucida Sans Unicode,Tahoma,Sans-Serif;
   font-style: normal;

@@ -32,6 +32,7 @@ das.reserved = require('../mock/reserved.json');
 das.recommendList = require('../mock/recommendList.json');
 das.banners = require('../mock/banners.json');
 das.linkResources = require('../mock/linkResources.json');
+das.ownerStat = require('../mock/accountsOwner.json');
 
 let localeConfig = require('../mock/lang.json');
 let iconMap = new Map();
@@ -212,7 +213,10 @@ class DASInvitRank extends React.Component {
             yField: 'name',
             seriesField: 'name',
             legend: { position: 'bottom-left' },
-            theme: { "styleSheet": { "brandColor": "#F8D4A4", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
+            theme: { "styleSheet": { "brandColor": "#F8D4A4", 
+                "paletteQualitative10":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62'], 
+                "paletteQualitative20":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62']}},
+            
         };
         return <Bar {...config} />;
     }
@@ -264,13 +268,84 @@ class DASWordCloud extends React.Component {
                 fontFamily: 'Verdana',
                 fontSize: [8, this.calcFontSize()],
             },
-            theme: { "styleSheet": { "brandColor": "#F8D4A4", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
-        
+            theme: { "styleSheet": { "brandColor": "#F8D4A4", 
+                "paletteQualitative10":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62'], 
+                "paletteQualitative20":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62']}},
+            
+            
         };
         //console.log('config.width' + config.width + 'config.height' + config.height)
         return <WordCloud {...config} />;
     };
 }
+
+
+class DASUniqueOwnerLine extends React.Component {
+    state = {
+        daily_data : []
+    }
+    
+    loadData = () => {
+        let dailydata = this.props.dataCallback();
+        let totaldata = [];
+        let sum = 0;
+        for (let index = 0; index < dailydata.length; index++) {
+            dailydata[index].category = "daily"
+            let total = {};
+            total["date"] = dailydata[index].date;
+            if (index > 0) {
+                sum = totaldata[index - 1].value;
+            }
+            total["value"] = dailydata[index].value + sum;
+            total["category"] = "sum";
+            totaldata.push(total);
+        }
+
+        let showdata = dailydata.concat(totaldata);
+
+        return totaldata;
+    }
+
+    render() {
+        let config = {
+        data: this.loadData(),
+        renderer:'svg',
+        padding:[10, 8, 32, 48],
+        xField: "date",
+        yField: "value",
+    //    seriesField: "category",
+        smooth: "true",
+        color: ['#7B48F6','#FAA219'],
+        theme: { "styleSheet": { "brandColor": "#7B48F6", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
+        lineStyle: {
+            fillOpacity: 0.5,
+            lineWidth: 4
+        },
+        yAxis: {
+            grid: {
+            line: {
+                style: {
+                lineWidth: 0
+                }
+            }
+            },
+            label: {
+                formatter: function formatter(v) {
+                  let value = ""
+                    .concat(v)
+                    .replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+                      return "".concat(s, ",");
+                    });
+                  return value;
+                }
+              }
+            }
+        };
+
+        
+        return <Line {...config} />;
+    }
+  };
 
 class DASLine extends React.Component {
     state = {
@@ -302,14 +377,30 @@ class DASLine extends React.Component {
         let config = {
         data: this.loadData(),
         renderer:'svg',
-        padding:[40, 8, 32, 48],
+        padding:[10, 8, 32, 48],
         xField: "date",
         yField: "value",
     //    seriesField: "category",
         smooth: "true",
     //    color: ['#7B49F6', '#C7304F', '#FAA219'],
-        color: ['#C7304F'],
+        color: ['#C7304F','#FAA219'],
+        theme: { "styleSheet": { "brandColor": "#C7304F", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
         lineStyle: {
+            fillOpacity: 0.5,
+        //    stroke: "#C7304F",
+            lineWidth: 4
+        },
+    /*    lineStyle: {
+            fillOpacity: 0.5,
+        //    stroke: "#C7304F",
+            lineWidth: 3,
+        //    strokeOpacity: 0.7,
+        //    shadowColor: "yellow",
+            shadowBlur: 10,
+            shadowOffsetX: 3,
+            shadowOffsetY: 0
+        },*/
+    /*    lineStyle: {
             fillOpacity: 0.5,
             stroke: "#C7304F",
             lineWidth: 3,
@@ -318,7 +409,7 @@ class DASLine extends React.Component {
             shadowBlur: 10,
             shadowOffsetX: 3,
             shadowOffsetY: 0
-        },
+        },*/
         yAxis: {
             grid: {
             line: {
@@ -337,9 +428,9 @@ class DASLine extends React.Component {
                   return value;
                 }
               }
-        },
-    
-        annotations: [
+            }
+        
+    /*    annotations: [
             {
             type: "line",
             start: ["min", "median"],
@@ -349,8 +440,10 @@ class DASLine extends React.Component {
                 lineDash: [4, 4]
             }
             }
-        ]
+        ]*/
         };
+
+        
         return <Line {...config} />;
     }
   };
@@ -397,12 +490,10 @@ class DASTreemap extends React.Component {
             }
             },
             
-            theme: { "styleSheet": { "brandColor": "#F8D4A4", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
-        //    theme: { "styleSheet": { "brandColor": "#F8D4A4", "paletteQualitative10": ["#D90096","#7300C9","#0007B9","#0D7CAA","#1D9A6C","#39A96B","#56B870","#74C67A","#99D492","#BFE1B0","#DEEDCF"], "paletteQualitative20": ["#D90096","#7300C9","#0007B9","#0D7CAA","#1D9A6C","#39A96B","#56B870","#74C67A","#99D492","#BFE1B0","#DEEDCF"]}},
-        //    theme: { "styleSheet": { "brandColor": "#F8D4A4", "paletteQualitative10": ["#D9ED92","#B5E48C","#99D98C","#76C893","#52B69A","#34A0A4","#168AAD","#1A759F","#1E6091","#184E77"], "paletteQualitative20": ["#D9ED92","#B5E48C","#99D98C","#76C893","#52B69A","#34A0A4","#168AAD","#1A759F","#1E6091","#184E77"] } } 
-        //    theme: { "styleSheet": { "brandColor": "#F8D4A4", "paletteQualitative10": ["#C32A48", "#B06FEF", "#F6C744", "#5DBEFC", "#787DFC", "#64DB9F", "#EF749F", "#D57AF1", "#60D5F6", "#5CD0AE"], "paletteQualitative20": ["#C32A48", "#B06FEF", "#F6C744", "#5DBEFC", "#787DFC", "#64DB9F", "#EF749F", "#D57AF1", "#60D5F6", "#5CD0AE","#FF6B3B", "#626681", "#FFC100", "#9FB40F", "#76523B", "#DAD5B5", "#0E8E89", "#E19348", "#F383A2", "#247FEA", "#2BCB95", "#B1ABF4", "#1D42C2", "#1D9ED1", "#D64BC0", "#255634", "#8C8C47", "#8CDAE5", "#8E283B", "#791DC9"] } } 
-        //    theme: { "styleSheet": { "brandColor": "#FF6B3B", "paletteQualitative10": ["#FF6B3B", "#626681", "#FFC100", "#9FB40F", "#76523B", "#DAD5B5", "#0E8E89", "#E19348", "#F383A2", "#247FEA"], "paletteQualitative20": ["#FF6B3B", "#626681", "#FFC100", "#9FB40F", "#76523B", "#DAD5B5", "#0E8E89", "#E19348", "#F383A2", "#247FEA", "#2BCB95", "#B1ABF4", "#1D42C2", "#1D9ED1", "#D64BC0", "#255634", "#8C8C47", "#8CDAE5", "#8E283B", "#791DC9"] } } 
-        };
+            theme: { "styleSheet": { "brandColor": "#F8D4A4", 
+                "paletteQualitative10":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62'], 
+                "paletteQualitative20":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62']}},
+            };
         return <Treemap {...config} />;
     }
 };
@@ -1262,14 +1353,15 @@ export default class AddShop extends React.Component {
 
         this.changeLanguage(language);
 
-        // 先提前预加载logo。避免使用的时候第一次加载头像失败头像绘制出问题
-        const {Sprite} = spritejs;
-        const logoSprite = new Sprite(img);
-
         // 强制执行一次
         setTimeout(() => {
+            // 先提前预加载logo。避免使用的时候第一次加载头像失败头像绘制出问题
+            console.log('getRegistList');
+            const {Sprite} = spritejs;
+            const logoSprite = new Sprite(img);
             this.getRegistList();
         }, 1000);
+        
         //this.getRegistList();
 
         // 再设置定时器，拉取最新注册账号，1分钟跑一次，之后改成 5 分钟 todo
@@ -1410,6 +1502,10 @@ export default class AddShop extends React.Component {
 
     getDailyRegisteredData = () => {
         return das['dailyRegistered'];
+    }
+
+    getDailyUniqueOwnerData = () => {
+        return das.ownerStat['daily_new_owner_count'];
     }
 
     getLastdayRegisteredCount = () => {
@@ -1827,20 +1923,13 @@ export default class AddShop extends React.Component {
                     </Card>
                     <br/>
                     <Card title={this.langConfig('das-big-data')} bordered={false}>
-                        <div className='statistic-das-count-title'>
+                        <div className='statistic-data-updatetime'>
                             {this.loadDailyStatUpdatedTime()}
                         </div>
                         <br/>
-                        <div style={{display:'flex', flexWrap:'wrap', width:'100%',justifyContent:'space-around',height:100,flexDirection:'row'}}>
-                            <div>
-                                <div className='statistic-das-count-title'>
-                                    {this.langConfig('yesterday-registered-count')}
-                                </div>
-                                <div className='statistic-lastday-das-count'>
-                                    {this.getLastdayRegisteredCount().toLocaleString()}
-                                </div>
-                            </div>
-                            <div>
+                        <div className='statistic-summary-wrapper'>
+                            
+                            <div className='statistic-info-item'>
                                 <div className='statistic-das-count-title'>
                                     {this.langConfig('das-registered-count')}
                                 </div>
@@ -1848,6 +1937,31 @@ export default class AddShop extends React.Component {
                                     {das.registered.length.toLocaleString()}
                                 </div>
                             </div>
+                            <div className='statistic-info-item'>
+                                <div className='statistic-das-count-title'>
+                                    {this.langConfig('yesterday-registered-count')}
+                                </div>
+                                <div className='statistic-das-count'>
+                                    {this.getLastdayRegisteredCount().toLocaleString()}
+                                </div>
+                            </div>
+                            <div className='statistic-info-item'>
+                                <div className='statistic-das-count-title'>
+                                    {this.langConfig('das-owner-count')}
+                                </div>
+                                <div className='statistic-owner-count'>
+                                    {das.ownerStat['unique_owner_amount'].toLocaleString()}
+                                </div>
+                            </div>
+                            <div className='statistic-info-item'>
+                                <div className='statistic-das-count-title'>
+                                    {this.langConfig('max-from-a-unique-owner')}
+                                </div>
+                                <div className='statistic-owner-count'>
+                                    {das.ownerStat['max_owner_account'].toLocaleString()}
+                                </div>
+                            </div>
+                            
                            
                         </div>
                         <br/>
@@ -1855,6 +1969,11 @@ export default class AddShop extends React.Component {
                             {this.langConfig('daily-registered-chart-title')}
                         </div>
                         <DASLine loadConfigCallback={this.langConfig} dataCallback={this.getDailyRegisteredData}></DASLine>
+                        <br/>
+                        <div className='statistic-das-count-title'>
+                            {this.langConfig('das-owners-count-chart-title')}
+                        </div>
+                        <DASUniqueOwnerLine loadConfigCallback={this.langConfig} dataCallback={this.getDailyUniqueOwnerData}></DASUniqueOwnerLine>
                         
                         <br/>
                         <div className='statistic-das-count-title'>
