@@ -165,6 +165,11 @@
                 "name":"Discord群",
                 "link":"https://discord.gg/WVunwT2hju",
                 "iconClassName":"fa fa-discord-alt foot-link-icon-fa"
+            },
+            {
+                "name":"DAS 交易市场",
+                "link":"https://bestdas.com",
+                "iconClassName":"fa fa-usd foot-link-icon-fa"
             }
         ],
         "en_US":[
@@ -192,6 +197,11 @@
                 "name":"Discord Group",
                 "link":"https://discord.gg/WVunwT2hju",
                 "iconClassName":"fa fa-discord-alt foot-link-icon-fa"
+            },
+            {
+                "name":"Marketplace for DAS",
+                "link":"https://bestdas.com",
+                "iconClassName":"fa fa-usd foot-link-icon-fa"
             }
         ]
     },

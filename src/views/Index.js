@@ -17,6 +17,7 @@ import REG_DENAME_LOGO from '../img/ic-registrar-dename.png';
 import REG_DAS_LOGO from '../img/ic-registrar-das.png';
 import WORDCLOUD_MASK from '../img/wordcloud_mask.png';
 import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH, DONATEADDRESS, TABLEFILTER} from "../mock/constant"
+import { indexOf } from '@antv/util';
 //import { loadConfig } from 'browserslist';
 
 //const {Footer} = Layout
@@ -86,7 +87,7 @@ const DASACCOUNTSTATUS = {
 
 let AccountStatusColors = {
     '0':'#22C493',
-    '1':'#808191',
+    '1':'#22C493',
     '2':'#DF4A46',
     '3':'#FFA800',
     '4':'#808191',
@@ -256,7 +257,7 @@ class DASWordCloud extends React.Component {
             data: this.props.dataCallback(),
             wordField: 'name',
             weightField: 'count',
-            //padding:[0, -20, 0, -40],
+            padding:[0, -20, 0, -20],
             colorField: 'name',
             height: this.state.clientWidth > 500 ? 500 : this.state.clientWidth,
             
@@ -313,6 +314,7 @@ class DASUniqueOwnerLine extends React.Component {
         padding:[10, 8, 32, 48],
         xField: "date",
         yField: "value",
+        height: 288,
     //    seriesField: "category",
         smooth: "true",
         color: ['#7B48F6','#FAA219'],
@@ -341,7 +343,6 @@ class DASUniqueOwnerLine extends React.Component {
               }
             }
         };
-
         
         return <Line {...config} />;
     }
@@ -380,6 +381,7 @@ class DASLine extends React.Component {
         padding:[10, 8, 32, 48],
         xField: "date",
         yField: "value",
+        height: 288,
     //    seriesField: "category",
         smooth: "true",
     //    color: ['#7B49F6', '#C7304F', '#FAA219'],
@@ -518,6 +520,7 @@ export default class AddShop extends React.Component {
         clientWidth: document.body.clientWidth,
         discordTimerId: 0,
         showNewDASTimerID: 0, 
+        DASMarketData:{},       // 正在出售的账号列表
     }
 
     setCache = (dataObject) => {
@@ -775,8 +778,19 @@ export default class AddShop extends React.Component {
                     accountStatus = DASACCOUNTSTATUS.Reserved;
                 }
 
+                let price = undefined;
                 if (registered.includes(account)) {
                     accountStatus = DASACCOUNTSTATUS.Registered;
+
+                    // 如果上次查过在市场上挂单，则修改状态
+                    if (account in this.cacheData.DASMarketData) {
+                        // TODO， 是否需要加一个过期时间？用户一直不关闭浏览器或者不刷新浏览器，旧数据就一直在，再议。。
+                        accountStatus = DASACCOUNTSTATUS.OnSale;
+                        price = this.cacheData.DASMarketData[account].price_ckb/100000000;
+                    }
+                    else {
+                        this.searchAccountFromMarket(account);
+                    }                    
                 }    
 
                 // 添加到结果中
@@ -785,7 +799,8 @@ export default class AddShop extends React.Component {
                     result.push({
                         id: result.length + 1,
                         status: [accountStatus],
-                        name: account
+                        name: account,
+                        price: price
                     })
                 }
             }
@@ -813,9 +828,11 @@ export default class AddShop extends React.Component {
 
     getAccountListByFilter = (dataSrcList, accountStatus) => {
         console.log('getAccountListByFilter, accountStatus:' + accountStatus);
-        if (accountStatus === "-1")
+        if (accountStatus === "-1") {
+            //console.log(JSON.stringify(dataSrcList));
             return dataSrcList;
-
+        }
+        
         let result = [];
         for ( let i in dataSrcList) {
             let account = dataSrcList[i];
@@ -975,12 +992,22 @@ export default class AddShop extends React.Component {
     select = record => {
         // window.open("https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
         let status = record.status[0];
+        if (status === DASACCOUNTSTATUS.Registered) {
+            if (-1 != indexOf(record.status, DASACCOUNTSTATUS.OnSale)) {
+                status = DASACCOUNTSTATUS.OnSale;
+            }
+        }
+                        
         // 如果是窄屏幕（手机），则在本页打开，否则新开窗口。
         let url = "";
         switch (status) {
             case DASACCOUNTSTATUS.Registered: 
                 url = "https://" + record.name + this.langConfig("dascc-host");
                 this.openLink(url, 'view_host_'+record.name);
+                break;
+            case DASACCOUNTSTATUS.OnSale: 
+                url = "https://bestdas.com/account/" + record.name + "?inviter=nervosyixiu.bit";
+                this.openLink(url, 'view_market_'+record.name);
                 break;
             case DASACCOUNTSTATUS.Reserved: 
                 this.openLink(this.langConfig("das-claim-link"));
@@ -1323,6 +1350,98 @@ export default class AddShop extends React.Component {
         });
     }
 
+    // 查询账号是否在市场挂单
+    searchAccountFromMarket = async (account) => {
+        let that = this;
+        return new Promise((resolve) => {
+            const headers = {
+                'User-Agent': 'das.la Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+                'content-type': 'application/json;charset=UTF-8',
+                'cookie': '__dcfduid=4c76a7a70895b91877e29c9534d5fa30; __sdcfduid=b31379a6f3ff11eb96d242010a0a02bc0e534fe0d6b719f4db746cfff96889994a9b543e4bb06bb57942c430e90bd14b',
+            }
+
+            const data = {"keyword": account,"page":1,"size":50}
+
+            const optionParam = {
+                headers: headers,
+                body: JSON.stringify(data),
+                method: 'POST'
+            }
+
+            let url = 'https://tx-api.bestdas.com/v1/sell/account/search'
+
+            fetch(url, optionParam)
+            .then(function(response){
+                return response.json();  
+              })
+              .then(function(json){
+                  console.log(json)
+                  
+                  for (let i = 0; i < json['data']['list'].length; i++) {
+                    let account_onsale = json['data']['list'][i]
+                    console.log(account_onsale)
+                    if (account_onsale.account === account && account_onsale.status === 1) {
+                        console.log('add ' + account_onsale.account);
+                        that.addMainTableOnSaleAccount(account_onsale);
+                        break;
+                    }
+                  }
+              })
+              .catch(function(err){
+                console.log(err);
+              });
+        });
+    }
+
+    addMainTableOnSaleAccount = (accountDetail) => {
+    //    console.log(JSON.stringify(accountDetail));
+        if (!accountDetail || !accountDetail.account)   {
+            return;
+        }
+
+    /*    
+        for (let index = 0; index < this.state.mainTableDataList.length; ) {
+            if (this.state.mainTableDataList[index].name === accountDetail.account) {
+                let account_info = this.state.mainTableDataList[index];
+                account_info.status.push(DASACCOUNTSTATUS.OnSale);
+                this.state.mainTableDataList[index] = account_info;
+            //    console.log(JSON.stringify(this.state.mainTableDataList));
+                break;
+            }
+            index++
+        }
+    */
+        // 直接替换状态，原来的已注册状态变为出售状态
+        for (let index = 0; index < this.state.mainTableDataList.length; index++) {
+            if (this.state.mainTableDataList[index].name === accountDetail.account) {
+                this.state.mainTableDataList[index].status = [DASACCOUNTSTATUS.OnSale];
+                this.state.mainTableDataList[index].price = accountDetail.price_ckb/100000000;
+
+                // 排序
+                if (this.state.mainTableDataList.length > 1) {
+                    this.state.mainTableDataList.sort((a, b) => {
+                        return (a.status[0]-b.status[0] || (a.name.length - b.name.length))
+                     });
+                }
+
+                let filterList = this.getAccountListByFilter(this.state.mainTableDataList, this.state.mainTableFilter)
+                //console.log(JSON.stringify(filterList));
+                // 设置数据
+                this.setState({
+                    list: filterList,
+                    mainTableFilter: this.state.mainTableFilter,
+                });
+
+                // 增加一个数据来缓存，之后方便显示价格
+                this.cacheData.DASMarketData[accountDetail.account] = accountDetail;
+
+                console.log(JSON.stringify(this.cacheData.DASMarketData));
+
+                break;
+            }
+        }
+    }
+
     changeLanguage = (language) => {
         //把用户的语言写入缓存，供下次获取使用
         localStorage.setItem('locale', language)
@@ -1559,6 +1678,8 @@ export default class AddShop extends React.Component {
                 break;
             case DASACCOUNTSTATUS.NotOpen: tips = this.langConfig("das-account-status-notopen"); 
                 break;
+            case DASACCOUNTSTATUS.OnSale: tips = this.langConfig("das-account-status-onsale"); 
+                break;
             default:break;
         }
 
@@ -1586,6 +1707,8 @@ export default class AddShop extends React.Component {
         switch (status) {
             case DASACCOUNTSTATUS.Available: title = this.langConfig("register-btn"); 
                 break;
+            case DASACCOUNTSTATUS.OnSale: title = this.langConfig("btn-title-buy-now"); 
+                break;
             case DASACCOUNTSTATUS.Reserved: title = this.langConfig("btn-title-claim-reserved"); 
                 break;
             case DASACCOUNTSTATUS.Registering: title = this.langConfig("btn-title-view-profile"); 
@@ -1601,6 +1724,35 @@ export default class AddShop extends React.Component {
         return title;
     }
 
+    numberFormatter = (num, digits) => {
+        var si = [
+          { value: 1, symbol: "" },
+          { value: 1E3, symbol: "K" },
+          { value: 1E6, symbol: "M" },
+          { value: 1E9, symbol: "G" },
+          { value: 1E12, symbol: "T" },
+          { value: 1E15, symbol: "P" },
+          { value: 1E18, symbol: "E" }
+        ];
+
+        // 中文的习惯，使用万，百万。。
+        if (this.state.locale.indexOf("zh") !== -1) {
+            si = [
+                { value: 1, symbol: "" },
+                { value: 1E4, symbol: "万" },
+                { value: 99999900, symbol: "亿" }
+              ];
+        }
+
+        var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+        var i;
+        for (i = si.length - 1; i > 0; i--) {
+          if (num >= si[i].value) {
+            break;
+          }
+        }
+        return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+    }
     
     // 考虑到不同状态、不同设备，需要特殊处理列字断
     getTableColumns = () => {
@@ -1618,7 +1770,7 @@ export default class AddShop extends React.Component {
                             return dom
                         }
                         else {
-                            console.log('avatar drawing')
+                            //console.log('avatar drawing')
                             let nameMD5 = md5(record.name)
                             let id = `img${nameMD5}`
                             let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
@@ -1660,11 +1812,15 @@ export default class AddShop extends React.Component {
                 title: '状态',
                 key: 'status',
                 dataIndex: 'status',
+            /*    defaultSortOrder: 'ascend',
+                sorter: {
+                    compare: (a, b) => a.status[0] - b.status[0],
+                },*/
                 render: tags => (
                   <>
                     {tags.map(status => {
                       let color = AccountStatusColors[status];
-                      
+                      //console.log(status);
                       return (
                         <Tag color={color} key={status}>
                           {this.getAccountStatusString(status)}
@@ -1673,6 +1829,17 @@ export default class AddShop extends React.Component {
                     })}
                   </>
                 ),
+            },
+            {
+                title: '价格',
+                key: 'price',
+                dataIndex: 'price',
+                render: (text, record, index) => {
+                    if (record.price) {
+                        let value = this.numberFormatter(record.price, 2);
+                        return <span className="das-account-price">🍔 {value} CKB</span>
+                    }
+                }
             },
             {
                 title: '操作',
@@ -1714,9 +1881,17 @@ export default class AddShop extends React.Component {
                         }
                     }
                     else {
+                        let status = record.status[0];
+                        if (status === DASACCOUNTSTATUS.OnSale) {
+                                return <Space size="small">
+                                        <Button className="dasla-btn-select-account" size={'normal'} shape="round"
+                                        onClick={() => this.select(record)}>{this.getAccountStatusLinkTitle(status)}</Button>
+                                        </Space>
+                        }
+                        
                         return <Space size="small">
                            <Button type="primary" size={'normal'} shape="round"
-                                    onClick={() => this.select(record)}>{this.getAccountStatusLinkTitle(record.status[0])}</Button>
+                                    onClick={() => this.select(record)}>{this.getAccountStatusLinkTitle(status)}</Button>
                         
                             </Space>
                     }
@@ -1808,7 +1983,7 @@ export default class AddShop extends React.Component {
         return (
             <div>
             <div className={this.state.animationClass}>
-                <div className="content">                   
+                <div className="content"> 
                     <div className="bannerWraper">
                         <Carousel
                             autoPlay={true}
@@ -1826,6 +2001,7 @@ export default class AddShop extends React.Component {
                             })}
                         </Carousel>
                     </div>
+
                     <div >
                         <Alert style={{
                             marginBottom: 8,

@@ -45,6 +45,13 @@ code {
   word-break: break-all;
 }
 
+.das-account-price {
+  font-size: 12px;
+  font-weight: 500;
+  color: #3D393E;
+  word-break: break-all;
+}
+
 .das-account-status-tag {
   height: 22px;
 }
