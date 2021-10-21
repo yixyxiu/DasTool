@@ -97,8 +97,8 @@ export const DASOPENEPOCH = [
         // todo 
     //new Date('2021-10-10 02:00:00 GMT'),
     //new Date('2021-10-17 03:00:00 GMT'),
-    new Date('2021-10-24 04:00:00 GMT'),
-    new Date('2021-10-31 05:00:00 GMT'),
+    //new Date('2021-10-24 04:00:00 GMT'),
+    //new Date('2021-10-31 05:00:00 GMT'),
     new Date('2021-11-07 06:00:00 GMT'),
     new Date('2021-11-14 07:00:00 GMT'),
     new Date('2021-11-21 08:00:00 GMT'),

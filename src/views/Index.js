@@ -272,8 +272,6 @@ class DASWordCloud extends React.Component {
             theme: { "styleSheet": { "brandColor": "#F8D4A4", 
                 "paletteQualitative10":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62'], 
                 "paletteQualitative20":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62']}},
-            
-            
         };
         //console.log('config.width' + config.width + 'config.height' + config.height)
         return <WordCloud {...config} />;
