@@ -86,8 +86,8 @@ const DASACCOUNTSTATUS = {
 ]*/
 
 let AccountStatusColors = {
-    '0':'#22C493',
-    '1':'#22C493',
+    '0':'#1890ff',
+    '1':'#1890ff',
     '2':'#DF4A46',
     '3':'#FFA800',
     '4':'#808191',
@@ -1810,21 +1810,42 @@ export default class AddShop extends React.Component {
                 sorter: {
                     compare: (a, b) => a.status[0] - b.status[0],
                 },*/
-                render: tags => (
+                render: (text, record, index) => (
                   <>
-                    {tags.map(status => {
-                      let color = AccountStatusColors[status];
-                      //console.log(status);
-                      return (
-                        <Tag color={color} key={status}>
-                          {this.getAccountStatusString(status)}
-                        </Tag>
-                      );
-                    })}
+                    {record.status.map(status => {
+                        let color = AccountStatusColors[status];
+                        //console.log(status);
+                        
+                        if (status === DASACCOUNTSTATUS.OnSale) {
+                            if (record.price) {
+                                let value = this.numberFormatter(record.price, 2);
+                                return (
+                                    <Tag color={color} key={status}>
+                                    {this.getAccountStatusString(status)}<span className="das-account-price"> 🍔 {value} CKB</span>
+                                    </Tag>
+                                );
+                            }
+                            else {
+                                return (
+                                    <Tag color={color} key={status}>
+                                    {this.getAccountStatusString(status)}
+                                    </Tag>
+                                );
+                            }
+                        }
+                        else {
+                            return (
+                                <Tag color={color} key={status}>
+                                {this.getAccountStatusString(status)}
+                                </Tag>
+                            );
+                        }
+                        
+                        })}
                   </>
                 ),
             },
-            {
+            /*{
                 title: '价格',
                 key: 'price',
                 dataIndex: 'price',
@@ -1834,7 +1855,7 @@ export default class AddShop extends React.Component {
                         return <span className="das-account-price">🍔 {value} CKB</span>
                     }
                 }
-            },
+            },*/
             {
                 title: '操作',
                 width: 100,

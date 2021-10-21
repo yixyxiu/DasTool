@@ -45,6 +45,16 @@ code {
   word-break: break-all;
 }
 
+@media (max-width: 480px) {
+  .das-account-name {
+      font-size: 14px;
+  }
+
+  .registed-account-name {
+    font-size: 14px;
+  }
+}
+
 .das-account-price {
   font-size: 12px;
   font-weight: 500;
