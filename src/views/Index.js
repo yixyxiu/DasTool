@@ -1355,17 +1355,15 @@ export default class AddShop extends React.Component {
         let that = this;
         return new Promise((resolve) => {
             const headers = {
-                'User-Agent': 'das.la Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
                 'content-type': 'application/json;charset=UTF-8',
-                'cookie': '__dcfduid=4c76a7a70895b91877e29c9534d5fa30; __sdcfduid=b31379a6f3ff11eb96d242010a0a02bc0e534fe0d6b719f4db746cfff96889994a9b543e4bb06bb57942c430e90bd14b',
-            }
+              }
 
             const data = {"keyword": account,"page":1,"size":50}
 
             const optionParam = {
                 headers: headers,
                 body: JSON.stringify(data),
-                method: 'POST'
+                method: 'POST', 
             }
 
             let url = 'https://tx-api.bestdas.com/v1/sell/account/search'
@@ -1380,10 +1378,11 @@ export default class AddShop extends React.Component {
                   for (let i = 0; i < json['data']['list'].length; i++) {
                     let account_onsale = json['data']['list'][i]
                     console.log(account_onsale)
+                    // 增加一个数据来缓存，之后方便显示价格
+                    that.cacheData.DASMarketData[account_onsale.account] = account_onsale;
                     if (account_onsale.account === account && account_onsale.status === 1) {
                         console.log('add ' + account_onsale.account);
                         that.addMainTableOnSaleAccount(account_onsale);
-                        break;
                     }
                   }
               })
@@ -1431,11 +1430,6 @@ export default class AddShop extends React.Component {
                     list: filterList,
                     mainTableFilter: this.state.mainTableFilter,
                 });
-
-                // 增加一个数据来缓存，之后方便显示价格
-                this.cacheData.DASMarketData[accountDetail.account] = accountDetail;
-
-                console.log(JSON.stringify(this.cacheData.DASMarketData));
 
                 break;
             }
