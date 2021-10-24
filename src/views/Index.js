@@ -205,6 +205,226 @@ class DaslaFooter extends React.Component {
     }
 }
 
+class ForSaleAccountCard extends React.Component {
+    formatAddress = (address) => {
+        let begin = address.substr(0,7);
+        let end = address.substr(-7);
+        let str = begin + '...' + end;
+
+        return str;
+    }
+
+    state = {
+        account: '',
+        accountDetail: {}
+    }
+
+    componentDidMount() {
+        // 获取账号明细
+        setTimeout(() => {
+            this.loadAccountDetail(this.props.account+'.bit');
+        }, 100);
+    }
+
+    loadAccountDetail = (account) => {
+        let that = this;
+        return new Promise((resolve) => {
+            const headers = {
+                'content-type': 'application/json;charset=UTF-8',
+              }
+
+            const data = {"account": account}
+
+            const optionParam = {
+                headers: headers,
+                body: JSON.stringify(data),
+                method: 'POST', 
+            }
+
+            let url = 'https://tx-api.bestdas.com/v1/sell/account/detail'
+
+            fetch(url, optionParam)
+            .then(function(response){
+                return response.json();  
+            })
+            .then(function(json){                     
+                let account_onsale = json['data']
+                console.log(account_onsale)
+                
+                if (account_onsale.account === account && account_onsale.status === 1) {
+                    console.log('get detail ：' + account_onsale.account);
+                    that.setState({
+                        account: account_onsale.account,
+                        accountDetail: account_onsale
+                    })
+                }
+              })
+              .catch(function(err){
+                console.log(err);
+              });
+        });
+    }
+
+    // 根据账号长度计算字体大小
+    calcAccountNameFontSize = () => {
+        let maxFontSize = 64;   // 4 个字符时
+        let minFontSize = 24;   // 15 个字符时
+        let accountLen = this.props.account.length;
+        if (accountLen > 15) {
+            return minFontSize;
+        }
+
+        if (accountLen < 4) {
+            return maxFontSize;
+        }
+        
+        let fontSize = 64 - (64-24)/(15-4)*(accountLen-4)-1.5;
+        return fontSize;
+    }
+
+    /* 
+    "data": {
+        "account": "uniquenft.bit",
+        "price_ckb": "1500000000000",
+        "price_usd": "310.42725",
+        "status": 1,
+        "collection_num": 0,
+        "owner_chain_type": 1,
+        "owner_address": "0xeaea3a7ab8762be33d06796aaca691d67d6d17ed",
+        "description": "特别的，唯一的NFT",
+        "timestamp": 1634829472000,
+        "expire_at": 1666322649000
+    }
+    */
+    getAccountDetail = (key) => {
+        if (!this.state.accountDetail) {
+            return '';
+        }
+
+        if (key in this.state.accountDetail) {
+            return this.state.accountDetail[key];
+        }
+
+        return '';
+    }
+
+    // 格式化持有人地址展示
+    formatOwnerAddress = () => {
+        let address = this.getAccountDetail('owner_address');
+        if (address.length < 15) {
+            return address;
+        }
+
+        return this.formatAddress(address);
+    }
+
+    formatExpireTime = () => {
+        let timestamp = this.getAccountDetail('expire_at');
+        let date = new Date(timestamp);
+
+        let strTime = "" + date.getFullYear()+
+                    "-"+("0" + (date.getMonth()+1)).slice(-2) +
+                    "-"+("0" + (date.getDate())).slice(-2) +
+                    " "+("0" + (date.getHours())).slice(-2) +
+                    ":"+("0" + (date.getMinutes())).slice(-2) +
+                    ":"+("0" + (date.getSeconds())).slice(-2) ;                    
+        
+        return strTime;
+    }
+
+    formatCKBPrice = () => {
+        let ckbPrice = this.getAccountDetail('price_ckb');
+        if (!ckbPrice) {
+            return '0 CKB';
+        }
+
+        let realPrice = ckbPrice/100000000;
+        let value = "".concat(realPrice).replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+                      return "".concat(s, ",");
+        });
+        
+        return value + ' CKB';
+    }
+
+    formatAccountDescription = () => {
+        let desc = this.getAccountDetail('description');
+        if (!desc) {
+            desc = '----------'
+        }
+        return desc;
+    }
+
+    viewMarketAccount = () => {
+        let url = "https://bestdas.com/account/" + this.state.account + "?inviter=nervosyixiu.bit";
+        this.props.parent.openLink(url, 'view_market_' + this.state.account);
+    }
+    
+    render() {
+        let account = this.props.account + '.bit';
+        let nameMD5 = md5(account);
+        let id = `market-account${nameMD5}`;
+        let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
+        setTimeout(() => {
+            this.props.getDASAvata(id, account);
+        }, 3000)
+
+        return <div className="mini-card">
+        <div className="mini-card-owner-row">
+            {dom}
+            <div className="author-name">{this.formatOwnerAddress()}</div>
+        </div>
+        <div className="mini-card-describle-row">
+            <div className="fa fa-quote-left fa-card-quote-left"></div>
+            <div className="account-describle">{this.formatAccountDescription()}</div>
+            <div className="fa fa-quote-right fa-card-quote-right"></div>
+        </div>
+        
+        <div className="golden-das-name-container" style={{backgroundColor:this.props.color}}>
+            <div className="golden-das-name" style={{fontSize:this.calcAccountNameFontSize()}}>
+            {this.props.account}</div>
+            <div className="golden-das-bit-fix">
+            .bit</div>
+        </div>
+        <time>
+        <strong>{this.props.langConfig('expire_time')}</strong>
+        {this.formatExpireTime()}
+        </time>
+        <div className="mini-card-price">{this.formatCKBPrice()}
+        </div>
+        
+        <Button className="dasla-btn-select-account" size={'normal'} shape="round"
+           onClick={this.viewMarketAccount} >{this.props.langConfig('btn-title-buy-now')}</Button>
+                
+        
+    </div>
+    }
+}
+
+class DASMarketCardList extends React.Component {
+
+    render() {
+        const colors = ['brown','dimgrey','chocolate',
+                        'blueviolet','darkcyan','darkgoldenrod','coral','none','indianred',
+                        'orangered', 'peru'];
+        return <div className="popular-das noselect">
+            <div className="popular-header header-card">
+                <div className="icon-das-for-sale "/>
+                <h2 className="header-card-title">{this.props.langConfig('market-card-sponsor-list')}<br /></h2>
+                <a href={this.props.langConfig('become-our-sponsor-url')} target="_blank" rel="noopener noreferrer" >{this.props.langConfig('become-a-sponsor')}</a>
+            </div>
+            <div className="mini-card-grid">
+                <ForSaleAccountCard account="bank" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
+                <ForSaleAccountCard account="defihacker" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[1]} />
+                <ForSaleAccountCard account="guard" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />
+                <ForSaleAccountCard account="earlybird" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[3]} />
+                <ForSaleAccountCard account="meta4fund" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[4]} />
+                <ForSaleAccountCard account="0xcapital" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[5]} />                
+            </div>
+        </div>
+        
+    }
+}
+
 class DASInvitRank extends React.Component {
 
     render() {
@@ -2070,6 +2290,8 @@ export default class AddShop extends React.Component {
                                rowClassName='das-account-name noselect' showHeader={false}/>
                         <br/>
                     </Card>
+                    <br/>
+                    <DASMarketCardList parent={this} getDASAvata={this.getImg} langConfig={this.langConfig}/>
                     <br/>
                     <Card title={this.langConfig('keyword-title')} bordered={false}>
                         
