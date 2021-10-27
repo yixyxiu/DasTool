@@ -413,7 +413,7 @@ class DASMarketCardList extends React.Component {
                 <a href={this.props.langConfig('become-our-sponsor-url')} target="_blank" rel="noopener noreferrer" >{this.props.langConfig('become-a-sponsor')}</a>
             </div>
             <div className="mini-card-grid">
-                <ForSaleAccountCard account="bank" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
+                <ForSaleAccountCard account="jpeg" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
                 <ForSaleAccountCard account="defihacker" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[1]} />
                 <ForSaleAccountCard account="guard" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />
                 <ForSaleAccountCard account="earlybird" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[3]} />

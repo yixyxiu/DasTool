@@ -1003,7 +1003,7 @@ h6 {
 }
 
 .mini-card:focus-within~.mini-card,.mini-card:hover~.mini-card {
-	transform: translateX(130px)
+	transform: translateX(30px)
 }
 
 .mini-card:first-child:focus-within,.mini-card:first-child:hover {
@@ -1011,7 +1011,7 @@ h6 {
 }
 
 .mini-card:not(:first-child) {
-	margin-left: -130px;
+	margin-left: -30px;
 	box-shadow: -3rem 0 3rem -2rem #000
 }
 
