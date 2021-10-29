@@ -52,7 +52,7 @@ let defKeywords = ['btc','eth','ckb','bnb','uni','das','nervos','link','ada','de
                     'asset','heco','bsc','888','666','000','999','777','222','111',
                     'just','lend','mask','okex','sushi','graph','tron','pay','dai','dog',
                     'fish','protocol','dot','file','cyber','city','bank','china','net',
-                    'network','com','cn','chat','ok','hello','work'
+                    'network','com','cn','chat','ok','hello','work','meta',
                     ];
 let random = Math.floor(Math.random()*defKeywords.length); 
 
@@ -413,12 +413,12 @@ class DASMarketCardList extends React.Component {
                 <a href={this.props.langConfig('become-our-sponsor-url')} target="_blank" rel="noopener noreferrer" >{this.props.langConfig('become-a-sponsor')}</a>
             </div>
             <div className="mini-card-grid">
-                <ForSaleAccountCard account="jpeg" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
-                <ForSaleAccountCard account="defihacker" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[1]} />
+                <ForSaleAccountCard account="defihacker" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
+                <ForSaleAccountCard account="labrador" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[1]} />
                 <ForSaleAccountCard account="guard" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />
-                <ForSaleAccountCard account="earlybird" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[3]} />
-                <ForSaleAccountCard account="meta4fund" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[4]} />
-                <ForSaleAccountCard account="0xcapital" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[5]} />                
+                <ForSaleAccountCard account="victoriafalls" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[3]} />
+                <ForSaleAccountCard account="operahouse" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[4]} />
+                <ForSaleAccountCard account="adopt" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[5]} />                
             </div>
         </div>
         
@@ -1292,6 +1292,12 @@ export default class AddShop extends React.Component {
             }
         }
 
+        if (result.length > 1) {
+            result.sort((a, b) => {
+                return (a.name.length - b.name.length)
+             });
+        }
+
         //console.log(result)
         this.setState({
             keywordList: result
@@ -1317,6 +1323,12 @@ export default class AddShop extends React.Component {
                     })
                 }
             }
+        }
+
+        if (result.length > 1) {
+            result.sort((a, b) => {
+                return (a.name.length - b.name.length)
+             });
         }
 
         //console.log(result)
