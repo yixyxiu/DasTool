@@ -1,14 +1,14 @@
 {
     "zh_CN":[
         {
-            "name":"mibao",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211021/247e337ab9154d98b22a6adf275b3cd2_GYYDAKRTGAYA.jpeg",
-            "link":"https://mibao.net/explore"
+            "name":"godwoken",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211106/37b32e38437742a1bfaa6bd29ad6addd_GYYDAKRTGAYA.jpeg",
+            "link":"https://www.nervos.org/godwoken"
         },
         {
-            "name":"秘宝",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211021/1cb91800793847c080d17929f0736e0a_GYYDAKRTGAYA.jpeg",
-            "link":"https://v.mibao.net/zh"
+            "name":"NexisDAO",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211106/c71619827cb14708940a939d3b8530fe_GYYDAKRTGAYA.jpeg",
+            "link":"https://nexisdao.com/"
         },
         {
             "name":"bestdas",
@@ -19,14 +19,14 @@
     ],
     "en_US":[
         {
-            "name":"mibao",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211021/2b69e57f793d4076a7885f7cffb08b78_GYYDAKRTGAYA.jpeg",
-            "link":"https://mibao.net/explore"
+            "name":"godwoken",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211106/63cbfad7611347fe93db16c2ff7b1ff2_GYYDAKRTGAYA.jpeg",
+            "link":"https://www.nervos.org/godwoken"
         },
         {
-            "name":"秘宝",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211021/e4e6795882ca40af9157992d370f0651_GYYDAKRTGAYA.jpeg",
-            "link":"https://v.mibao.net/en"
+            "name":"NexisDAO",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211106/37c203779e4a4e848f80f0169048ac45_GYYDAKRTGAYA.jpeg",
+            "link":"https://nexisdao.com/"
         },
         {
             "name":"bestdas",

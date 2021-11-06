@@ -168,7 +168,7 @@
             },
             {
                 "name":"DAS 交易市场",
-                "link":"https://bestdas.com",
+                "link":"https://bestdas.com?inviter=cryptofans.bit",
                 "iconClassName":"fa fa-usd foot-link-icon-fa"
             }
         ],
@@ -200,7 +200,7 @@
             },
             {
                 "name":"Marketplace for DAS",
-                "link":"https://bestdas.com",
+                "link":"https://bestdas.com?inviter=cryptofans.bit",
                 "iconClassName":"fa fa-usd foot-link-icon-fa"
             }
         ]
