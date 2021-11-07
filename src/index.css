@@ -1207,6 +1207,20 @@ h6 {
 
 /*---- end ，卡片样式结束 -------------*/
 
+/*---- start ，证书样式结束 -------------*/
+
+.das-certificate-container {
+  max-width: 1008px;
+}
+.das-certificate {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+}
+
+/*---- end ，证书样式结束 -------------*/
+
 .site-footer {
     margin: calc(var(--gap)*2) 0 0 0;
     padding: 0 0 var(--gap);

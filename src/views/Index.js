@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select} from 'antd';
+import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select, Form} from 'antd';
 import {SearchOutlined, DownOutlined, QuestionCircleFilled} from '@ant-design/icons';
 import { Treemap, Line, WordCloud, Bar } from '@ant-design/charts';
 import {Carousel} from "react-responsive-carousel";
@@ -16,6 +16,7 @@ import CKB_QRCODE from '../img/ckb_qrcode.png';
 import REG_DENAME_LOGO from '../img/ic-registrar-dename.png';
 import REG_DAS_LOGO from '../img/ic-registrar-das.png';
 import WORDCLOUD_MASK from '../img/wordcloud_mask.png';
+import CERTIFICATE_MASK from '../img/certificate_mask.jpg';
 import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH, DONATEADDRESS, TABLEFILTER} from "../mock/constant"
 import { indexOf } from '@antv/util';
 //import { loadConfig } from 'browserslist';
@@ -37,23 +38,32 @@ das.ownerStat = require('../mock/accountsOwner.json');
 
 let localeConfig = require('../mock/lang.json');
 let iconMap = new Map();
+// https://identicons.da.systems/avatar/nervosyixiu.bit?size=xxs
 // 存放新注册且没有显示通知的账号列表
 let newDASBornList = [];
 
 let defKeywords = ['btc','eth','ckb','bnb','uni','das','nervos','link','ada','dex',
-                    'swap','defi','nft','gamefi','crypto','token','coin','market','finance','exchange',
-                    'ex','wallet','fork','hashing','hodl','stake', 'farm','miner','node','block',
-                    'genesis','hash','fans','bar','moon','trans','boy','girl','poor','rich',
-                    'gold','game','sky','home','sun','fuck','digital','fund','chain','foundation',
-                    'air','club','cool','bit','bitcoin','key','vip','super','cloud','open',
-                    'drop','new','imtoken','stock','good','world','metavers','qq','little','system',
-                    'bridge','dapp','shop','hot','blue','black','green','base','king','white',
-                    'dao','satoshi','ethereum','vitalik','0x','ico','comp','currency','hunt',
-                    'asset','heco','bsc','888','666','000','999','777','222','111',
-                    'just','lend','mask','okex','sushi','graph','tron','pay','dai','dog',
-                    'fish','protocol','dot','file','cyber','city','bank','china','net',
-                    'network','com','cn','chat','ok','hello','work','meta',
-                    ];
+        'swap','defi','nft','gamefi','crypto','token','coin','market','finance','exchange',
+        'ex','wallet','fork','hashing','hodl','stake', 'farm','miner','node','block',
+        'genesis','hash','fans','bar','moon','trans','boy','girl','poor','rich',
+        'gold','game','sky','home','sun','fuck','digital','fund','chain','foundation',
+        'air','club','cool','bit','bitcoin','key','vip','super','cloud','open',
+        'drop','new','imtoken','stock','good','world','metavers','qq','little','system',
+        'bridge','dapp','shop','hot','blue','black','green','base','king','white',
+        'dao','satoshi','ethereum','vitalik','0x','ico','comp','currency','hunt',
+        'asset','heco','bsc','888','666','000','999','777','222','111',
+        'just','lend','mask','okex','sushi','graph','tron','pay','dai','dog',
+        'fish','protocol','dot','file','cyber','city','bank','china','net',
+        'network','com','cn','chat','ok','hello','work','list','money','love',
+        'alibaba','huawei','tencent','baidu','box','lake','man','team','official','hold',
+        'gogo','space','social','web','online','play','my','hero','baby','more',
+        'developer','war','your','pig','airdrop','yyds','buy','sea','live','maker',
+        'broker','right','punk','star','launch','hunter','one','first','last','eth',
+        'mini','whale','123','12345','321','luck','lucky','house','allin','trust',
+        'google','group','loser','winner','music','video','safe','hand','big','long',
+        'labs','apple','web3','polkadot','artist','alpha','book','solana','meta','metaverse',
+
+        ];
 let random = Math.floor(Math.random()*defKeywords.length); 
 
 const FIXMETHODS = {
@@ -278,7 +288,7 @@ class ForSaleAccountCard extends React.Component {
             return maxFontSize;
         }
         
-        let fontSize = 64 - (64-24)/(15-4)*(accountLen-4)-1.5;
+        let fontSize = 64 - (64-24)/(15-4)*(accountLen-4)-5.5;
         return fontSize;
     }
 
@@ -355,7 +365,7 @@ class ForSaleAccountCard extends React.Component {
     }
 
     viewMarketAccount = () => {
-        let url = "https://bestdas.com/account/" + this.state.account + "?inviter=nervosyixiu.bit";
+        let url = "https://bestdas.com/account/" + this.state.account + "?inviter=cryptofans.bit";
         this.props.parent.openLink(url, 'view_market_' + this.state.account);
     }
     
@@ -363,10 +373,15 @@ class ForSaleAccountCard extends React.Component {
         let account = this.props.account + '.bit';
         let nameMD5 = md5(account);
         let id = `market-account${nameMD5}`;
-        let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
+    /*    let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
         setTimeout(() => {
             this.props.getDASAvata(id, account);
         }, 3000)
+    */
+    //    let avatar = "https://identicons.da.systems/avatar/" + account + "?size=xxs";
+        let avatar = "https://identicons.da.systems/identicon/" + account;
+        let dom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
+
 
         return <div className="mini-card">
         <div className="mini-card-owner-row">
@@ -413,15 +428,81 @@ class DASMarketCardList extends React.Component {
                 <a href={this.props.langConfig('become-our-sponsor-url')} target="_blank" rel="noopener noreferrer" >{this.props.langConfig('become-a-sponsor')}</a>
             </div>
             <div className="mini-card-grid">
-                <ForSaleAccountCard account="defihacker" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
-                <ForSaleAccountCard account="labrador" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[1]} />
-                <ForSaleAccountCard account="guard" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />
-                <ForSaleAccountCard account="victoriafalls" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[3]} />
-                <ForSaleAccountCard account="operahouse" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[4]} />
+                <ForSaleAccountCard account="plusmeta" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
                 <ForSaleAccountCard account="adopt" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[5]} />                
+                <ForSaleAccountCard account="guard" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />
+                <ForSaleAccountCard account="labrador" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[1]} />
+                <ForSaleAccountCard account="victoriafalls" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[3]} />
+                <ForSaleAccountCard account="defihacker" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[6]} />
+                <ForSaleAccountCard account="operahouse" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[4]} />
             </div>
         </div>
         
+    }
+}
+
+
+// 秀一秀
+class DASAccountShow extends React.Component {
+    
+    OnShow = (account) => {
+
+    }
+
+    render() {
+        return null
+        const onFinish = (values) => {
+            console.log('Success:', values);
+        };
+        
+        const onFinishFailed = (errorInfo) => {
+            console.log('Failed:', errorInfo);
+        };
+
+        return <Card title={this.props.langConfig('das-show')} bordered={false}>
+        <Form
+            name="basic"
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            initialValues={{ remember: true }}
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            autoComplete="off"
+            >
+            <Form.Item
+                label="Step 1: Enter your .bit Account"
+                name="account"
+                rules={[{ required: true, message: 'Please input your account' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Step 2: Share das.la for Requesting faucet"
+                name="sharebtn"
+            >
+                <a href="https://twitter.com/intent/tweet?url=das.la&text=Requesting faucet prizes for nervosyixiu.bit on das.la, an awesome registration tool of DAS account." target="_blank" rel="noopener noreferrer"><span className="fa fa-twitter"></span></a>
+                <Button className="dasla-btn-select-account" size={'normal'} shape="round"
+           onClick={this.viewMarketAccount} ><span className="fa fa-twitter"></span></Button>
+            </Form.Item>
+
+            <Form.Item
+                label="Step 3: Paste the twiter URL"
+                name="share_url"
+                rules={[{ required: true, message: 'Please input your password!' }]}
+            >
+                <Input />
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                <Button type="primary" htmlType="submit">
+                Submit
+                </Button>
+            </Form.Item>
+        </Form>
+            <div className="das-certificate-container">
+                <img className="das-certificate" src={CERTIFICATE_MASK} alt="das" />
+            </div>
+        </Card>;
     }
 }
 
@@ -1224,7 +1305,7 @@ export default class AddShop extends React.Component {
                 this.openLink(url, 'view_host_'+record.name);
                 break;
             case DASACCOUNTSTATUS.OnSale: 
-                url = "https://bestdas.com/account/" + record.name + "?inviter=nervosyixiu.bit";
+                url = "https://bestdas.com/account/" + record.name + "?inviter=cryptofans.bit";
                 this.openLink(url, 'view_market_'+record.name);
                 break;
             case DASACCOUNTSTATUS.Reserved: 
@@ -2417,7 +2498,8 @@ export default class AddShop extends React.Component {
                         <DASInvitRank dataCallback={this.getInvitRankList} ></DASInvitRank>
                         
                     </Card>
-                    
+                    <br/>
+                    <DASAccountShow langConfig={this.langConfig}/>
                 </div>
                 
             </div>
