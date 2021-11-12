@@ -418,7 +418,7 @@ class ForSaleAccountCard extends React.Component {
 class DASMarketCardList extends React.Component {
 
     render() {
-        const colors = ['brown','dimgrey','chocolate',
+        const colors = ['#00E495','brown','dimgrey','chocolate',
                         'blueviolet','darkcyan','darkgoldenrod','coral','none','indianred',
                         'orangered', 'peru'];
         return <div className="popular-das noselect">
@@ -428,10 +428,11 @@ class DASMarketCardList extends React.Component {
                 <a href={this.props.langConfig('become-our-sponsor-url')} target="_blank" rel="noopener noreferrer" >{this.props.langConfig('become-a-sponsor')}</a>
             </div>
             <div className="mini-card-grid">
-                <ForSaleAccountCard account="plusmeta" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
+                <ForSaleAccountCard account="enskiller" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
+                <ForSaleAccountCard account="plusmeta" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[1]} />
                 <ForSaleAccountCard account="adopt" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[5]} />                
                 <ForSaleAccountCard account="guard" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />
-                <ForSaleAccountCard account="labrador" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[1]} />
+                <ForSaleAccountCard account="labrador" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[7]} />
                 <ForSaleAccountCard account="victoriafalls" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[3]} />
                 <ForSaleAccountCard account="defihacker" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[6]} />
                 <ForSaleAccountCard account="operahouse" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[4]} />
