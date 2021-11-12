@@ -58,11 +58,11 @@ let defKeywords = ['btc','eth','ckb','bnb','uni','das','nervos','link','ada','de
         'alibaba','huawei','tencent','baidu','box','lake','man','team','official','hold',
         'gogo','space','social','web','online','play','my','hero','baby','more',
         'developer','war','your','pig','airdrop','yyds','buy','sea','live','maker',
-        'broker','right','punk','star','launch','hunter','one','first','last','eth',
+        'broker','right','punk','star','launch','hunter','one','first','last','ens',
         'mini','whale','123','12345','321','luck','lucky','house','allin','trust',
         'google','group','loser','winner','music','video','safe','hand','big','long',
         'labs','apple','web3','polkadot','artist','alpha','book','solana','meta','metaverse',
-
+        'killer','kill'
         ];
 let random = Math.floor(Math.random()*defKeywords.length); 
 
@@ -2289,9 +2289,9 @@ export default class AddShop extends React.Component {
               <span>
                   <div><img src={DAS_LA_LOGO} height='48px' alt="" /></div>
                 <p>
-                    {this.langConfig('empty-data')}   
+                    {this.langConfig('keyword-query-onboard')}   
                 </p>
-                <Button onClick={this.handleTryKeywordSearchClick}>{this.langConfig('empty-try-input-keyword')}</Button>
+                <Button type="primary" size={'normal'} shape="round" onClick={this.handleTryKeywordSearchClick}>{this.langConfig('empty-try-input-keyword')}</Button>
               </span>
             )
         };
@@ -2340,9 +2340,7 @@ export default class AddShop extends React.Component {
                         />
                         
                     </div>
-                    <Card title={this.langConfig('match-all')} bordered={false} tabBarExtraContent= {<QuestionCircleFilled />}>
-                        
-                        
+                    <Card title={this.langConfig('keyword-title')} bordered={false}>
                         <div style={{
                             display: 'inline-block',
                             position: 'absolute',
@@ -2350,45 +2348,12 @@ export default class AddShop extends React.Component {
                             top: 18,
                             textAlign: 'right'
                         }}>
-                            
                             <Dropdown overlay={menu}>
                                 <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
                                     {this.langConfig('lang')} <DownOutlined/>
                                 </a>
                             </Dropdown>
-                            
                         </div>
-                        <div style={{display: 'flex'}}>
-                            
-                            <div style={{width:'100%'}}>
-                                <TextArea onChange={(e) => this.textAreaChange(e)} allowClear placeholder={this.langConfig('wordlist-tips')} 
-                                        rows={4}/>
-                                
-                                
-                            </div>
-                            
-                        </div>
-                        <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', paddingTop:10, height:35}}>
-                            <div/>
-                            <Space>
-                            <span className="fa fa-filter"></span>
-                            <Select value={this.getResultFilterString(this.state.mainTableFilter)} onChange={this.handMainTableFilterChange} style={{ width: 190 }}>
-                                {tableFilters}
-                            </Select>
-                            <Button type="primary" shape="round" icon={<SearchOutlined/>}
-                                onClick={() => this.search()}>{this.langConfig('wordlist-search')}</Button>
-                            </Space>
-                        </div>
-                        <br/>
-                        <Table locale={localeAllMatch} rowKey={(item) => item.id} dataSource={list} columns={this.getTableColumns()}
-                               rowClassName='das-account-name noselect' showHeader={false}/>
-                        <br/>
-                    </Card>
-                    <br/>
-                    <DASMarketCardList parent={this} getDASAvata={this.getImg} langConfig={this.langConfig}/>
-                    <br/>
-                    <Card title={this.langConfig('keyword-title')} bordered={false}>
-                        
                         <div style={{position: 'relative', paddingRight: 0}}>
                             <Input ref={(input) => { this.kewordInput = input; }} onBlur={(e) => this.keywordChanged(e)} placeholder="defi" defaultValue={this.state.keyword} allowClear maxLength={10}
                                    rows={1} style={{textAlign: 'right'}}/>
@@ -2416,17 +2381,56 @@ export default class AddShop extends React.Component {
                         <Table locale={localeKeywordMatch} rowKey={(item) => item.id} dataSource={keywordList} columns={columns}
                                rowClassName='das-account-name noselect' showHeader={false}/>
                         <br/>
+                        <div className='statistic-das-count-title'>
+                            {this.langConfig('account-word-cloud-title')}
+                        </div>
+                        <DASWordCloud dataCallback={this.getWordCloudList} ></DASWordCloud>
+                        <br/>
                     </Card>
                     <br/>
+                    <Card title={this.langConfig('match-all')} bordered={false} tabBarExtraContent= {<QuestionCircleFilled />}> 
+                        
+                        <div style={{display: 'flex'}}>
+                            
+                            <div style={{width:'100%'}}>
+                                <TextArea onChange={(e) => this.textAreaChange(e)} allowClear placeholder={this.langConfig('wordlist-tips')} 
+                                        rows={4}/>
+                                
+                                
+                            </div>
+                            
+                        </div>
+                        <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', paddingTop:10, height:35}}>
+                            <div/>
+                            <Space>
+                            <span className="fa fa-filter"></span>
+                            <Select value={this.getResultFilterString(this.state.mainTableFilter)} onChange={this.handMainTableFilterChange} style={{ width: 190 }}>
+                                {tableFilters}
+                            </Select>
+                            <Button type="primary" shape="round" icon={<SearchOutlined/>}
+                                onClick={() => this.search()}>{this.langConfig('wordlist-search')}</Button>
+                            </Space>
+                        </div>
+                        <br/>
+                        <Table locale={localeAllMatch} rowKey={(item) => item.id} dataSource={list} columns={this.getTableColumns()}
+                               rowClassName='das-account-name noselect' showHeader={false}/>
+                        
+                    </Card>
+                    <br/>
+                    
+                    
                     <Card id="SuggestedList" title={this.langConfig('recommend-title')} bordered={false}
                           extra={<Button type="primary" shape="round" danger 
                                          onClick={() => this.refreshRecommendList()}>{this.langConfig('recommend-change-list')}</Button>}>
                         
                         <Table locale={localeRecommend} rowKey={(item) => item.id} dataSource={recommendList} columns={columns}
                                rowClassName='das-account-name noselect' showHeader={false}/>
-                        <br/>
                     </Card>
                     <br/>
+                    
+                    <DASMarketCardList parent={this} getDASAvata={this.getImg} langConfig={this.langConfig}/> 
+                    <br/>
+
                     <Card title={this.langConfig('das-big-data')} bordered={false}>
                         <div className='statistic-data-updatetime'>
                             {this.loadDailyStatUpdatedTime()}
@@ -2469,6 +2473,7 @@ export default class AddShop extends React.Component {
                             
                            
                         </div>
+                                          
                         <br/>
                         <div className='statistic-das-count-title'>
                             {this.langConfig('daily-registered-chart-title')}
@@ -2486,11 +2491,7 @@ export default class AddShop extends React.Component {
                             <a href={this.langConfig('das-limit-link')} target="_blank" rel="noopener noreferrer" >{this.langConfig('das-limit-info')}</a>
                         </div>
                         <DASTreemap loadConfigCallback={this.langConfig} dataCallback={this.getAccountLenStatList} ></DASTreemap>
-                        <br/>
-                        <div className='statistic-das-count-title'>
-                            {this.langConfig('account-word-cloud-title')}
-                        </div>
-                        <DASWordCloud dataCallback={this.getWordCloudList} ></DASWordCloud>
+                        
                         <br/>
                         <div className='statistic-das-count-title'>
                             {this.langConfig('inviter-rank-title')}
