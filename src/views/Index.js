@@ -1327,7 +1327,8 @@ export default class AddShop extends React.Component {
     }
 
     getDASRegisterLink = (account) => {
-        return "https://app.da.systems/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
+        return "https://app.gogodas.com/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
+//        return "https://app.da.systems/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
     }
 
     getDeNameRegisterLink = (account) => {
