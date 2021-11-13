@@ -1420,10 +1420,50 @@ export default class AddShop extends React.Component {
         });
     }
 
+    GenerateRecommendList = () => {
+        let wordCloud = [{"name":"coin","count":1253},{"name":"bit","count":1139},{"name":"meta","count":1070},{"name":"crypto","count":819},{"name":"ok","count":718},{"name":"bitcoin","count":577},{"name":"888","count":572},{"name":"ex","count":553},{"name":"btc","count":553},{"name":"nft","count":503},{"name":"das","count":456},{"name":"eth","count":439},{"name":"chain","count":333},{"name":"bank","count":320},{"name":"net","count":315},{"name":"uni","count":308},{"name":"pay","count":308},{"name":"love","count":293},{"name":"wallet","count":292},{"name":"token","count":281},{"name":"swap","count":278},{"name":"china","count":278},{"name":"metavers","count":274},{"name":"game","count":274},{"name":"ens","count":273},{"name":"my","count":264},{"name":"com","count":262},{"name":"man","count":261},{"name":"dao","count":258},{"name":"block","count":251},{"name":"ckb","count":233},{"name":"dog","count":230},{"name":"work","count":224},{"name":"world","count":208},{"name":"0x","count":204},{"name":"club","count":187},{"name":"king","count":186},{"name":"network","count":177},{"name":"punk","count":176},{"name":"star","count":172},{"name":"labs","count":172},{"name":"defi","count":162},{"name":"new","count":158},{"name":"moon","count":150},{"name":"air","count":148},{"name":"nervos","count":141},{"name":"sun","count":138},{"name":"first","count":138},{"name":"super","count":132},{"name":"vip","count":128},{"name":"team","count":127},{"name":"fund","count":120},{"name":"launch","count":115},{"name":"digital","count":109},{"name":"ico","count":105},{"name":"cn","count":103},{"name":"long","count":102},{"name":"group","count":101},{"name":"market","count":98}];
+        let reserved = das.reserved;
+        let registered = das.registered;
+        let RecommendList = [];
+        
+        wordCloud.forEach((item) => {
+            // 后缀方式
+            for (let i = 0; i < das.prefixList.length; i++) {
+                let accountName = das.prefixList[i] + item['name'];
+                // 只在结果集里显示 10 位以下的可注册账号
+                if (this.canRegister(accountName) && accountName.length < 11) {
+                    let account = accountName + '.bit';
+                    // 排除
+                    if (!reserved.includes(account) && !registered.includes(account)) {
+                        RecommendList.push(account);
+                    }
+                }
+            }
+            //前缀方式
+            for (let i = 0; i < das.suffixList.length; i++) {
+                let accountName = item['name'] + das.suffixList[i];
+                // 只在结果集里显示 10 位以下的可注册账号
+                if (this.canRegister(accountName) && accountName.length < 11) {
+                    let account = accountName + '.bit';
+                    // 排除
+                    if (!reserved.includes(account) && !registered.includes(account)) {
+                        RecommendList.push(account);
+                    }
+                }
+            }
+        });
+
+        console.log(RecommendList);
+    }
+
     keywordSearch = () => {
         let keyword = this.state.keyword;
 
         keyword = keyword.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+
+    /*    if (!keyword) {
+            return this.GenerateRecommendList();
+        }*/
 
         switch (this.state.fix){
             case FIXMETHODS.ASPREFIX:
