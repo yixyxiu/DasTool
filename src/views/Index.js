@@ -217,8 +217,12 @@ class DaslaFooter extends React.Component {
 
 class ForSaleAccountCard extends React.Component {
     formatAddress = (address) => {
-        let begin = address.substr(0,7);
-        let end = address.substr(-7);
+        if (address.len < 10){
+            return address;
+        }
+
+        let begin = address.substring(0,6);
+        let end = address.substring(address.length-6);
         let str = begin + '...' + end;
 
         return str;
@@ -365,7 +369,8 @@ class ForSaleAccountCard extends React.Component {
     }
 
     viewMarketAccount = () => {
-        let url = "https://bestdas.com/account/" + this.state.account + "?inviter=cryptofans.bit";
+        let url = "https://bestdas.com/account/" + this.state.account + "?inviter=cryptofans.bit&channel=dasdotla.bit";
+                                    https://bestdas.com/account/oline.bit?inviter=00711.bit&
         this.props.parent.openLink(url, 'view_market_' + this.state.account);
     }
     
@@ -429,7 +434,7 @@ class DASMarketCardList extends React.Component {
             </div>
             <div className="mini-card-grid">
                 <ForSaleAccountCard account="enskiller" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
-                <ForSaleAccountCard account="plusmeta" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[1]} />
+                <ForSaleAccountCard account="ponzischeme" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[1]} />
                 <ForSaleAccountCard account="adopt" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[5]} />                
                 <ForSaleAccountCard account="guard" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />
                 <ForSaleAccountCard account="labrador" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[7]} />
