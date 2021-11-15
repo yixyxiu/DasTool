@@ -818,7 +818,7 @@ class DASDailyStat extends React.Component {
 }
 
 
-export default class AddShop extends React.Component {
+export default class Index extends React.Component {
     
     cacheData = {
         // 用于判断当前显示尺寸，动态调整一些显示元素。主要是table里面，小尺寸时不显示头像，曾经使用过css的display：none来控制，但还是会有column。

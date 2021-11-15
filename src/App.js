@@ -2,8 +2,7 @@ import React, {Component} from 'react'
 import { Layout,Modal } from 'antd';
 import moment from 'moment';
 import Routes from './routes';
-import { StaticRouterMap, AsyncRouterMap } from "./routes/routeMap";
-import Aside from './components/Aside';
+//import Aside from './components/Aside';
 import https from "./api/https";
 import './utils';
 import './App.css';
@@ -77,13 +76,13 @@ export default class App extends Component {
       if (data.code === 200) {
         let roleId = data.data.roleId+'';
         //初始化路由
-        let routeList = this.routerInit(roleId,AsyncRouterMap);
+      /*  let routeList = this.routerInit(roleId,AsyncRouterMap);
         let menuList = this.menuInit(roleId,AsyncRouterMap);
         console.log(menuList)
         this.setState({
           routeList,
           menuList
-        });
+        });*/
       }
     })
   };
@@ -93,20 +92,19 @@ export default class App extends Component {
     //this.getRoleId();
 
     //初始化路由
-    let routeList = this.routerInit('1',AsyncRouterMap);
+    /*let routeList = this.routerInit('1',AsyncRouterMap);
     routeList = routeList.concat(StaticRouterMap);
     let menuList = this.menuInit('1',AsyncRouterMap);
     this.setState({
       routeList,
       menuList
-    });
+    });*/
   }
 
   render() {
     
     return (
       <Layout>
-        <Aside menuList={this.state.menuList} pathname={this.props.location.pathname} collapsed={this.state.collapsed} />
         <Layout>
           <Header className="site-layout-sub-header-background" style={{ padding: 0 }}>
             {React.createElement(this.state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
