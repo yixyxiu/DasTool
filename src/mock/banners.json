@@ -6,9 +6,9 @@
             "link":"https://www.nervos.org/godwoken"
         },
         {
-            "name":"NexisDAO",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211106/c71619827cb14708940a939d3b8530fe_GYYDAKRTGAYA.jpeg",
-            "link":"https://nexisdao.com/"
+            "name":"yokaiido",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211122/e182f2163a03467f848aa46761d49749_GYYDAKRTGAYA.jpeg",
+            "link":"https://talk.nervos.org/t/yokaiswap-ido-nervos-dex/6306"
         },
         {
             "name":"bestdas",
@@ -20,6 +20,12 @@
             "image":"https://oss-cdn1.bihu-static.com/image/20211118/d6583a52345f4f16aba94a6bae67ef19_GYYDAKRTGAYA.jpeg",
             "link":"https://www.mibao.net/explore"
             
+        },
+        {
+            "name":"UniPass",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211122/b6d74bfce9fc4fe0b63aa3785e3cace8_GYYDAKRTGAYA.jpeg",
+            "link":"https://beta.app.unipass.id/"
+            
         }
         
     ],
@@ -30,9 +36,9 @@
             "link":"https://www.nervos.org/godwoken"
         },
         {
-            "name":"NexisDAO",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211106/37c203779e4a4e848f80f0169048ac45_GYYDAKRTGAYA.jpeg",
-            "link":"https://nexisdao.com/"
+            "name":"yokaiido",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211122/e182f2163a03467f848aa46761d49749_GYYDAKRTGAYA.jpeg",
+            "link":"https://medium.com/@yokaiswap/yokai-swap-ido-step-by-step-guide-b1a13a37078c"
         },
         {
             "name":"bestdas",
@@ -43,6 +49,12 @@
             "name":"mibao",
             "image":"https://oss-cdn1.bihu-static.com/image/20211118/d6583a52345f4f16aba94a6bae67ef19_GYYDAKRTGAYA.jpeg",
             "link":"https://www.mibao.net/explore"
+            
+        },
+        {
+            "name":"UniPass",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211122/b6d74bfce9fc4fe0b63aa3785e3cace8_GYYDAKRTGAYA.jpeg",
+            "link":"https://beta.app.unipass.id/"
             
         }
     ]
