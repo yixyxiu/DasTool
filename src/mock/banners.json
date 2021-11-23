@@ -26,8 +26,11 @@
             "image":"https://oss-cdn1.bihu-static.com/image/20211122/b6d74bfce9fc4fe0b63aa3785e3cace8_GYYDAKRTGAYA.jpeg",
             "link":"https://beta.app.unipass.id/"
             
+        },{
+            "name":"dasbsc",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211122/9399f37ce1c34bde82f32a6b3dc9d457_GYYDAKRTGAYA.jpeg",
+            "link":""
         }
-        
     ],
     "en_US":[
         {
@@ -49,13 +52,17 @@
             "name":"mibao",
             "image":"https://oss-cdn1.bihu-static.com/image/20211118/d6583a52345f4f16aba94a6bae67ef19_GYYDAKRTGAYA.jpeg",
             "link":"https://www.mibao.net/explore"
-            
         },
         {
             "name":"UniPass",
             "image":"https://oss-cdn1.bihu-static.com/image/20211122/b6d74bfce9fc4fe0b63aa3785e3cace8_GYYDAKRTGAYA.jpeg",
             "link":"https://beta.app.unipass.id/"
             
+        },{
+            "name":"dasbsc",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211122/9399f37ce1c34bde82f32a6b3dc9d457_GYYDAKRTGAYA.jpeg",
+            "link":""
         }
+
     ]
 }
