@@ -2386,6 +2386,35 @@ export default class Index extends React.Component {
                         />
                         
                     </div>
+                    <Card title={this.langConfig('match-all')} bordered={false} tabBarExtraContent= {<QuestionCircleFilled />}> 
+                        
+                        <div style={{display: 'flex'}}>
+                            
+                            <div style={{width:'100%'}}>
+                                <TextArea onChange={(e) => this.textAreaChange(e)} allowClear placeholder={this.langConfig('wordlist-tips')} 
+                                        rows={4}/>
+                                
+                                
+                            </div>
+                            
+                        </div>
+                        <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', paddingTop:10, height:35}}>
+                            <div/>
+                            <Space>
+                            <span className="fa fa-filter"></span>
+                            <Select value={this.getResultFilterString(this.state.mainTableFilter)} onChange={this.handMainTableFilterChange} style={{ width: 190 }}>
+                                {tableFilters}
+                            </Select>
+                            <Button type="primary" shape="round" icon={<SearchOutlined/>}
+                                onClick={() => this.search()}>{this.langConfig('wordlist-search')}</Button>
+                            </Space>
+                        </div>
+                        <br/>
+                        <Table locale={localeAllMatch} rowKey={(item) => item.id} dataSource={list} columns={this.getTableColumns()}
+                               rowClassName='das-account-name noselect' showHeader={false}/>
+                        
+                    </Card>
+                    <br/>
                     <Card title={this.langConfig('keyword-title')} bordered={false}>
                         <div style={{
                             display: 'inline-block',
@@ -2434,35 +2463,7 @@ export default class Index extends React.Component {
                         <br/>
                     </Card>
                     <br/>
-                    <Card title={this.langConfig('match-all')} bordered={false} tabBarExtraContent= {<QuestionCircleFilled />}> 
-                        
-                        <div style={{display: 'flex'}}>
-                            
-                            <div style={{width:'100%'}}>
-                                <TextArea onChange={(e) => this.textAreaChange(e)} allowClear placeholder={this.langConfig('wordlist-tips')} 
-                                        rows={4}/>
-                                
-                                
-                            </div>
-                            
-                        </div>
-                        <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', paddingTop:10, height:35}}>
-                            <div/>
-                            <Space>
-                            <span className="fa fa-filter"></span>
-                            <Select value={this.getResultFilterString(this.state.mainTableFilter)} onChange={this.handMainTableFilterChange} style={{ width: 190 }}>
-                                {tableFilters}
-                            </Select>
-                            <Button type="primary" shape="round" icon={<SearchOutlined/>}
-                                onClick={() => this.search()}>{this.langConfig('wordlist-search')}</Button>
-                            </Space>
-                        </div>
-                        <br/>
-                        <Table locale={localeAllMatch} rowKey={(item) => item.id} dataSource={list} columns={this.getTableColumns()}
-                               rowClassName='das-account-name noselect' showHeader={false}/>
-                        
-                    </Card>
-                    <br/>
+                    
                     
                     
                     <Card id="SuggestedList" title={this.langConfig('recommend-title')} bordered={false}
