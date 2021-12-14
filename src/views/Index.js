@@ -2387,7 +2387,19 @@ export default class Index extends React.Component {
                         
                     </div>
                     <Card title={this.langConfig('match-all')} bordered={false} tabBarExtraContent= {<QuestionCircleFilled />}> 
-                        
+                        <div style={{
+                                display: 'inline-block',
+                                position: 'absolute',
+                                right: 15,
+                                top: 18,
+                                textAlign: 'right'
+                            }}>
+                                <Dropdown overlay={menu}>
+                                    <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
+                                        {this.langConfig('lang')} <DownOutlined/>
+                                    </a>
+                                </Dropdown>
+                        </div>
                         <div style={{display: 'flex'}}>
                             
                             <div style={{width:'100%'}}>
@@ -2416,19 +2428,7 @@ export default class Index extends React.Component {
                     </Card>
                     <br/>
                     <Card title={this.langConfig('keyword-title')} bordered={false}>
-                        <div style={{
-                            display: 'inline-block',
-                            position: 'absolute',
-                            right: 15,
-                            top: 18,
-                            textAlign: 'right'
-                        }}>
-                            <Dropdown overlay={menu}>
-                                <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
-                                    {this.langConfig('lang')} <DownOutlined/>
-                                </a>
-                            </Dropdown>
-                        </div>
+                        
                         <div style={{position: 'relative', paddingRight: 0}}>
                             <Input ref={(input) => { this.kewordInput = input; }} onBlur={(e) => this.keywordChanged(e)} placeholder="defi" defaultValue={this.state.keyword} allowClear maxLength={10}
                                    rows={1} style={{textAlign: 'right'}}/>
