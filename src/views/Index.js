@@ -1993,11 +1993,12 @@ export default class Index extends React.Component {
 
     getInvitRankList = () => {
         let rankList = [];
-        for (let i = 0, dst_len = 0; i < das['invitRank'].length && dst_len < 10; i++) {
+        // 去掉前面的空、dename、imtoken
+        for (let i = 3, dst_len = 0; i < das['invitRank'].length && dst_len < 10; i++) {
             let inviter = das['invitRank'][i];
             if (inviter['name'].length > 0) {
-                rankList.push(inviter)
-                dst_len++
+                rankList.push(inviter);
+                dst_len++;
             }
 
         }
