@@ -12,24 +12,18 @@
         },
         {
             "name":"bestdas",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211021/47122eeae78641a29e488cbc3ec60e3a_GYYDAKRTGAYA.jpeg",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211217/5687527f2fe34a2da8cb6af3ecbaa153_GEZDANBKGYYDI.png",
             "link":"https://bestdas.com/account/defihacker.bit?inviter=nervosyixiu.bit"
         },
         {
-            "name":"mibao",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211118/d6583a52345f4f16aba94a6bae67ef19_GYYDAKRTGAYA.jpeg",
-            "link":"https://www.mibao.net/explore"
-            
-        },
-        {
             "name":"UniPass",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211122/b6d74bfce9fc4fe0b63aa3785e3cace8_GYYDAKRTGAYA.jpeg",
-            "link":"https://beta.app.unipass.id/"
+            "image":"https://oss-cdn1.bihu-static.com/image/20211217/78ad2b38d0e7439cae58c158db3ab039_GYYDAKRTGAYA.png",
+            "link":"https://wn.nr/p47DQs"
             
         },{
-            "name":"dasbsc",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211122/9399f37ce1c34bde82f32a6b3dc9d457_GYYDAKRTGAYA.jpeg",
-            "link":""
+            "name":"das-reverse",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211217/9071d1fa8fdd4bdcab4961b284f5004c_GYYDAKRTGAYA.png",
+            "link":"https://app.da.systems/reverse"
         }
     ],
     "en_US":[
@@ -45,23 +39,18 @@
         },
         {
             "name":"bestdas",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211021/47122eeae78641a29e488cbc3ec60e3a_GYYDAKRTGAYA.jpeg",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211217/8fabfb21609b475995d1eda925582020_GEZDANBKGYYDI.png",
             "link":"https://bestdas.com/account/defihacker.bit?inviter=nervosyixiu.bit"
         },
         {
-            "name":"mibao",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211118/d6583a52345f4f16aba94a6bae67ef19_GYYDAKRTGAYA.jpeg",
-            "link":"https://www.mibao.net/explore"
-        },
-        {
             "name":"UniPass",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211122/b6d74bfce9fc4fe0b63aa3785e3cace8_GYYDAKRTGAYA.jpeg",
-            "link":"https://beta.app.unipass.id/"
+            "image":"https://oss-cdn1.bihu-static.com/image/20211217/78ad2b38d0e7439cae58c158db3ab039_GYYDAKRTGAYA.png",
+            "link":"https://wn.nr/p47DQs"
             
         },{
-            "name":"dasbsc",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211122/9399f37ce1c34bde82f32a6b3dc9d457_GYYDAKRTGAYA.jpeg",
-            "link":""
+            "name":"das-reverse",
+            "image":"https://oss-cdn1.bihu-static.com/image/20211217/9d8ea69d3bf74c97ba251c955fcf60c4_GYYDAKRTGAYA.png",
+            "link":"https://app.da.systems/reverse"
         }
 
     ]
