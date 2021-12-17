@@ -2060,7 +2060,7 @@ export default class Index extends React.Component {
         switch (status) {
             case DASACCOUNTSTATUS.Available: title = this.langConfig("register-btn"); 
                 break;
-            case DASACCOUNTSTATUS.OnSale: title = this.langConfig("btn-title-buy-now"); 
+            case DASACCOUNTSTATUS.OnSale: title = this.langConfig("btn-title-make-offer"); 
                 break;
             case DASACCOUNTSTATUS.Reserved: title = this.langConfig("btn-title-claim-reserved"); 
                 break;
