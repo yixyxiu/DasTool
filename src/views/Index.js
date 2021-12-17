@@ -1307,8 +1307,10 @@ export default class Index extends React.Component {
         let url = "";
         switch (status) {
             case DASACCOUNTSTATUS.Registered: 
-                url = "https://" + record.name + this.langConfig("dascc-host");
-                this.openLink(url, 'view_host_'+record.name);
+            //    url = "https://" + record.name + this.langConfig("dascc-host");
+            //    this.openLink(url, 'view_host_'+record.name);
+                url = "https://bestdas.com/account/" + record.name + "?inviter=cryptofans.bit";
+                this.openLink(url, 'make_offer_'+record.name);
                 break;
             case DASACCOUNTSTATUS.OnSale: 
                 url = "https://bestdas.com/account/" + record.name + "?inviter=cryptofans.bit";
@@ -2064,7 +2066,7 @@ export default class Index extends React.Component {
                 break;
             case DASACCOUNTSTATUS.Registering: title = this.langConfig("btn-title-view-profile"); 
                 break;
-            case DASACCOUNTSTATUS.Registered: title = this.langConfig("btn-title-view-host"); 
+            case DASACCOUNTSTATUS.Registered: title = this.langConfig("btn-title-make-offer"); 
                 break;
             case DASACCOUNTSTATUS.NotOpen: title = this.langConfig("btn-title-release-rules"); 
                 break;
