@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select, Form} from 'antd';
+import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select, Form, notification} from 'antd';
 import {SearchOutlined, DownOutlined, QuestionCircleFilled} from '@ant-design/icons';
 import { Treemap, Line, WordCloud, Bar } from '@ant-design/charts';
 import {Carousel} from "react-responsive-carousel";
@@ -104,6 +104,10 @@ let AccountStatusColors = {
     '5':'#FFD717',
 }
     
+let defLocalConfig= {
+    "newbie-add-favorite-tip-showed": "false",
+    "newbie-remove-favorite-tip-showed": "false",
+};
 
 
 class DaslaFooter extends React.Component {
@@ -844,6 +848,8 @@ export default class Index extends React.Component {
         list: [],  // 主表里显示的数据，也即增加过滤条件后显示的数据
         recommendList: [],
         banners: das.banners,
+        favoriteList: [],
+        localConfig: defLocalConfig,
         keywordList: [],
         fix: FIXMETHODS.ASPREFIX,
         animationClass: 'dasAnimation',
@@ -1810,6 +1816,112 @@ export default class Index extends React.Component {
         this.state.fix = e.target.value;
     };
 
+    loadFavoriteList = () => {
+        let favoriteList = localStorage.getItem('favoriteList');
+        if (!favoriteList) {
+            favoriteList = '[]';
+        }
+           
+        return JSON.parse(favoriteList);
+    }
+
+    addToFavorite = (account) => {
+        if (!this.state.favoriteList.includes(account)) {
+            console.log(this.state.favoriteList)
+            console.log(account);
+            this.state.favoriteList.push(account);
+
+            this.saveFavoriteList(this.state.favoriteList);
+
+            // 没有提示过，则提醒用户，本地收藏是安全的
+            if (!this.state.localConfig['newbie-add-favorite-tip-showed']) {
+                this.openNotification(
+                    'success',
+                    this.langConfig('add-to-favorite'), 
+                    this.langConfig('first-add-fav-tip'),
+                    0)
+
+                this.state.localConfig['newbie-add-favorite-tip-showed'] = true;
+                this.saveLocalConfig(this.state.localConfig);
+            }
+        }
+    }
+
+    removeFromArray = (arr, value) => { 
+    
+        return arr.filter(function(ele){ 
+            return ele != value; 
+        });
+    }
+
+    removeFromFavorite = (account) => {
+        this.state.favoriteList = this.removeFromArray(this.state.favoriteList, account);
+        this.saveFavoriteList(this.state.favoriteList);
+
+        // 没有提示过，则提醒用户，本地收藏是安全的
+        if (!this.state.localConfig['newbie-remove-favorite-tip-showed']) {
+            this.openNotification(
+                'warning',
+                this.langConfig('remove-from-favorite'), 
+                this.langConfig('remove-from-favorite-tip'),
+                0)
+
+            this.state.localConfig['newbie-remove-favorite-tip-showed'] = true;
+            this.saveLocalConfig(this.state.localConfig);
+        }
+    }
+
+    clearFavorite = () => {
+        this.setState({favoriteList: []});
+        this.saveFavoriteList([]);
+    }
+
+    saveFavoriteList = (favoriteList) => {
+        if (favoriteList) {
+            localStorage.setItem('favoriteList', JSON.stringify(favoriteList));
+        }
+
+        this.setState({favoriteList: favoriteList});
+    }
+
+    getUnFavoriteTip = (account) => {
+        let format = this.langConfig('unfavorite-item-tip');
+        return format;
+    }
+
+    loadLocalConfig = () => {
+        let config = localStorage.getItem('localConfig');
+        if (!config) {
+            config = '{}';
+        }
+           
+        return JSON.parse(config);
+    }
+
+    saveLocalConfig = (config) => {
+        if (config) {
+            localStorage.setItem('localConfig', JSON.stringify(config));
+        }
+    }
+
+    // 显示title、desc 的通知框，dura 为显示多久自动关闭，0为不自动关闭
+    openNotification = (type, title, desc, dura) => {
+        const key = `open${Date.now()}`;
+        const btn = (
+          <Button type="primary" size="small" onClick={() => notification.close(key)}>
+            Confirm
+          </Button>
+        );
+        notification.open({
+          message: title,
+          description: desc,
+          //btn,
+          key,
+          type: type,
+          duration: dura,
+        });
+      };
+
     componentDidMount() {
 
         let language = localStorage.getItem('locale') || window.navigator.language.toLowerCase() || 'en';
@@ -1823,6 +1935,9 @@ export default class Index extends React.Component {
             //其它的都使用英文
             language = "en_US";
         }
+
+        this.state.favoriteList = this.loadFavoriteList();
+        this.state.localConfig = this.loadLocalConfig();
 
         this.changeLanguage(language);
 
@@ -1891,6 +2006,22 @@ export default class Index extends React.Component {
             // input.select(); // 可全部选中
     };
 
+    handleTryFavoriteListClick = () => {
+
+       // let fav = 
+        let wordList = JSON.stringify(this.state.favoriteList).match(/[a-z0-9]+/gi);
+
+        if (wordList) {
+            wordList = [...new Set(wordList)].sort(function (a, b) {
+                return a.length - b.length;
+            });
+        }
+
+        this.state.snsArr = (wordList ? wordList : "");
+
+        this.search();
+    }
+
     handleTryRecommendListClick = () => {
         let section = document.querySelector('#SuggestedList');
         if (section) {
@@ -1930,10 +2061,7 @@ export default class Index extends React.Component {
         return wordString;
     }
 
-    loadFrequentWords = () => {
-        let wordList = require('../mock/wordlist.json');
-        
-
+    loadAccountList = (wordList) => {
         let reserved = das.reserved;
         let registered = das.registered;
         let result = [];
@@ -1967,6 +2095,12 @@ export default class Index extends React.Component {
         this.setState({
             list: result
         });
+    } 
+
+    loadFrequentWords = () => {
+        let wordList = require('../mock/wordlist.json');
+        
+        this.loadAccountList(wordList);
     }
 
     getWordCloudList = () => {
@@ -2110,6 +2244,29 @@ export default class Index extends React.Component {
     // 考虑到不同状态、不同设备，需要特殊处理列字断
     getTableColumns = () => {
         let columns = [];
+
+        columns.push(
+            {
+                dataIndex: 'fav',
+                key: 'fav', 
+                width: 10,                   
+                render: (text, record, index) => {
+                    if (this.state.favoriteList && this.state.favoriteList.includes(record.name)) {
+                        // 自选
+                        return <Tooltip placement="topLeft" title={''}>
+                            <span className="fa fa-star fa-favorite-sel" onClick={() => this.removeFromFavorite(record.name)}></span>
+                        </Tooltip>
+                    }
+                    else {
+                        // 非自选
+                        return <Tooltip placement="topLeft" title={this.langConfig('unfavorite-item-tip')}>
+                            <span className="fa fa-star fa-favorite-unsel" onClick={() => this.addToFavorite(record.name)}></span>
+                        </Tooltip>
+                    }
+                    
+                },
+            }
+        )
         if (!this.state.isNarrowScreen) {
             columns.push(
                 {
@@ -2318,6 +2475,11 @@ export default class Index extends React.Component {
         // 修改标题
         document.title = this.langConfig('app-name');
 
+        let loadFavListBtnDom = <Button onClick={this.handleTryRecommendListClick}>{this.langConfig('empty-try-recommendList')}</Button>
+        if (this.state.favoriteList.length > 0) {
+            loadFavListBtnDom = <Button type="primary" size={'normal'} shape="round" onClick={this.handleTryFavoriteListClick}><span className="fa fa-star fa-favorite-sel"/>{this.langConfig('empty-try-favoriteList')}</Button>
+        }
+
         let localeAllMatch = {
             emptyText: (
               <span>
@@ -2325,9 +2487,9 @@ export default class Index extends React.Component {
                 <p>
                     {this.langConfig('empty-data')}                  
                 </p>
-                <Button onClick={this.handleTryRecommendListClick}>{this.langConfig('empty-try-recommendList')}</Button>
+                {loadFavListBtnDom}
                 <Divider type="vertical"/>
-                <Button onClick={this.loadFrequentWords}>{this.langConfig('empty-try-load-default')}</Button>
+                <Button type="primary" size={'normal'} shape="round" onClick={this.loadFrequentWords}>{this.langConfig('empty-try-load-default')}</Button>
               </span>
             )
         };

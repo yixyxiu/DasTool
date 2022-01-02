@@ -1578,6 +1578,20 @@ social icons
     color:#DF4A46;
   }
 
+  .fa-favorite-sel {
+    color: #00DF9B;
+    font-size: 1.0rem;
+    margin-right: 0.3rem;
+    line-height: 1rem;
+  }
+
+  .fa-favorite-unsel {
+    color: #8894AB;
+    font-size: 1.0rem;
+    margin-right: .3rem;
+    line-height: 1rem;
+  }
+
   .copy-address-a {
     margin-top: 0.5rem;
     font-size: 1rem;
