@@ -451,6 +451,33 @@ class DASMarketCardList extends React.Component {
     }
 }
 
+class DASPopularCardList extends React.Component {
+
+    render() {
+        const colors = ['#00E495','brown','dimgrey','chocolate',
+                        'blueviolet','darkcyan','darkgoldenrod','coral','none','indianred',
+                        'orangered', 'peru'];
+        return <div className="popular-das noselect">
+            <div className="popular-header header-card">
+                <div className="icon-das-for-sale "/>
+                <h2 className="header-card-title">{this.props.langConfig('popular-das-list')}<br /></h2>
+            </div>
+            <div className="mini-card-grid">
+                <ForSaleAccountCard account="delete" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
+                <ForSaleAccountCard account="qrcode" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[1]} />
+                <ForSaleAccountCard account="namecoin" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />                
+                <ForSaleAccountCard account="333333" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[3]} />
+                <ForSaleAccountCard account="0038" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[4]} />
+                <ForSaleAccountCard account="superx" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[5]} />
+                <ForSaleAccountCard account="modify" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[6]} />
+                <ForSaleAccountCard account="whiteman" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[8]} />
+                <ForSaleAccountCard account="glorious" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[9]} />
+            </div>
+        </div>
+        
+    }
+}
+
 
 // 秀一秀
 class DASAccountShow extends React.Component {
@@ -2008,7 +2035,6 @@ export default class Index extends React.Component {
 
     handleTryFavoriteListClick = () => {
 
-       // let fav = 
         let wordList = JSON.stringify(this.state.favoriteList).match(/[a-z0-9]+/gi);
 
         if (wordList) {
@@ -2638,7 +2664,8 @@ export default class Index extends React.Component {
                     </Card>
                     <br/>
                     
-                    <DASMarketCardList parent={this} getDASAvata={this.getImg} langConfig={this.langConfig}/> 
+                    <DASPopularCardList parent={this} getDASAvata={this.getImg} langConfig={this.langConfig}/>
+                    
                     <br/>
 
                     <Card title={this.langConfig('das-big-data')} bordered={false}>
@@ -2711,6 +2738,9 @@ export default class Index extends React.Component {
                         
                     </Card>
                     <br/>
+                    
+                    <DASMarketCardList parent={this} getDASAvata={this.getImg} langConfig={this.langConfig}/> 
+
                     <DASAccountShow langConfig={this.langConfig}/>
                 </div>
                 
