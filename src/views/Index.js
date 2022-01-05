@@ -267,10 +267,11 @@ class ForSaleAccountCard extends React.Component {
             })
             .then(function(json){                     
                 let account_onsale = json['data']
-                console.log(account_onsale)
+            //    console.log(account_onsale)
                 
                 if (account_onsale.account === account && account_onsale.status === 1) {
-                    console.log('get detail ：' + account_onsale.account);
+                    that.loadReverseRecord(account_onsale);
+                //    console.log('get detail ：' + account_onsale.account);
                     that.setState({
                         account: account_onsale.account,
                         accountDetail: account_onsale
@@ -279,9 +280,68 @@ class ForSaleAccountCard extends React.Component {
               })
               .catch(function(err){
                 console.log(err);
+            /*//  测试接口，因本地localhost 不能访问bestdas
+                
+                let info = {"account":"defihacker.bit","price_ckb":"88000000000000","price_usd":"17684.392","status":1,"collection_num":0,"owner_chain_type":1,"owner_address":"0x64619F4F65DCB33D15eB5687112718E1ace16f34","description":"DeFi hacker !","timestamp":1634828331870,"expire_at":1660175511000}
+                
+                that.loadReverseRecord(info);*/
               });
         });
     }
+
+    loadReverseRecord = (accountDetail) => {
+        let that = this;
+        return new Promise((resolve) => {
+            const headers = {
+                'content-type': 'application/json;charset=UTF-8',
+              }
+
+            const params = [{
+                "type":"blockchain",
+                "key_info":{
+                    "coin_type":"60",   // ToDO
+                    "chain_id":accountDetail.owner_chain_type + "",
+                    "key":accountDetail.owner_address
+                }
+            }]
+
+            const payload = {
+                "jsonrpc":"2.0",
+                "id":"1",
+                "method":"das_reverseRecord",
+                "params":params
+            }
+            
+            const optionParam = {
+                headers: headers,
+                body: JSON.stringify(payload),
+                method: 'POST', 
+            }
+
+            let url = 'https://indexer-basic.da.systems/'
+
+            fetch(url, optionParam)
+            .then(function(response){
+                return response.json();  
+            })
+            .then(function(json){                     
+                let reverse_data = json['result']['data']
+                console.log('reverse_data:' + reverse_data)
+                
+                if (json['result']['errno'] === 0) {     
+                    accountDetail.reverse_record = reverse_data.account   
+                    that.setState({
+                        account: accountDetail.account,
+                        accountDetail: accountDetail
+                    })
+                }
+              })
+              .catch(function(err){
+                console.log(err);
+              });
+        });
+    }
+
 
     // 根据账号长度计算字体大小
     calcAccountNameFontSize = () => {
@@ -329,6 +389,20 @@ class ForSaleAccountCard extends React.Component {
     // 格式化持有人地址展示
     formatOwnerAddress = () => {
         let address = this.getAccountDetail('owner_address');
+        if (address.length < 15) {
+            return address;
+        }
+
+        return this.formatAddress(address);
+    }
+
+    // 格式化地址与DAS反向解析结果的显示
+    formatDASReverseRecord = () => {
+        let address = this.getAccountDetail('reverse_record');
+        if (!address || address.length === 0) {
+            return this.formatOwnerAddress();
+        }
+
         if (address.length < 15) {
             return address;
         }
@@ -395,7 +469,7 @@ class ForSaleAccountCard extends React.Component {
         return <div className="mini-card">
         <div className="mini-card-owner-row">
             {dom}
-            <div className="author-name">{this.formatOwnerAddress()}</div>
+            <div className="author-name">{this.formatDASReverseRecord()}</div>
         </div>
         <div className="mini-card-describle-row">
             <div className="fa fa-quote-left fa-card-quote-left"></div>
