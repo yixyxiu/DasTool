@@ -2880,7 +2880,6 @@ export default class Index extends React.Component {
                     <DASMarketCardList parent={this} getDASAvata={this.getImg} langConfig={this.langConfig}/> 
 
                     <DASAccountShow langConfig={this.langConfig}/>
-                    <DemoLine />
 
                 </div>
                 
