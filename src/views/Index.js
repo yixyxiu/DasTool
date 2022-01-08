@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select, Form, notification} from 'antd';
 import {SearchOutlined, DownOutlined, QuestionCircleFilled} from '@ant-design/icons';
 import { Treemap, Line, WordCloud, Bar } from '@ant-design/charts';
@@ -690,6 +690,71 @@ class DASWordCloud extends React.Component {
     };
 }
 
+const DemoLine = () => {
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+      asyncFetch();
+    }, []);
+  
+    const asyncFetch = () => {
+        const headers = {
+            'content-type': 'application/json;charset=UTF-8',
+          }
+
+        //const data = {"keyword": account,"page":1,"size":50}
+
+        const optionParam = {
+            headers: headers,
+        //    body: JSON.stringify(data),
+            method: 'GET', 
+        }
+
+        let url = 'https:/api.das.la/api/v1/das_accounts/daily_reg_count?begin_at=2021-01-01'
+
+        fetch(url, optionParam)
+            .then((response) => response.json())
+            .then((json) => setData(json))
+            .catch((error) => {
+            console.log('fetch data failed', error);
+            });
+    };
+    const config = {
+      data,
+      padding: 'auto',
+      xField: 'index_day',
+      yField: 'total',
+      annotations: [
+        // 低于中位数颜色变化
+        {
+          type: 'regionFilter',
+          start: ['min', 'median'],
+          end: ['max', '0'],
+          color: '#F4664A',
+        },
+        {
+          type: 'text',
+          position: ['min', 'median'],
+          content: '中位数',
+          offsetY: -4,
+          style: {
+            textBaseline: 'bottom',
+          },
+        },
+        {
+          type: 'line',
+          start: ['min', 'median'],
+          end: ['max', 'median'],
+          style: {
+            stroke: '#F4664A',
+            lineDash: [2, 2],
+          },
+        },
+      ],
+    };
+  
+    return <Line {...config} />;
+  };
 
 class DASUniqueOwnerLine extends React.Component {
     state = {
@@ -1733,7 +1798,7 @@ export default class Index extends React.Component {
     }
 
     addNewBornDAS = (item, msgTime) => {
-        console.log(item, msgTime)
+        //console.log(item, msgTime)
         let account = this.getMidString(item, '** ', ' **');
         let inviter = this.getInviterName(item);
         if (das.registered.indexOf(account) < 0) {
@@ -1765,7 +1830,7 @@ export default class Index extends React.Component {
                 newDASBornList.push(tipsInfo);
             }   
         }
-        console.log(account);
+        //console.log(account);
     }
 
     getRegistList = async () => {
@@ -1786,11 +1851,11 @@ export default class Index extends React.Component {
                   // 先排序，顺序，时间最小的在最前面
                   json.reverse();
                   json.forEach(item => {
-                      console.log(item)
+                      //console.log(item)
                       // 考虑到一次content里可能会来多笔数据，以\n分割
                       if (item['content'].indexOf('\n') > 0) {
                             let accountList = item['content'].split('\n')
-                            console.log(accountList)
+                            //console.log(accountList)
                             for ( let it in accountList) {
                                 that.addNewBornDAS(accountList[it], item['timestamp']);
                             }
@@ -1803,7 +1868,7 @@ export default class Index extends React.Component {
                   if (json.length > 0) {
                       das.lastRegiseredId = json[json.length-1].id;
                       das.lastUpdateTime = json[json.length-1].timestamp;
-                      console.log(das.lastRegiseredId);
+                      //console.log(das.lastRegiseredId);
                       that.setState({dataUpdateFlag: true});
                       // 如果有数据，继续拉取
                       setTimeout(() => {
@@ -2728,7 +2793,6 @@ export default class Index extends React.Component {
                     <br/>
                     
                     
-                    
                     <Card id="SuggestedList" title={this.langConfig('recommend-title')} bordered={false}
                           extra={<Button type="primary" shape="round" danger 
                                          onClick={() => this.refreshRecommendList()}>{this.langConfig('recommend-change-list')}</Button>}>
@@ -2816,6 +2880,8 @@ export default class Index extends React.Component {
                     <DASMarketCardList parent={this} getDASAvata={this.getImg} langConfig={this.langConfig}/> 
 
                     <DASAccountShow langConfig={this.langConfig}/>
+                    <DemoLine />
+
                 </div>
                 
             </div>
