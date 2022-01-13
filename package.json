@@ -5,6 +5,7 @@
   "homepage": ".",
   "dependencies": {
     "@ant-design/charts": "^1.2.13",
+    "@ant-design/plots": "^1.0.7",
     "@ant-design/compatible": "^1.0.8",
     "@ant-design/icons": "^4.6.2",
     "@babel/core": "7.9.0",

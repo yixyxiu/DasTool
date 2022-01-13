@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select, Form, notification} from 'antd';
 import {SearchOutlined, DownOutlined, QuestionCircleFilled} from '@ant-design/icons';
 import { Treemap, Line, WordCloud, Bar } from '@ant-design/charts';
+import { Column } from '@ant-design/plots';
 import {Carousel} from "react-responsive-carousel";
 import {CopyToClipboard} from 'react-copy-to-clipboard';   // copy 地址用到
 import https from '../api/https';   // 请求discord用到
@@ -35,6 +36,8 @@ das.recommendList = require('../mock/recommendList.json');
 das.banners = require('../mock/banners.json');
 das.linkResources = require('../mock/linkResources.json');
 das.ownerStat = require('../mock/accountsOwner.json');
+das.recentRegData = [];
+das.recentOwnerData = [];
 
 let localeConfig = require('../mock/lang.json');
 let iconMap = new Map();
@@ -690,6 +693,462 @@ class DASWordCloud extends React.Component {
     };
 }
 
+const  DASStatisticSummary = (props) => {
+    const [data, setData] = useState({});
+  
+    useEffect(() => {
+      asyncFetch();
+    }, {});
+  
+    const asyncFetch = () => {
+        const headers = {
+            'content-type': 'application/json;charset=UTF-8',
+          }
+
+        const optionParam = {
+            headers: headers,
+            method: 'GET', 
+        }
+
+        let url = 'https://api.das.la/api/v1/das_accounts/sync_total'
+
+        fetch(url, optionParam)
+            .then((response) => response.json())
+            .then((data) => {
+                setData(data)
+            })
+            .catch((error) => {
+            console.log('fetch data failed', error);
+            });
+    };
+
+    const getDataField = (dataSrc, filed) => {
+        if (dataSrc && dataSrc[filed]) {
+            return dataSrc[filed];
+        }
+
+        return ''
+    };
+
+    const getTop1OwnerCount = () => {
+        if (data && data['owner_order']) {
+            if (data['owner_order'].length > 0) {
+                return data['owner_order'][0].total;
+            }
+        }
+
+        return ''
+    }
+
+    const loadDailyStatUpdatedTime = () => {
+        let defTitle = props.langConfig('dailystat-title');
+        let updateTime = '';
+        if (data.update_time) {
+            let time = new Date(data.update_time);
+            updateTime = time.toLocaleDateString() + " " + time.toLocaleTimeString();
+        }
+            
+        return defTitle + updateTime;
+    }
+
+    const getYesterdayRegCount = () => {
+        if (props.recentRegData && props.recentRegData.length > 2) {
+            let dataLen = props.recentRegData.length;
+            return props.recentRegData[1].value;
+        }
+
+        return '';
+    }
+
+    const getYesterdayAcountIncrement = () => {
+
+        let recentRegData = props.recentRegData;//data.recent_reg_data;
+        if ( recentRegData && recentRegData.length > 2) {
+            return recentRegData[1].value - recentRegData[0].value;
+        }
+
+        return 0;
+    }
+
+    const getYesterdayOwnerCount = () => {
+        let recentOwnerData = props.recentOwnerData;//data.recent_owner_data;
+        if (recentOwnerData && recentOwnerData.length > 2) {
+            let dataLen = recentOwnerData.length;
+            return recentOwnerData[1].value;
+        }
+
+        return '';
+    }
+
+    const getYesterdayOwnerIncrement = () => {
+        return -2
+        let recentOwnerData = props.recentOwnerData;//data.recent_owner_data;
+        if ( recentOwnerData && recentOwnerData.length > 2) {
+            return recentOwnerData[1].value - recentOwnerData[0].value;
+        }
+
+        return 0;
+    }
+
+    const getCustomDom = (count) => {
+        let value = Math.abs(count);
+        let up_dom = <div className="statistic-growth_wrapper "><img className="statistic-change-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAhBAMAAADaG82tAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAhUExURUD/vzzHiz7HjD3GizzHij7HjEDOkD3HizzHiz3HizzGilTodQIAAAAKdFJOUwHAd8HPThGs6ppjq8MjAAAAnElEQVQY02NgwAaSUHhsLgXI3BQrc2RJx1WLkaSTpVatEkdIOq9atWohXDoFKLlqFUw3mzGIB9edYgXmQqWBxq5qXrW4CyoNNHYFkOsBlZ68alWL4KrFJqtWLVEAm7vCVXnV4iAPiCybcUuA8qqFASrNEKNTWhmAsgFM7VB7AxhAsgwBcGeCZJG8BJZlGOSyKoImyNxQVaUEBsIAAGaTS7LuoNMXAAAAAElFTkSuQmCC" alt="dasla change up icon"></img><span className="statistic-change-up-value">{value}</span></div>
+        let down_dom = <div className="statistic-growth_wrapper"><img className="statistic-change-icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAeBAMAAAAvN3jVAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAeUExURf9HT/9HT0dwTP9SVP9HT/9GT/9GT/9HUf9HUP9GT+lzoCoAAAAJdFJOU79mAAu81eyFSixCjOgAAACgSURBVBjT1dE/CsIwFMfxDOmQzVS6a3MCQw4QSDu46dJZoR26Cl5AL5DFwu+2zcuzmCuYIfDhC/nDE225DoJ2c9La/tg2otoX3CHWf0XzYr6Z7p55HC3RdFNNbMZAdGq5JuoB0iY+gUkgVjM+D6pnLBfEAeioGg/cEGfEwCcr5CUt3+uzUuRXcU6RmTPF75spU9ym4DluP3JKlkMxfeCRrQ4UXRk5tkeyAAAAAElFTkSuQmCC" alt="dasla change down icon"></img><span className="statistic-change-down-value">{value}</span></div>
+        if (count > 0) {
+            return up_dom;
+        }
+        else if (count < 0){
+            return down_dom;
+        }
+        
+        return <></>
+    }
+
+    return  <div>
+                <div className='statistic-data-updatetime'>
+                    {loadDailyStatUpdatedTime()}
+                </div>
+                <br/>
+                <div className='statistic-summary-wrapper'>
+                    <div className='statistic-info-item'>
+                        <div className='statistic-das-count-title'>
+                            {props.langConfig('das-registered-count')}
+                        </div>
+                        <div className='statistic-das-count'>
+                            {getDataField(data,'account_num').toLocaleString()}
+                        </div>
+                    </div>
+                    <div className='statistic-info-item'>
+                        <div className='statistic-das-count-title'>
+                            {props.langConfig('yesterday-registered-count')}
+                        </div>
+                        <div className='statistic-item-with-growth'>
+                            <div className='statistic-das-count'>
+                                {getYesterdayRegCount().toLocaleString()}
+                            </div>
+                            {getCustomDom(getYesterdayAcountIncrement())}
+                        </div>
+                    </div>
+                    <div className='statistic-info-item'>
+                        <div className='statistic-das-count-title'>
+                            {props.langConfig('das-owner-count')}
+                        </div>
+                        <div className='statistic-owner-count'>
+                            {getDataField(data, 'owner_num').toLocaleString()}
+                        </div>
+                    </div>
+                    <div className='statistic-info-item'>
+                        <div className='statistic-das-count-title'>
+                            {props.langConfig('yesterday-owner-count')}
+                        </div>
+                        <div className='statistic-item-with-growth'>
+                            <div className='statistic-owner-count'>
+                                {getYesterdayOwnerCount().toLocaleString()}
+                            </div>
+                            {getCustomDom(getYesterdayOwnerIncrement())}
+                        </div>
+                    </div>
+                    <div className='statistic-info-item'>
+                        <div className='statistic-das-count-title'>
+                            {props.langConfig('max-from-a-unique-owner')}
+                        </div>
+                        <div className='statistic-owner-count'>
+                            {getTop1OwnerCount().toLocaleString()}
+                        </div>
+                    </div>
+                </div>
+            </div>
+}
+
+const DailyRegCountChart = (props) => {
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+      asyncFetch();
+    }, []);
+  
+    const asyncFetch = () => {
+        const headers = {
+            'content-type': 'application/json;charset=UTF-8',
+          }
+
+        //const data = {"keyword": account,"page":1,"size":50}
+
+        const optionParam = {
+            headers: headers,
+        //    body: JSON.stringify(data),
+            method: 'GET', 
+        }
+
+        let url = 'https:/api.das.la/api/v1/das_accounts/daily_reg_count?begin_at=2021-07-20'
+
+        fetch(url, optionParam)
+            .then((response) => response.json())
+            .then((dailydata) => {
+                let totaldata = [];
+                let recentData = [];
+                let sum = 0;
+                for (let index = 0; index < dailydata.length; index++) {
+                    let total = {};
+                    total["date"] = dailydata[index].date;
+                    if (index > 0) {
+                        sum = totaldata[index - 1].total;
+                    }
+                    total["value"] = dailydata[index].total;
+                    total["total"] = dailydata[index].total + sum;
+                    
+                    totaldata.push(total);
+
+                    if (index > dailydata.length - 4) {
+                        recentData.push(total);
+                    }
+                }
+
+                setData(totaldata)
+                // 把数据提供给外面
+                props.dataUpdateCallback(recentData);
+            })
+            .catch((error) => {
+            console.log('fetch data failed', error);
+            });
+    };
+
+    const lineConfig = {
+        data,
+        renderer:'svg',
+        xField: 'date',
+        yField: 'total',
+        height: 288,
+        smooth: "true",
+        color: ['#C6304F','#FAA219'],
+        theme: { "styleSheet": { "brandColor": "#C6304F", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
+        lineStyle: {
+            fillOpacity: 0.5,
+            lineWidth: 2,
+        //    stroke: 'C430FF',
+        },
+       
+        yAxis: {
+            grid: {
+            line: {
+                style: {
+                lineWidth: 0
+                }
+            }
+            },
+            label: {
+                formatter: function formatter(v) {
+                  let value = ""
+                    .concat(v)
+                    .replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+                      return "".concat(s, ",");
+                    });
+                  return value;
+                }
+              }
+            }
+        };
+
+
+    const config = {
+        data,
+        padding: 'auto',
+        xField: 'date',
+        yField: 'value',
+        color: '#C6304F',
+        height: 288,
+        renderer:'svg',
+        xAxis: {
+            label: {
+                autoRotate: false,
+            },
+        },
+        slider: {
+            start: 0.8,
+            end: 1.0,
+        },
+        yAxis: {
+            grid: {
+                line: {
+                    style: {
+                    lineWidth: 0
+                    }
+                }
+            },
+            label: {
+                formatter: function formatter(v) {
+                  let value = ""
+                    .concat(v)
+                    .replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+                      return "".concat(s, ",");
+                    });
+                  return value;
+                }
+              }
+            },
+        
+        };
+    return <div className='statistic-daily-chart'>
+                    <div className='statistic-das-count-title'>
+                    {props.langConfig('daily-registered-chart-title')} 
+                    </div>
+                    <div>
+                    <Column {...config} /> 
+                    
+                    </div>
+                    <div className='statistic-das-count-title'>
+                     {props.langConfig('total-registered-chart-title')} 
+                    </div>
+                    <div>
+                    <Line {...lineConfig} /> 
+                    </div>
+            </div>;
+  };
+
+
+  const DailyOwnerCountChart = (props) => {
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+      asyncFetch();
+    }, []);
+  
+    const asyncFetch = () => {
+        const headers = {
+            'content-type': 'application/json;charset=UTF-8',
+          }
+
+        //const data = {"keyword": account,"page":1,"size":50}
+
+        const optionParam = {
+            headers: headers,
+        //    body: JSON.stringify(data),
+            method: 'GET', 
+        }
+
+        let url = 'https://api.das.la/api/v1/das_accounts/daily_new_owner?begin_at=2021-07-01'
+
+        fetch(url, optionParam)
+            .then((response) => response.json())
+            .then((dailydata) => {
+                let totaldata = [];
+                let recentData = [];
+                let sum = 0;
+                for (let index = 0; index < dailydata.length; index++) {
+                    let total = {};
+                    total["date"] = dailydata[index].date;
+                    if (index > 0) {
+                        sum = totaldata[index - 1].total;
+                    }
+                    total["value"] = dailydata[index].total;
+                    total["total"] = dailydata[index].total + sum;
+                    
+                    totaldata.push(total);
+
+                    if (index > dailydata.length - 4) {
+                        recentData.push(total);
+                    }
+                }
+                setData(totaldata)
+                // 把数据提供给外面
+                props.dataUpdateCallback(recentData);
+            })
+            .catch((error) => {
+            console.log('fetch data failed', error);
+            });
+    };
+
+    const lineConfig = {
+        data,
+        renderer:'svg',
+        xField: 'date',
+        yField: 'total',
+        height: 288,
+    //    seriesField: "category",
+        smooth: "true",
+        color: ['#7B48F6','#FAA219'],
+        theme: { "styleSheet": { "brandColor": "#7B48F6", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
+        lineStyle: {
+            fillOpacity: 0.5,
+            lineWidth: 2,
+            color: 'C430FF',
+        },
+        yAxis: {
+            grid: {
+            line: {
+                style: {
+                lineWidth: 0
+                }
+            }
+            },
+            label: {
+                formatter: function formatter(v) {
+                  let value = ""
+                    .concat(v)
+                    .replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+                      return "".concat(s, ",");
+                    });
+                  return value;
+                }
+              }
+            }
+        };
+
+    const config = {
+        data,
+        padding: 'auto',
+        xField: 'date',
+        yField: 'value',
+        color: ['#7B48F6','#FAA219'],
+        theme: { "styleSheet": { "brandColor": "#7B48F6", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}}, 
+        height: 288,
+        renderer:'svg',
+        xAxis: {
+            label: {
+                autoRotate: false,
+            },
+        },
+        slider: {
+            start: 0.8,
+            end: 1.0,
+        },
+        yAxis: {
+            grid: {
+                line: {
+                    style: {
+                    lineWidth: 0
+                    }
+                }
+            },
+            label: {
+                formatter: function formatter(v) {
+                  let value = ""
+                    .concat(v)
+                    .replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+                      return "".concat(s, ",");
+                    });
+                  return value;
+                }
+              }
+            },
+        
+        };
+
+    return  <div className='statistic-daily-chart'>
+                <div className='statistic-das-count-title'>
+                    {props.langConfig('daily-new-owners-count-chart-title')} 
+                </div>
+                <div>
+                    <Column {...config} /> 
+                </div>
+                <div className='statistic-das-count-title'>
+                    {props.langConfig('das-owners-count-chart-title')} 
+                </div>
+                <div>
+                    <Line {...lineConfig} /> 
+               </div>
+            </div>;
+  };
 const DemoLine = () => {
     const [data, setData] = useState([]);
   
@@ -710,7 +1169,7 @@ const DemoLine = () => {
             method: 'GET', 
         }
 
-        let url = 'https:/api.das.la/api/v1/das_accounts/daily_reg_count?begin_at=2021-01-01'
+        let url = 'https:/api.das.la/api/v1/das_accounts/daily_reg_count?begin_at=2021-07-20'
 
         fetch(url, optionParam)
             .then((response) => response.json())
@@ -720,38 +1179,61 @@ const DemoLine = () => {
             });
     };
     const config = {
-      data,
-      padding: 'auto',
-      xField: 'index_day',
-      yField: 'total',
-      annotations: [
-        // 低于中位数颜色变化
-        {
-          type: 'regionFilter',
-          start: ['min', 'median'],
-          end: ['max', '0'],
-          color: '#F4664A',
+        data,
+        padding: 'auto',
+        xField: 'index_day',
+        yField: 'total',
+        lineStyle: {
+            fillOpacity: 0.5,
+            lineWidth: 2
         },
-        {
-          type: 'text',
-          position: ['min', 'median'],
-          content: '中位数',
-          offsetY: -4,
-          style: {
-            textBaseline: 'bottom',
-          },
-        },
-        {
-          type: 'line',
-          start: ['min', 'median'],
-          end: ['max', 'median'],
-          style: {
-            stroke: '#F4664A',
-            lineDash: [2, 2],
-          },
-        },
-      ],
-    };
+        yAxis: {
+            grid: {
+                line: {
+                    style: {
+                    lineWidth: 0
+                    }
+                }
+            },
+            label: {
+                formatter: function formatter(v) {
+                  let value = ""
+                    .concat(v)
+                    .replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+                      return "".concat(s, ",");
+                    });
+                  return value;
+                }
+              }
+            },
+        annotations: [
+            // 低于中位数颜色变化
+            {
+            type: 'regionFilter',
+            start: ['min', 'median'],
+            end: ['max', '0'],
+            color: '#F4664A',
+            },
+            {
+            type: 'text',
+            position: ['min', 'median'],
+            content: '中位数',
+            offsetY: -4,
+            style: {
+                textBaseline: 'bottom',
+            },
+            },
+            {
+            type: 'line',
+            start: ['min', 'median'],
+            end: ['max', 'median'],
+            style: {
+                stroke: '#F4664A',
+                lineDash: [2, 2],
+            },
+            },
+        ],
+        };
   
     return <Line {...config} />;
   };
@@ -1868,8 +2350,7 @@ export default class Index extends React.Component {
                   if (json.length > 0) {
                       das.lastRegiseredId = json[json.length-1].id;
                       das.lastUpdateTime = json[json.length-1].timestamp;
-                      //console.log(das.lastRegiseredId);
-                      that.setState({dataUpdateFlag: true});
+                      //that.setState({dataUpdateFlag: true});
                       // 如果有数据，继续拉取
                       setTimeout(() => {
                           that.getRegistList();
@@ -2290,6 +2771,20 @@ export default class Index extends React.Component {
 
     getAccountLenStatList = () => {
         return das['accountLen'];
+    }
+
+    recentRegDataChanged = (recentRegArray) => {
+        if (recentRegArray) {
+            das['recentRegData'] = recentRegArray;
+            this.setState({dataUpdateFlag: true});
+        }
+    }
+
+    recentOwnerDataChanged = (recentOwnerArray) => {
+        if (recentOwnerArray) {
+            das['recentOwnerData'] = recentOwnerArray;
+            this.setState({dataUpdateFlag: true});
+        }
     }
 
     getInvitRankList = () => {
@@ -2807,59 +3302,14 @@ export default class Index extends React.Component {
                     <br/>
 
                     <Card title={this.langConfig('das-big-data')} bordered={false}>
-                        <div className='statistic-data-updatetime'>
-                            {this.loadDailyStatUpdatedTime()}
-                        </div>
-                        <br/>
-                        <div className='statistic-summary-wrapper'>
-                            
-                            <div className='statistic-info-item'>
-                                <div className='statistic-das-count-title'>
-                                    {this.langConfig('das-registered-count')}
-                                </div>
-                                <div className='statistic-das-count'>
-                                    {das.registered.length.toLocaleString()}
-                                </div>
-                            </div>
-                            <div className='statistic-info-item'>
-                                <div className='statistic-das-count-title'>
-                                    {this.langConfig('yesterday-registered-count')}
-                                </div>
-                                <div className='statistic-das-count'>
-                                    {this.getLastdayRegisteredCount().toLocaleString()}
-                                </div>
-                            </div>
-                            <div className='statistic-info-item'>
-                                <div className='statistic-das-count-title'>
-                                    {this.langConfig('das-owner-count')}
-                                </div>
-                                <div className='statistic-owner-count'>
-                                    {das.ownerStat['unique_owner_amount'].toLocaleString()}
-                                </div>
-                            </div>
-                            <div className='statistic-info-item'>
-                                <div className='statistic-das-count-title'>
-                                    {this.langConfig('max-from-a-unique-owner')}
-                                </div>
-                                <div className='statistic-owner-count'>
-                                    {das.ownerStat['max_owner_account'].toLocaleString()}
-                                </div>
-                            </div>
-                            
-                           
-                        </div>
-                                          
-                        <br/>
-                        <div className='statistic-das-count-title'>
-                            {this.langConfig('daily-registered-chart-title')}
-                        </div>
-                        <DASLine loadConfigCallback={this.langConfig} dataCallback={this.getDailyRegisteredData}></DASLine>
-                        <br/>
-                        <div className='statistic-das-count-title'>
-                            {this.langConfig('das-owners-count-chart-title')}
-                        </div>
-                        <DASUniqueOwnerLine loadConfigCallback={this.langConfig} dataCallback={this.getDailyUniqueOwnerData}></DASUniqueOwnerLine>
                         
+                        <DASStatisticSummary langConfig={this.langConfig} recentRegData={das.recentRegData} recentOwnerData={das.recentOwnerData}/>                 
+                        <br/>
+                        <div className='statistic-daily-container'>
+                            <DailyRegCountChart langConfig={this.langConfig} dataUpdateCallback={this.recentRegDataChanged}/>
+                            <br/>
+                            <DailyOwnerCountChart langConfig={this.langConfig} dataUpdateCallback={this.recentOwnerDataChanged}/>
+                        </div>
                         <br/>
                         <div className='statistic-das-count-title'>
                             {this.langConfig('account-length-distribution-title')}
