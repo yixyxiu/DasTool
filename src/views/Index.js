@@ -752,9 +752,11 @@ const  DASStatisticSummary = (props) => {
     }
 
     const getYesterdayRegCount = () => {
-        if (props.recentRegData && props.recentRegData.length > 2) {
-            let dataLen = props.recentRegData.length;
-            return props.recentRegData[1].value;
+
+        let recentRegData = data.recent_reg_data;// props.recentRegData;
+        console.log(recentRegData);
+        if (recentRegData && recentRegData.length > 2) {
+            return recentRegData[1].count;
         }
 
         return '';
@@ -762,29 +764,27 @@ const  DASStatisticSummary = (props) => {
 
     const getYesterdayAcountIncrement = () => {
 
-        let recentRegData = props.recentRegData;//data.recent_reg_data;
+        let recentRegData = data.recent_reg_data;// props.recentRegData;
         if ( recentRegData && recentRegData.length > 2) {
-            return recentRegData[1].value - recentRegData[0].value;
+            return recentRegData[1].count - recentRegData[0].count;
         }
 
         return 0;
     }
 
     const getYesterdayOwnerCount = () => {
-        let recentOwnerData = props.recentOwnerData;//data.recent_owner_data;
+        let recentOwnerData = data.recent_owner_data; //props.recentOwnerData;
         if (recentOwnerData && recentOwnerData.length > 2) {
-            let dataLen = recentOwnerData.length;
-            return recentOwnerData[1].value;
+            return recentOwnerData[1].count;
         }
 
         return '';
     }
 
     const getYesterdayOwnerIncrement = () => {
-        return -2
-        let recentOwnerData = props.recentOwnerData;//data.recent_owner_data;
+        let recentOwnerData = data.recent_owner_data;//props.recentOwnerData;
         if ( recentOwnerData && recentOwnerData.length > 2) {
-            return recentOwnerData[1].value - recentOwnerData[0].value;
+            return recentOwnerData[1].count - recentOwnerData[0].count;
         }
 
         return 0;
@@ -880,7 +880,7 @@ const DailyRegCountChart = (props) => {
             method: 'GET', 
         }
 
-        let url = 'https:/api.das.la/api/v1/das_accounts/daily_reg_count?begin_at=2021-07-20'
+        let url = 'https://api.das.la/api/v1/das_accounts/daily_reg_count?begin_at=2021-07-20'
 
         fetch(url, optionParam)
             .then((response) => response.json())
@@ -906,7 +906,7 @@ const DailyRegCountChart = (props) => {
 
                 setData(totaldata)
                 // 把数据提供给外面
-                props.dataUpdateCallback(recentData);
+                //props.dataUpdateCallback(recentData);
             })
             .catch((error) => {
             console.log('fetch data failed', error);
@@ -1051,7 +1051,7 @@ const DailyRegCountChart = (props) => {
                 }
                 setData(totaldata)
                 // 把数据提供给外面
-                props.dataUpdateCallback(recentData);
+                //props.dataUpdateCallback(recentData);
             })
             .catch((error) => {
             console.log('fetch data failed', error);
@@ -1148,94 +1148,6 @@ const DailyRegCountChart = (props) => {
                     <Line {...lineConfig} /> 
                </div>
             </div>;
-  };
-const DemoLine = () => {
-    const [data, setData] = useState([]);
-  
-    useEffect(() => {
-      asyncFetch();
-    }, []);
-  
-    const asyncFetch = () => {
-        const headers = {
-            'content-type': 'application/json;charset=UTF-8',
-          }
-
-        //const data = {"keyword": account,"page":1,"size":50}
-
-        const optionParam = {
-            headers: headers,
-        //    body: JSON.stringify(data),
-            method: 'GET', 
-        }
-
-        let url = 'https:/api.das.la/api/v1/das_accounts/daily_reg_count?begin_at=2021-07-20'
-
-        fetch(url, optionParam)
-            .then((response) => response.json())
-            .then((json) => setData(json))
-            .catch((error) => {
-            console.log('fetch data failed', error);
-            });
-    };
-    const config = {
-        data,
-        padding: 'auto',
-        xField: 'index_day',
-        yField: 'total',
-        lineStyle: {
-            fillOpacity: 0.5,
-            lineWidth: 2
-        },
-        yAxis: {
-            grid: {
-                line: {
-                    style: {
-                    lineWidth: 0
-                    }
-                }
-            },
-            label: {
-                formatter: function formatter(v) {
-                  let value = ""
-                    .concat(v)
-                    .replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
-                      return "".concat(s, ",");
-                    });
-                  return value;
-                }
-              }
-            },
-        annotations: [
-            // 低于中位数颜色变化
-            {
-            type: 'regionFilter',
-            start: ['min', 'median'],
-            end: ['max', '0'],
-            color: '#F4664A',
-            },
-            {
-            type: 'text',
-            position: ['min', 'median'],
-            content: '中位数',
-            offsetY: -4,
-            style: {
-                textBaseline: 'bottom',
-            },
-            },
-            {
-            type: 'line',
-            start: ['min', 'median'],
-            end: ['max', 'median'],
-            style: {
-                stroke: '#F4664A',
-                lineDash: [2, 2],
-            },
-            },
-        ],
-        };
-  
-    return <Line {...config} />;
   };
 
 class DASUniqueOwnerLine extends React.Component {
