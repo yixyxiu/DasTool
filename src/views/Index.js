@@ -638,6 +638,55 @@ class DASInvitRank extends React.Component {
     }
 }
 
+
+const DASInvitesLeaderboard = (props) => {
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+      asyncFetch();
+    }, []);
+  
+    const asyncFetch = () => {
+        const headers = {
+            'content-type': 'application/json;charset=UTF-8',
+          }
+
+        //const data = {"keyword": account,"page":1,"size":50}
+
+        const optionParam = {
+            headers: headers,
+        //    body: JSON.stringify(data),
+            method: 'GET', 
+        }
+
+        let url = 'https://api.das.la/api/v1/das_accounts/invites_leaderboard'
+
+        fetch(url, optionParam)
+            .then((response) => response.json())
+            .then((json) => {
+                setData(json)
+            })
+            .catch((error) => {
+            console.log('fetch data failed', error);
+            });
+    };
+
+    var config = {
+        data,
+        xField: 'invitee_num',
+        yField: 'account',
+        seriesField: 'account',
+        legend: { position: 'bottom-left' },
+        theme: { "styleSheet": { "brandColor": "#F8D4A4", 
+            "paletteQualitative10":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62'], 
+            "paletteQualitative20":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62']}},
+        
+    };
+
+    return <Bar {...config} />;
+  };
+
+
 class DASWordCloud extends React.Component {
 
     state = {
@@ -755,7 +804,7 @@ const  DASStatisticSummary = (props) => {
 
         let recentRegData = data.recent_reg_data;// props.recentRegData;
         console.log(recentRegData);
-        if (recentRegData && recentRegData.length > 2) {
+        if (recentRegData && recentRegData.length > 1) {
             return recentRegData[1].count;
         }
 
@@ -765,7 +814,7 @@ const  DASStatisticSummary = (props) => {
     const getYesterdayAcountIncrement = () => {
 
         let recentRegData = data.recent_reg_data;// props.recentRegData;
-        if ( recentRegData && recentRegData.length > 2) {
+        if ( recentRegData && recentRegData.length > 1) {
             return recentRegData[1].count - recentRegData[0].count;
         }
 
@@ -774,7 +823,7 @@ const  DASStatisticSummary = (props) => {
 
     const getYesterdayOwnerCount = () => {
         let recentOwnerData = data.recent_owner_data; //props.recentOwnerData;
-        if (recentOwnerData && recentOwnerData.length > 2) {
+        if (recentOwnerData && recentOwnerData.length > 1) {
             return recentOwnerData[1].count;
         }
 
@@ -783,7 +832,7 @@ const  DASStatisticSummary = (props) => {
 
     const getYesterdayOwnerIncrement = () => {
         let recentOwnerData = data.recent_owner_data;//props.recentOwnerData;
-        if ( recentOwnerData && recentOwnerData.length > 2) {
+        if ( recentOwnerData && recentOwnerData.length > 1) {
             return recentOwnerData[1].count - recentOwnerData[0].count;
         }
 
@@ -3233,8 +3282,7 @@ export default class Index extends React.Component {
                         <div className='statistic-das-count-title'>
                             {this.langConfig('inviter-rank-title')}
                         </div>
-                        <br/>
-                        <DASInvitRank dataCallback={this.getInvitRankList} ></DASInvitRank>
+                        <DASInvitesLeaderboard></DASInvitesLeaderboard>
                         
                     </Card>
                     <br/>
