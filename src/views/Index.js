@@ -791,10 +791,10 @@ const  DASStatisticSummary = (props) => {
 
     const loadDailyStatUpdatedTime = () => {
         let defTitle = props.langConfig('dailystat-title');
-        let updateTime = '';
+        let updateTime = '...';
         if (data.update_time) {
-            let time = new Date(data.update_time);
-            updateTime = time.toLocaleDateString() + " " + time.toLocaleTimeString();
+            //let time = new Date(data.update_time);
+            updateTime = data.update_time;//time.toLocaleDateString() + " " + time.toLocaleTimeString();
         }
             
         return defTitle + updateTime;
@@ -803,7 +803,7 @@ const  DASStatisticSummary = (props) => {
     const getYesterdayRegCount = () => {
 
         let recentRegData = data.recent_reg_data;// props.recentRegData;
-        console.log(recentRegData);
+        //console.log(recentRegData);
         if (recentRegData && recentRegData.length > 1) {
             return recentRegData[1].count;
         }
@@ -1075,7 +1075,7 @@ const DailyRegCountChart = (props) => {
             method: 'GET', 
         }
 
-        let url = 'https://api.das.la/api/v1/das_accounts/daily_new_owner?begin_at=2021-07-01'
+        let url = 'https://api.das.la/api/v1/das_accounts/daily_new_owner?begin_at=2021-07-21'
 
         fetch(url, optionParam)
             .then((response) => response.json())
