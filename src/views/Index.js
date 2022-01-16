@@ -3278,12 +3278,7 @@ export default class Index extends React.Component {
                             <a href={this.langConfig('das-limit-link')} target="_blank" rel="noopener noreferrer" >{this.langConfig('das-limit-info')}</a>
                         </div>
                         <DASTreemap loadConfigCallback={this.langConfig} dataCallback={this.getAccountLenStatList} ></DASTreemap>
-                        
-                        <br/>
-                        <div className='statistic-das-count-title'>
-                            {this.langConfig('invites-leaderboard-title')}
-                        </div>
-                        
+                       
                     </Card>
                     <br/>
                     
