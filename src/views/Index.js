@@ -2208,6 +2208,7 @@ export default class Index extends React.Component {
         }
     }
 
+/*  通过接口查询，不再自己计算
     // 收到新的注册成功通知之后，更新每日注册数据
     addOneAccourdToDailyData = (date) => {
         let find = false;
@@ -2227,7 +2228,7 @@ export default class Index extends React.Component {
             das['dailyRegistered'].push(dailyObj);
         }
     }
-
+*/
     // '** vivov.bit ** registed for 1 year(s), invited by cryptofans.bit'
     getInviterName = (src_str) => {
         let spliter = 'invited by ';
@@ -2249,11 +2250,11 @@ export default class Index extends React.Component {
             
             // 更新当天的注册数据
             let date = msgTime.substr(0,10);
-	        this.addOneAccourdToDailyData(date);
+	        //this.addOneAccourdToDailyData(date);
             // 更新词云图
 
             // 更新邀请榜单
-            this.addOneAccourdToInvitRank(inviter)
+            //this.addOneAccourdToInvitRank(inviter)
             
             // 只显示新增的，上次本地已经显示过了，就不再显示
             let lastNewDASTipsTime = localStorage.getItem('das-born-showed')
@@ -3280,13 +3281,17 @@ export default class Index extends React.Component {
                         
                         <br/>
                         <div className='statistic-das-count-title'>
-                            {this.langConfig('inviter-rank-title')}
+                            {this.langConfig('invites-leaderboard-title')}
                         </div>
-                        <DASInvitesLeaderboard></DASInvitesLeaderboard>
                         
                     </Card>
                     <br/>
                     
+                    <div className="leaderboards-grid">
+                        <InvitesLeaderboard langConfig={this.langConfig} openLink={this.openLink}></InvitesLeaderboard>
+                        <RichOwnerLeaderboard langConfig={this.langConfig} openLink={this.openLink}></RichOwnerLeaderboard>
+                    </div>
+                    <br/>
                     <DASMarketCardList parent={this} getDASAvata={this.getImg} langConfig={this.langConfig}/> 
 
                     <DASAccountShow langConfig={this.langConfig}/>
@@ -3301,3 +3306,193 @@ export default class Index extends React.Component {
     }
 }
 
+
+const InvitesLeaderboard = (props) => {
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+      asyncFetch();
+    }, []);
+  
+    const asyncFetch = () => {
+        const headers = {
+            'content-type': 'application/json;charset=UTF-8',
+          }
+
+        //const data = {"keyword": account,"page":1,"size":50}
+
+        const optionParam = {
+            headers: headers,
+        //    body: JSON.stringify(data),
+            method: 'GET', 
+        }
+
+        let url = 'https://api.das.la/api/v1/das_accounts/invites_leaderboard'
+
+        fetch(url, optionParam)
+            .then((response) => response.json())
+            .then((json) => {
+                setData(json)
+            })
+            .catch((error) => {
+            console.log('fetch data failed', error);
+            });
+    };
+
+    const onItemClicked = (account) => {
+        let url = "https://" + account + props.langConfig("dascc-host");
+        props.openLink(url, 'view_bitcc_' + account);
+    }
+
+    return  <div className="leader-board-wrapper"> 
+                <span className="leader-board-title">{props.langConfig('invites-leaderboard-title')}</span> 
+                
+                
+                {data.map((item, index) => {
+                    let avatar = "https://identicons.da.systems/identicon/" + item.account;
+                    let avatarDom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
+
+                    /* 前三名特殊处理 */
+                    if (index === 0) {
+                        return  <div className="leader-board-item-row gold" onClick={() => onItemClicked(item.account)}>
+                                    <span className="leader-board-rank-index-top3" >🥇</span>
+                                    { avatarDom }
+                                    <div className="leader-board-item-name">{item.account}</div>
+                                    <div className="leader-board-rank-value">{item.invitee_num}</div>
+                                </div>
+                    }
+                    else if (index === 1) {
+                        return  <div className="leader-board-item-row silver" onClick={() => onItemClicked(item.account)}>
+                                    <span className="leader-board-rank-index-top3">🥈</span>
+                                    { avatarDom }
+                                    <div className="leader-board-item-name">{item.account}</div>
+                                    <div className="leader-board-rank-value">{item.invitee_num}</div>
+                                </div>
+                    }
+                    else if (index === 2) {
+                        return  <div className="leader-board-item-row bronze" onClick={() => onItemClicked(item.account)}>
+                                    <span className="leader-board-rank-index-top3">🥉</span>
+                                    { avatarDom }
+                                    <div className="leader-board-item-name">{item.account}</div>
+                                    <div className="leader-board-rank-value">{item.invitee_num}</div>
+                                </div>
+                    }
+                    else {
+                        return  <div className="leader-board-item-row" onClick={() => onItemClicked(item.account)}>
+                                    <span className="leader-board-rank-index">{index+1}</span>
+                                    { avatarDom }
+                                    <div className="leader-board-item-name">{item.account}</div>
+                                    <div className="leader-board-rank-value">{item.invitee_num}</div>
+                                </div>
+                    }
+                })}
+            </div> 
+  };
+
+
+const RichOwnerLeaderboard = (props) => {
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+      asyncFetch();
+    }, []);
+  
+    const asyncFetch = () => {
+        const headers = {
+            'content-type': 'application/json;charset=UTF-8',
+          }
+
+        //const data = {"keyword": account,"page":1,"size":50}
+
+        const optionParam = {
+            headers: headers,
+        //    body: JSON.stringify(data),
+            method: 'GET', 
+        }
+
+        let url = 'https://api.das.la/api/v1/das_accounts/sync_total'
+
+        fetch(url, optionParam)
+            .then((response) => response.json())
+            .then((json) => {
+                setData(json.owner_order)
+            })
+            .catch((error) => {
+            console.log('fetch data failed', error);
+            });
+    };
+
+    const onItemClicked = (item) => {
+        if (item && item.reverse_record) {
+            let account = item.reverse_record;
+            let url = "https://" + account + props.langConfig("dascc-host");
+            props.openLink(url, 'view_bitcc_' + account);
+        }
+    }
+
+    const formatAddress = (address) => {
+        if (address.len < 20){
+            return address;
+        }
+
+        let begin = address.substring(0,6);
+        let end = address.substring(address.length-6);
+        let str = begin + '...' + end;
+
+        return str;
+    }
+
+    const formatDisplayName = (item) => {
+        if (item.reverse_record) {
+            return item.reverse_record;
+        }
+
+        let address = item.reverse_record ? item.reverse_record:item.owner;
+       
+        return formatAddress(address);
+    }
+
+    return  <div className="leader-board-wrapper"> 
+                <span className="leader-board-title">{props.langConfig('rich-owner-leaderboard-title')}</span> 
+                
+                
+                {data.map((item, index) => {
+                    let avatar = "https://identicons.da.systems/identicon/" + formatDisplayName(item);
+                    let avatarDom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
+
+                    /* 前三名特殊处理 */
+                    if (index === 0) {
+                            return  <div className="leader-board-item-row gold" onClick={() => onItemClicked(item)}>
+                                        <span className="leader-board-rank-index-top3" >🥇</span>
+                                        { avatarDom }
+                                        <div className="leader-board-item-name">{formatDisplayName(item)}</div>
+                                        <div className="leader-board-rank-value">{item.total}</div>
+                                    </div>
+                    }
+                    else if (index === 1) {
+                        return  <div className="leader-board-item-row silver" onClick={() => onItemClicked(item)}>
+                                    <span className="leader-board-rank-index-top3">🥈</span>
+                                    { avatarDom }
+                                    <div className="leader-board-item-name">{formatDisplayName(item)}</div>
+                                    <div className="leader-board-rank-value">{item.total}</div>
+                                </div>
+                    }
+                    else if (index === 2) {
+                        return  <div className="leader-board-item-row bronze" onClick={() => onItemClicked(item)}>
+                                <span className="leader-board-rank-index-top3">🥉</span>
+                                { avatarDom }
+                                <div className="leader-board-item-name">{formatDisplayName(item)}</div>
+                                <div className="leader-board-rank-value">{item.total}</div>
+                            </div>
+                    }
+                    else {
+                        return  <div className="leader-board-item-row" onClick={() => onItemClicked(item)}>
+                                    <span className="leader-board-rank-index">{index+1}</span>
+                                    { avatarDom }
+                                    <div className="leader-board-item-name">{formatDisplayName(item)}</div>
+                                    <div className="leader-board-rank-value">{item.total}</div>
+                                </div>
+                    }
+                })}
+            </div> 
+  };

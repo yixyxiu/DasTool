@@ -862,6 +862,138 @@ h6 {
 
 /* ----end 注册商选择，style from da.system */
 
+/*---- start, 排行榜开始 -------*/
+.leaderboards-grid {
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+}
+
+.leader-board-wrapper {
+  padding: 1.5rem;
+  border-radius: 16px;
+  /*background: linear-gradient(85deg,#434343,#262626);*/
+  background: linear-gradient(85deg,#434343,#565656);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  transition: .2s;
+  margin: 0;
+  margin: 20px 0px;
+  width: 100%;
+}
+
+.leader-board-title {
+  text-align: center;
+  font-size: 24px;
+  color:#22C493;
+  font-weight: 600;
+  font-family:"Poppins","PingFang SC", sans-serif;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.leader-board-item-row {
+  display: grid;
+  grid-template-columns: 18px 32px 1fr 50px;
+  grid-gap: 0.5rem;
+  gap: 0.5rem;
+  align-items: center;
+  color: #565656;
+  line-height: 1.3;
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  background: #dedede;
+  border-color: #dedede;
+  border-radius: 1rem;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.045);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.9);
+}
+
+
+.leader-board-item-row:hover,
+.leader-board-item-row:focus {
+  color: #000;
+  background: #fcfbfa;
+  border-color: #676663;
+  box-shadow: 0 2px 5px 0 rgba(213,217,217,.5);
+  cursor: pointer;
+}
+
+.leader-board-item-name {
+  color: rgba(0, 0, 0, 0.6); 
+  width: 100%;
+  text-shadow: 2px 2px 3px rgba(255,255,255,0.2);
+  font-size:20px;
+  font-family:"Poppins","PingFang SC", sans-serif;
+  text-align: left;
+  font-weight:bold;
+}
+
+.leader-board-rank-index {
+  color: rgba(0, 0, 0, 0.6); 
+  width: 100%;
+  text-shadow: 2px 2px 3px rgba(255,255,255,0.2);
+  font-size:1.0rem;
+  font-family:"Poppins","PingFang SC", sans-serif;
+  text-align: center;
+  font-weight:bold;
+}
+
+.leader-board-rank-index-top3 {
+  color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.2);
+  font-family: "Poppins", "PingFang SC", sans-serif;
+  font-weight: bold;
+  font-size: 2.9rem;
+  z-index: 1000;
+  text-align: left;
+  margin-top: -12px;
+  margin-left: -13px;
+}
+
+.leader-board-rank-value {
+  color: #171614;
+  width: 100%;
+  text-shadow: 2px 2px 3px rgba(255,255,255,0.2);
+  font-size:1.1rem;
+  font-family:"Poppins","PingFang SC", sans-serif;
+  text-align: right;
+  font-weight:bold;
+}
+
+.gold {
+  background-color: #E9AE02;
+}
+
+.silver {
+  background-color: #AFAFAF;
+}
+
+.bronze {
+  background-color: #BB771D;
+}
+
+.leader-board-top3 {
+  font-size: 2rem;
+  z-index: 1000;
+  text-align: left;
+}
+
+@media (min-width: 1000px) {
+  .leader-board-wrapper  {
+      width: 480px;
+  }
+
+  .leader-board-item-name {
+    font-size: 22px;
+  }
+}
+
+/* ----end 排行榜结束 */
 
 /*---- start ，卡片样式开始 -------------*/
 
