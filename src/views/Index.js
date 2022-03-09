@@ -41,11 +41,11 @@ das.recentOwnerData = [];
 
 let localeConfig = require('../mock/lang.json');
 let iconMap = new Map();
-// https://identicons.da.systems/avatar/nervosyixiu.bit?size=xxs
+// https://identicons.did.id/avatar/nervosyixiu.bit?size=xxs
 // 存放新注册且没有显示通知的账号列表
 let newDASBornList = [];
 
-let defKeywords = ['btc','eth','ckb','bnb','uni','das','nervos','link','ada','dex',
+let defKeywords = ['btc','eth','ckb','bnb','uni','das','did','nervos','link','ada','dex',
         'swap','defi','nft','gamefi','crypto','token','coin','market','finance','exchange',
         'ex','wallet','fork','hashing','hodl','stake', 'farm','miner','node','block',
         'genesis','hash','fans','bar','moon','trans','boy','girl','poor','rich',
@@ -214,7 +214,7 @@ class DaslaFooter extends React.Component {
          </div> 
          <Divider type="horizontal" className="footer-divider"/>
          <p className="footer-copyright">
-            © 2021 DASLA Limited. All rights reserved.
+            © 2021-2022 DASLA Limited. All rights reserved.
          </p> 
          </div> 
         
@@ -321,7 +321,7 @@ class ForSaleAccountCard extends React.Component {
                 method: 'POST', 
             }
 
-            let url = 'https://indexer-basic.da.systems/'
+            let url = 'https://indexer-basic.did.id/'
 
             fetch(url, optionParam)
             .then(function(response){
@@ -464,8 +464,8 @@ class ForSaleAccountCard extends React.Component {
             this.props.getDASAvata(id, account);
         }, 3000)
     */
-    //    let avatar = "https://identicons.da.systems/avatar/" + account + "?size=xxs";
-        let avatar = "https://identicons.da.systems/identicon/" + account;
+    //    let avatar = "https://identicons.did.id/avatar/" + account + "?size=xxs";
+        let avatar = "https://identicons.did.id/identicon/" + account;
         let dom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
 
 
@@ -594,7 +594,7 @@ class DASAccountShow extends React.Component {
                 label="Step 2: Share das.la for Requesting faucet"
                 name="sharebtn"
             >
-                <a href="https://twitter.com/intent/tweet?url=das.la&text=Requesting faucet prizes for nervosyixiu.bit on das.la, an awesome registration tool of DAS account." target="_blank" rel="noopener noreferrer"><span className="fa fa-twitter"></span></a>
+                <a href="https://twitter.com/intent/tweet?url=das.la&text=Requesting faucet prizes for nervosyixiu.bit on das.la, an awesome registration tool of .bit account." target="_blank" rel="noopener noreferrer"><span className="fa fa-twitter"></span></a>
                 <Button className="dasla-btn-select-account" size={'normal'} shape="round"
            onClick={this.viewMarketAccount} ><span className="fa fa-twitter"></span></Button>
             </Form.Item>
@@ -1910,7 +1910,7 @@ export default class Index extends React.Component {
         }
     }
     select = record => {
-        // window.open("https://app.da.systems/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
+        // window.open("https://app.did.id/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
         let status = record.status[0];
         if (status === DASACCOUNTSTATUS.Registered) {
             if (-1 != indexOf(record.status, DASACCOUNTSTATUS.OnSale)) {
@@ -1935,7 +1935,7 @@ export default class Index extends React.Component {
                 this.openLink(this.langConfig("das-claim-link"));
                 break;
             case DASACCOUNTSTATUS.Registering: 
-                url = "https://app.da.systems/explorer/account/" + record.name;
+                url = "https://app.did.id/explorer/account/" + record.name;
                 this.openLink(url);
                 break;
             case DASACCOUNTSTATUS.NotOpen: 
@@ -1949,8 +1949,8 @@ export default class Index extends React.Component {
     }
 
     getDASRegisterLink = (account) => {
-        return "https://app.gogodas.com/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
-//        return "https://app.da.systems/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
+//        return "https://app.gogodas.com/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
+        return "https://app.did.id/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
     }
 
     getDeNameRegisterLink = (account) => {
@@ -3344,7 +3344,7 @@ const InvitesLeaderboard = (props) => {
                 
                 
                 {data.map((item, index) => {
-                    let avatar = "https://identicons.da.systems/identicon/" + item.account;
+                    let avatar = "https://identicons.did.id/identicon/" + item.account;
                     let avatarDom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
 
                     /* 前三名特殊处理 */
@@ -3452,7 +3452,7 @@ const RichOwnerLeaderboard = (props) => {
                 
                 
                 {data.map((item, index) => {
-                    let avatar = "https://identicons.da.systems/identicon/" + formatDisplayName(item);
+                    let avatar = "https://identicons.did.id/identicon/" + formatDisplayName(item);
                     let avatarDom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
 
                     /* 前三名特殊处理 */

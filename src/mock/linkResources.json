@@ -41,39 +41,39 @@
             },
             {
                 "name":"HuobiWallet",
-                "link":"https://dasystems.medium.com/first-apps-integration-huobi-wallet-now-integrated-das-46d9e4b5b499"
+                "link":"https://dotbit.medium.com/first-apps-integration-huobi-wallet-now-integrated-das-46d9e4b5b499"
             },
             {
                 "name":"imToken",
-                "link":"https://dasystems.medium.com/das-is-now-listed-on-imtoken-619b1052b788"
+                "link":"https://dotbit.medium.com/das-is-now-listed-on-imtoken-619b1052b788"
             },
             {
                 "name":"Metamask",
-                "link":"https://dasystems.medium.com/how-to-register-das-in-metamask-713b2985531a"
+                "link":"https://dotbit.medium.com/how-to-register-das-in-metamask-713b2985531a"
             },
             {
                 "name":"TokenPocket",
-                "link":"https://dasystems.medium.com/first-apps-integration-tokenpocket-now-integrated-das-b89c780f3d8"
+                "link":"https://dotbit.medium.com/first-apps-integration-tokenpocket-now-integrated-das-b89c780f3d8"
             },
             {
                 "name":"Math Wallet",
-                "link":"https://dasystems.medium.com/das-is-now-listed-on-mathwallet-f858848b5b1f"
+                "link":"https://dotbit.medium.com/das-is-now-listed-on-mathwallet-f858848b5b1f"
             },
             {
                 "name":"Via Wallet",
-                "link":"https://dasystems.medium.com/das-is-now-listed-on-viawallet-20572453e60e"
+                "link":"https://dotbit.medium.com/das-is-now-listed-on-viawallet-20572453e60e"
             },
             {
                 "name":"BitKeep Wallet",
-                "link":"https://dasystems.medium.com/das-will-be-soon-listed-on-bitkeep-2efdb2b21ab9"
+                "link":"https://dotbit.medium.com/das-will-be-soon-listed-on-bitkeep-2efdb2b21ab9"
             },
             {
                 "name":"HyperPay",
-                "link":"https://dasystems.medium.com/das-is-now-listed-on-hyperpay-2d2f66356634"
+                "link":"https://dotbit.medium.com/das-is-now-listed-on-hyperpay-2d2f66356634"
             },
             {
                 "name":"ONTO Wallet",
-                "link":"https://dasystems.medium.com/das-is-now-listed-on-onto-wallet-2ac4b8319eeb"
+                "link":"https://dotbit.medium.com/das-is-now-listed-on-onto-wallet-2ac4b8319eeb"
             }
         ]
     },
@@ -88,20 +88,20 @@
                 "link":"https://everythingnervos.substack.com/"
             },
             {
-                "name":"DAS 论坛",
-                "link":"https://talk.da.systems"
+                "name":".bit 论坛",
+                "link":"https://talk.did.id"
             },
             {
                 "name":"das.la 论坛",
-                "link":"https://talk.da.systems/c/e4b8ade69687/dasla/7"
+                "link":"https://talk.did.id/c/e4b8ade69687/dasla/7"
             },
             {
                 "name":"给 das.la 提个需求",
-                "link":"https://talk.da.systems/t/das-la/97"
+                "link":"https://talk.did.id/t/das-la/97"
             },
             {
                 "name":"反馈 das.la 的 BUG",
-                "link":"https://talk.da.systems/t/das-la-bug/98"
+                "link":"https://talk.did.id/t/das-la-bug/98"
             },
             {
                 "name":"CKB 吧",
@@ -118,20 +118,20 @@
                 "link":"https://everythingnervos.substack.com/"
             },
             {
-                "name":"DAS Talk",
-                "link":"https://talk.da.systems"
+                "name":".bit Talk",
+                "link":"https://talk.did.id"
             },
             {
                 "name":"das.la Talk",
-                "link":"https://talk.da.systems/c/e4b8ade69687/dasla/7"
+                "link":"https://talk.did.id/c/e4b8ade69687/dasla/7"
             },
             {
                 "name":"List your requirements",
-                "link":"https://talk.da.systems/t/das-la/97"
+                "link":"https://talk.did.id/t/das-la/97"
             },
             {
                 "name":"Report a BUG",
-                "link":"https://talk.da.systems/t/das-la-bug/98"
+                "link":"https://talk.did.id/t/das-la-bug/98"
             },
             {
                 "name":"CKB bar",
@@ -142,18 +142,18 @@
     "official":{
         "zh_CN":[
             {
-                "name":"DAS 官网",
-                "link":"https://da.systems/explorer?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=dasla",
+                "name":".bit 官网",
+                "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid",
                 "iconClassName":"foot-link-icon-das"
             },
             {
                 "name":"推特",
-                "link":"https://twitter.com/realDASystems",
+                "link":"https://twitter.com/dotbitHQ",
                 "iconClassName":"fa fa-twitter foot-link-icon-fa"
             },
             {
                 "name":"Medium",
-                "link":"https://dasystems.medium.com/",
+                "link":"https://dotbit.medium.com/",
                 "iconClassName":"fa fa-medium foot-link-icon-fa"
             },
             {
@@ -163,19 +163,19 @@
             },
             {
                 "name":"Discord群",
-                "link":"https://discord.gg/WVunwT2hju",
+                "link":"https://discord.gg/did",
                 "iconClassName":"fa fa-discord-alt foot-link-icon-fa"
             },
             {
-                "name":"DAS 交易市场",
+                "name":".bit 交易市场",
                 "link":"https://bestdas.com?inviter=cryptofans.bit",
                 "iconClassName":"fa fa-usd foot-link-icon-fa"
             }
         ],
         "en_US":[
             {
-                "name":"DAS Official",
-                "link":"https://da.systems/explorer?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=dasla",
+                "name":".bit Official",
+                "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid",
                 "iconClassName":"foot-link-icon-das"
             },
             {
@@ -185,7 +185,7 @@
             },
             {
                 "name":"Medium",
-                "link":"https://dasystems.medium.com/",
+                "link":"https://dotbit.medium.com/",
                 "iconClassName":"fa fa-medium foot-link-icon-fa"
             },
             {
@@ -199,7 +199,7 @@
                 "iconClassName":"fa fa-discord-alt foot-link-icon-fa"
             },
             {
-                "name":"Marketplace for DAS",
+                "name":"Marketplace for .bit",
                 "link":"https://bestdas.com?inviter=cryptofans.bit",
                 "iconClassName":"fa fa-usd foot-link-icon-fa"
             }
@@ -233,7 +233,7 @@
         },
         {
             "name":"WeiBo",
-            "link":"https://service.weibo.com/share/share.php?title=我发现了一个很好用的DAS选靓号工具，推荐给你！&url=https://das.la&pic=https://oss-cdn1.bihu-static.com/image/20210915/2b82aa764c1146b4bcd5b4265cf378e4_GMYDAKRTGAYA.png",
+            "link":"https://service.weibo.com/share/share.php?title=我发现了一个很好用的 .bit 选靓号工具，推荐给你！&url=https://das.la&pic=https://oss-cdn1.bihu-static.com/image/20210915/2b82aa764c1146b4bcd5b4265cf378e4_GMYDAKRTGAYA.png",
             "iconClassName":"fa fa-weibo"
         }
     ]

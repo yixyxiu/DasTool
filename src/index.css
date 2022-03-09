@@ -1,14 +1,9 @@
 @charset "UTF-8";
-/*
-@font-face {
-  font-family: 'TTNormsProVarRoman';
-  font-weight: 400 700;
-  src: url('https://hicks.design/assets/webfonts/TTNormsProVarRoman/TT-Norms-Roman-Hicksdesign.woff2') format('woff2'), url('https://hicks.design/assets/webfonts/TTNormsProVarRoman/TT-Norms-Roman-Hicksdesign.woff') format('woff');
-}
+/*    font-family: 'TTNormsProVarRoman','Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 */
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color:white;
@@ -282,6 +277,11 @@ display: flex;
   overflow-wrap: break-word;
 }
 
+text {
+  font-family: 'Montserrat', sans-serif;
+  font-style: normal;
+  font-size: 10px;
+}
 /*
 .ant-alert-message {
   color: rgba(0, 0, 0, 0.85);
@@ -889,7 +889,6 @@ h6 {
   font-size: 24px;
   color:#22C493;
   font-weight: 600;
-  font-family:"Poppins","PingFang SC", sans-serif;
   text-transform: uppercase;
   margin-bottom: 1rem;
 }
@@ -927,9 +926,8 @@ h6 {
   width: 100%;
   text-shadow: 2px 2px 3px rgba(255,255,255,0.2);
   font-size:20px;
-  font-family:"Poppins","PingFang SC", sans-serif;
   text-align: left;
-  font-weight:bold;
+  font-weight: 500;
 }
 
 .leader-board-rank-index {
@@ -937,16 +935,14 @@ h6 {
   width: 100%;
   text-shadow: 2px 2px 3px rgba(255,255,255,0.2);
   font-size:1.0rem;
-  font-family:"Poppins","PingFang SC", sans-serif;
   text-align: center;
-  font-weight:bold;
+  font-weight:500;
 }
 
 .leader-board-rank-index-top3 {
   color: rgba(0, 0, 0, 0.6);
   width: 100%;
   text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.2);
-  font-family: "Poppins", "PingFang SC", sans-serif;
   font-weight: bold;
   font-size: 2.9rem;
   z-index: 1000;
@@ -960,9 +956,8 @@ h6 {
   width: 100%;
   text-shadow: 2px 2px 3px rgba(255,255,255,0.2);
   font-size:1.1rem;
-  font-family:"Poppins","PingFang SC", sans-serif;
   text-align: right;
-  font-weight:bold;
+  font-weight:500;
 }
 
 .gold {
@@ -1198,7 +1193,6 @@ h6 {
 	display: block;
 	margin: 0 0 .25rem;
 	color: #777;
-  font-family:"Poppins","PingFang SC", sans-serif;
 }
 
 .mini-card time strong {
@@ -1314,7 +1308,6 @@ h6 {
   width: 100%;
   text-shadow: 2px 2px 3px rgba(255,255,255,0.2);
   font-size:50px;
-  font-family:"Poppins","PingFang SC", sans-serif;
   text-align: center;
   font-weight:bold;
   line-height: 60px;
@@ -1324,7 +1317,6 @@ h6 {
   color: rgba(255, 255, 255, 0.6); 
   text-shadow: 2px 2px 3px rgba(0,0,0,0.9);
   font-size:50px;
-  font-family:"Poppins","PingFang SC", sans-serif;
   text-align: center;
   font-weight:bold;
   line-height: 60px;
@@ -1346,7 +1338,6 @@ h6 {
              0 10px 10px rgba(0,0,0,.2),
              0 20px 20px rgba(0,0,0,.15);
   font-size:50px;
-  font-family:"Poppins","PingFang SC", sans-serif;
   font-weight:bold;
 }
 
@@ -1488,6 +1479,7 @@ h6 {
     line-height: 1.3;
     margin: 2rem 1rem 0;
     color:azure;
+    font-weight:600;
 }
 
 .footer-inside {
@@ -1674,7 +1666,6 @@ social icons
     height: 48px;
     text-overflow: ellipsis;
     overflow: hidden;
-    font-family:"Poppins","PingFang SC", sans-serif;
     text-overflow:ellipsis;
     overflow:hidden;
     display: -webkit-box !important;
@@ -1730,16 +1721,6 @@ social icons
     margin-right: 1.0rem;
     margin-bottom: -1rem;
   }
-
-  /*
-  a {
-    text-decoration: none;
-    color: rgb(255, 163, 24);
-    font-size: normal;
-    font-family: TTNormsProVarRoman,sans-serif;
-    font-weight: normal;
-  }
-  */
 
   .foot-ckbaddr-qr{
     width: 124px;
