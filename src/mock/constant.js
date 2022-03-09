@@ -117,6 +117,7 @@ export const DASOPENEPOCH = [
     //new Date('2022-02-20 21:00:00 GMT'),
     //new Date('2022-02-27 22:00:00 GMT'),
     //new Date('2022-03-06 23:00:00 GMT')
+    new Date('2023-01-01 00:00:00 GMT')     //保留
 ];
 
 export const TABLEFILTER = 
