@@ -6,32 +6,40 @@
                 "link":"https://bihu.com/article/1247571945"
             },
             {
-                "name":"火币钱包",
-                "link":"https://mp.weixin.qq.com/s/XNqgtEDtBA_xZ6Hnlo4evA"
+                "name":"货币钱包",
+                "link":"https://dotbit.medium.com/first-apps-integration-huobi-wallet-now-integrated-das-46d9e4b5b499"
             },
             {
                 "name":"imToken",
-                "link":"https://mp.weixin.qq.com/s/m-oIZOKwHkGbu6QkchgtwA"
+                "link":"https://dotbit.medium.com/das-is-now-listed-on-imtoken-619b1052b788"
+            },
+            {
+                "name":"Metamask",
+                "link":"https://dotbit.medium.com/how-to-register-das-in-metamask-713b2985531a"
             },
             {
                 "name":"TokenPocket",
-                "link":"https://mp.weixin.qq.com/s/MyRp_ggtKrCGA24RIjpREA"
+                "link":"https://dotbit.medium.com/first-apps-integration-tokenpocket-now-integrated-das-b89c780f3d8"
             },
             {
                 "name":"麦子钱包",
-                "link":"https://mp.weixin.qq.com/s/Rl9HUgz25u4AArxWZjQCXA"
+                "link":"https://dotbit.medium.com/das-is-now-listed-on-mathwallet-f858848b5b1f"
             },
             {
                 "name":"Via Wallet",
-                "link":"https://mp.weixin.qq.com/s/MEaLjn4gUbE6A70Zzs8G1w"
-            },
-            {
-                "name":"AToken",
-                "link":"https://mp.weixin.qq.com/s/_ZNn2AHqmo1Y3E1R-ijYVw"
+                "link":"https://dotbit.medium.com/das-is-now-listed-on-viawallet-20572453e60e"
             },
             {
                 "name":"BitKeep Wallet",
-                "link":"https://mp.weixin.qq.com/s/6PY8cdntazPSwYYmtXIdAw"
+                "link":"https://dotbit.medium.com/das-will-be-soon-listed-on-bitkeep-2efdb2b21ab9"
+            },
+            {
+                "name":"HyperPay",
+                "link":"https://dotbit.medium.com/das-is-now-listed-on-hyperpay-2d2f66356634"
+            },
+            {
+                "name":"ONTO Wallet",
+                "link":"https://dotbit.medium.com/das-is-now-listed-on-onto-wallet-2ac4b8319eeb"
             }
         ],
         "en_US":[
@@ -40,7 +48,7 @@
                 "link":"https://bihu.com/article/1247571945"
             },
             {
-                "name":"HuobiWallet",
+                "name":"Huobi Wallet",
                 "link":"https://dotbit.medium.com/first-apps-integration-huobi-wallet-now-integrated-das-46d9e4b5b499"
             },
             {
