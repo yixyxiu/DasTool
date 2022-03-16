@@ -93,31 +93,41 @@ export function getFigurePaths(domainMd5) {
 }
 
 export const DASOPENEPOCH = [
-    new Date('2021-09-17 02:00:00 GMT'),    //
-        // todo 
-    //new Date('2021-10-10 02:00:00 GMT'),
-    //new Date('2021-10-17 03:00:00 GMT'),
-    //new Date('2021-10-24 04:00:00 GMT'),
-    //new Date('2021-10-31 05:00:00 GMT'),
-    //new Date('2021-11-07 06:00:00 GMT'),
-    //new Date('2021-11-14 07:00:00 GMT'),
-    //new Date('2021-11-21 08:00:00 GMT'),
-    //new Date('2021-11-28 09:00:00 GMT'),
-    //new Date('2021-12-05 10:00:00 GMT'),
-    //new Date('2021-12-12 11:00:00 GMT'),
-    //new Date('2021-12-19 12:00:00 GMT'),
-    //new Date('2021-12-26 13:00:00 GMT'),
-    //new Date('2022-01-02 14:00:00 GMT'),
-    //new Date('2022-01-09 15:00:00 GMT'),
-    //new Date('2022-01-16 16:00:00 GMT'),
-    //new Date('2022-01-23 17:00:00 GMT'),
-    //new Date('2022-01-30 18:00:00 GMT'),
-    //new Date('2022-02-06 19:00:00 GMT'),
-    //new Date('2022-02-13 20:00:00 GMT'),
-    //new Date('2022-02-20 21:00:00 GMT'),
-    //new Date('2022-02-27 22:00:00 GMT'),
-    //new Date('2022-03-06 23:00:00 GMT')
-    new Date('2023-01-01 00:00:00 GMT')     //保留
+    {
+        time: new Date('2021-09-17 02:00:00 GMT'), 
+        open_percents: 0.35,
+        parameters: 1503238553
+    },
+    {
+        time: new Date('2022-03-21 12:00:00 GMT'), 
+        open_percents: 0.40,
+        parameters: 1717986918
+    },
+    {
+        time: new Date('2022-03-28 12:00:00 GMT'), 
+        open_percents: 0.45,
+        parameters: 1932735282
+    },
+    {
+        time: new Date('2022-04-04 12:00:00 GMT'), 
+        open_percents: 0.50,
+        parameters: 2147483647
+    },
+    {
+        time: new Date('2022-04-11 12:00:00 GMT'), 
+        open_percents: 0.55,
+        parameters: 2362232012
+    },
+    {
+        time: new Date('2022-04-18 12:00:00 GMT'), 
+        open_percents: 0.60,
+        parameters: 2576980377
+    },
+    {
+        time: new Date('2022-07-18 12:00:00 GMT'), 
+        open_percents: 0.60,
+        parameters: 2576980377
+    }
 ];
 
 export const TABLEFILTER = 
@@ -134,28 +144,33 @@ export const TABLEFILTER =
             "iconClass":"fa fa-check-circle dropdown-icon-fa"
         },
         {
-            "name":"在售账号",
+            "name":"即将开放账号",
             "key":'1',
+            "iconClass":"fa fa-calendar dropdown-icon-fa"
+        },
+        {
+            "name":"在售账号",
+            "key":'2',
             "iconClass":"fa fa-usd dropdown-icon-fa"
         },
         {
             "name":"未开放的账号",
-            "key":'2',
+            "key":'3',
             "iconClass":"fa fa-lock dropdown-icon-fa"
         },
         {
             "name":"已注册账号",
-            "key":'3',
+            "key":'4',
             "iconClass":"fa fa-registered dropdown-icon-fa"
         },
         {
             "name":"系统保留账号",
-            "key":'4',
+            "key":'5',
             "iconClass":"fa fa-certificate dropdown-icon-fa"
         },
         {
             "name":"注册中的账号",
-            "key":'5',
+            "key":'6',
             "iconClass":"fa fa-exclamation-circle dropdown-icon-fa"
         }
         
@@ -172,28 +187,33 @@ export const TABLEFILTER =
             "iconClass":"fa fa-check-circle dropdown-icon-fa"
         },
         {
-            "name":"On Sale",
+            "name":"Release soon",
             "key":'1',
+            "iconClass":"fa fa-calendar dropdown-icon-fa"
+        },
+        {
+            "name":"On Sale",
+            "key":'2',
             "iconClass":"fa fa-usd dropdown-icon-fa"
         },
         {
             "name":"Not yet Open Account",
-            "key":'2',
+            "key":'3',
             "iconClass":"fa fa-lock dropdown-icon-fa"
         },
         {
             "name":"Rigistered",
-            "key":'3',
+            "key":'4',
             "iconClass":"fa fa-registered dropdown-icon-fa"
         },
         {
             "name":"Reserved Account",
-            "key":'4',
+            "key":'5',
             "iconClass":"fa fa-certificate dropdown-icon-fa"
         },
         {
             "name":"Rigistering",
-            "key":'5',
+            "key":'6',
             "iconClass":"fa fa-exclamation-circle dropdown-icon-fa"
         }
     ]

@@ -76,11 +76,12 @@ const FIXMETHODS = {
 
 const DASACCOUNTSTATUS = {
     Available: '0',
-    OnSale:'1',
-    NotOpen: '2',
-    Registered: '3',
-    Reserved: '4',
-    Registering: '5',
+    ScheOpen:'1',
+    OnSale:'2',
+    NotOpen: '3',
+    Registered: '4',
+    Reserved: '5',
+    Registering: '6',
 }
 
 // 注意，顺序与上面的DASACCOUNTSTATUS保持一致
@@ -99,18 +100,41 @@ const DASACCOUNTSTATUS = {
 ]*/
 
 let AccountStatusColors = {
-    '0':'#1890ff',
-    '1':'#1890ff',
-    '2':'#DF4A46',
-    '3':'#FFA800',
-    '4':'#808191',
-    '5':'#FFD717',
+    '0':'#1890ff',      // 可注册
+    '1':'#00E09C',      // 即将开放 
+    '2':'#1890ff',      // 在售
+    '3':'#DF4A46',      // 未开放
+    '4':'#FFA800',      // 已注册
+    '5':'#808191',      // 保留
+    '6':'#FFD717',      // 注册中
 }
     
 let defLocalConfig= {
     "newbie-add-favorite-tip-showed": "false",
     "newbie-remove-favorite-tip-showed": "false",
 };
+/*
+String.prototype.format = function () {
+    // store arguments in an array
+    var args = arguments;
+    // use replace to iterate over the string
+    // select the match and check if related argument is present
+    // if yes, replace the match with the argument
+    return this.replace(/{([0-9]+)}/g, function (match, index) {
+      // check if the argument is present
+      return typeof args[index] == 'undefined' ? match : args[index];
+    });
+};
+*/
+
+String.prototype.format = function() {
+    let a = this;
+    for (let k in arguments) {
+        a = a.replace("{" + k + "}", arguments[k]);
+    }
+
+    return a;
+}
 
 
 class DaslaFooter extends React.Component {
@@ -1463,6 +1487,7 @@ export default class Index extends React.Component {
         fix: FIXMETHODS.ASPREFIX,
         animationClass: 'dasAnimation',
         mainTableFilter: '-1',  // 显示全部
+        accountOpenInfoList: {},
 
         loginTime: new Date(),
         dataUpdateFlag: false,
@@ -1669,6 +1694,51 @@ export default class Index extends React.Component {
         this.state.snsArr = (wordList ? wordList : "");
     }
 
+    getAccountOpenTime = (account) => {
+        let openTime = DASOPENEPOCH[0].time;
+
+        if (account.length < 4)
+            return openTime;
+
+        // 虽然 > 10 < 47 位都可以注册，但考虑到太长的账号没意义，在此只用15个字符以内的
+        if (account.length > 9 && account.length < 20)
+            return openTime;
+
+        // 4-9 位的，算法决定
+        account += '.bit';
+        var hash = blake2b(32, null, null, Buffer.from('2021-07-22 12:00'));
+        hash = hash.update(Buffer.from(account));
+        var output = new Uint8Array(32)
+        var out = hash.digest(output);
+        
+        
+        let arr = out.slice(0,4);
+        let uintValue = this.toBeUint32(arr);
+        let checkOpen = false;
+
+        console.log(DASOPENEPOCH);
+        for (let index = 0; index < DASOPENEPOCH.length; index++) {
+            const element = DASOPENEPOCH[index];
+            if (uintValue <= element.parameters) {
+                openTime = element.time;
+                return openTime;
+            }
+
+        }
+
+        return undefined;
+    }
+
+    formatAccountOpenTime = (dateTime) => {
+        
+        let date = dateTime.toLocaleDateString();
+        let time = dateTime.toLocaleTimeString();
+
+        let result = this.langConfig("das-will-open-tips").format(date, time);
+
+        return result;
+    }
+
     search = () => {
 
         let reserved = das.reserved;
@@ -1709,9 +1779,20 @@ export default class Index extends React.Component {
                         price = this.cacheData.DASMarketData[account].price_ckb/100000000;
                     }
                     else {
-                        this.searchAccountFromMarket(account);
+                    //    this.searchAccountFromMarket(account);    // 避免请求太多，加载的时候才去请求
                     }                    
                 }    
+
+                // 如果账户是未开放的，则检查该账号是什么时候开放
+                let openDate = undefined;
+                if (accountStatus === DASACCOUNTSTATUS.NotOpen) {
+                    openDate = this.getAccountOpenTime(item);
+                    if (openDate) {
+                        this.state.accountOpenInfoList[account] = openDate;
+                        console.log(this.state.accountOpenInfoList);
+                        accountStatus = DASACCOUNTSTATUS.ScheOpen;
+                    }
+                }
 
                 // 添加到结果中
                 if (!arr.includes(account)) {
@@ -1720,9 +1801,11 @@ export default class Index extends React.Component {
                         id: result.length + 1,
                         status: [accountStatus],
                         name: account,
+                        openDate: openDate,
                         price: price
                     })
                 }
+                console.log(result);
             }
         }
 
@@ -1734,7 +1817,8 @@ export default class Index extends React.Component {
         // 按字符长度排序
         if (result.length > 1) {
             result.sort((a, b) => {
-                return (a.status[0]-b.status[0] || (a.name.length - b.name.length))
+                return ((a.status[0] === b.status[0]) && (a.status[0] === DASACCOUNTSTATUS.ScheOpen) && (a.openDate-b.openDate)) || 
+                (a.status[0]-b.status[0]) || (a.name.length - b.name.length)
              });
         }
         let filterList = this.getAccountListByFilter(result, this.state.mainTableFilter)
@@ -1796,29 +1880,25 @@ export default class Index extends React.Component {
     getCanRegistValue = (localTime) => {
         // let localTime = new Date();
 
-        // 第一波之前，小于
-        if (localTime < DASOPENEPOCH[0])
-    	    return 1503238553;
-        
-        // 最后一波开放完之后
-        if (localTime >= DASOPENEPOCH[DASOPENEPOCH.length-1])
-            return 4294967295;
-
-        let index = 0;
+        let percents = 0.35;
         // 处于中间的区间
-        for (var j = 0; j < DASOPENEPOCH.length; j++) {
-            //var tmp = DASOPENEPOCH[j].toUTCString();
+        for (let j = 0; j < DASOPENEPOCH.length; j++) {
             //console.log(tmp)
             
-            if ((j < DASOPENEPOCH.length -1 ) && (localTime >= DASOPENEPOCH[j]) && (localTime < DASOPENEPOCH[j+1])) {
+            if ((j < DASOPENEPOCH.length -1 ) && (localTime >= DASOPENEPOCH[j].time) && (localTime < DASOPENEPOCH[j+1]).time) {
             	//console.log('find' + j)
-                index = j;
+                percents = DASOPENEPOCH[j].percents;
                 break;
             }
         }
 		
-        let value = 1503238553 + 4294967295*(65/24)*0.01*index
-		//console.log(localTime + ' need:' + value)
+        if (localTime > DASOPENEPOCH[DASOPENEPOCH.length-1].time) {
+            percents = DASOPENEPOCH[DASOPENEPOCH.length-1].percents;
+        }
+            
+
+        let value = 4294967295 * percents;
+		console.log(localTime + ' need:' + value)
 
         return value;
     }
@@ -1926,6 +2006,9 @@ export default class Index extends React.Component {
             //    this.openLink(url, 'view_host_'+record.name);
                 url = "https://bestdas.com/account/" + record.name + "?inviter=cryptofans.bit";
                 this.openLink(url, 'make_offer_'+record.name);
+                break;
+            case DASACCOUNTSTATUS.ScheOpen: 
+                this.openLink(this.langConfig("das-limit-link"));
                 break;
             case DASACCOUNTSTATUS.OnSale: 
                 url = "https://bestdas.com/account/" + record.name + "?inviter=cryptofans.bit";
@@ -2950,10 +3033,33 @@ export default class Index extends React.Component {
                 },*/
                 render: (text, record, index) => (
                   <>
+
                     {record.status.map(status => {
                         let color = AccountStatusColors[status];
-                        //console.log(status);
                         
+                        let otherTag = '';
+                        if (record.name in this.state.accountOpenInfoList) {
+                            otherTag = <Tag color={color} key={status}>
+                                {this.formatAccountOpenTime(this.state.accountOpenInfoList[record.name])}
+                            </Tag>
+                        }
+                        else {
+                            otherTag = <Tag color={color} key={status}>
+                                    {this.getAccountStatusString(status)}
+                                    </Tag>
+                        }
+
+                        // 如果上次查过在市场上挂单，则修改状态
+                        if (status === DASACCOUNTSTATUS.Registered) {
+                            if (record.name in this.cacheData.DASMarketData) {
+
+                            } 
+                            else {
+                                // 搜索
+                                this.searchAccountFromMarket(record.name);
+                            }   
+                        }
+                              
                         if (status === DASACCOUNTSTATUS.OnSale) {
                             if (record.price) {
                                 let value = this.numberFormatter(record.price, 2);
@@ -2965,21 +3071,18 @@ export default class Index extends React.Component {
                             }
                             else {
                                 return (
-                                    <Tag color={color} key={status}>
-                                    {this.getAccountStatusString(status)}
-                                    </Tag>
+                                    otherTag
                                 );
                             }
                         }
                         else {
                             return (
-                                <Tag color={color} key={status}>
-                                {this.getAccountStatusString(status)}
-                                </Tag>
+                                otherTag
                             );
                         }
                         
                         })}
+                        
                   </>
                 ),
             },
