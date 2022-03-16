@@ -99,7 +99,7 @@ export const DASOPENEPOCH = [
         parameters: 1503238553
     },
     {
-        time: new Date('2022-03-21 12:00:00 GMT'), 
+        time: new Date('Mon Mar 21 2022 12:00:00 GMT+0000'), 
         open_percents: 0.40,
         parameters: 1717986918
     },

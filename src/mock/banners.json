@@ -1,11 +1,6 @@
 {
     "zh_CN":[
         {
-            "name":"godwoken",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211106/37b32e38437742a1bfaa6bd29ad6addd_GYYDAKRTGAYA.jpeg",
-            "link":"https://www.nervos.org/godwoken"
-        },
-        {
 
             "name":"nervos2022",
             "image":"https://talk.nervos.org/uploads/default/original/2X/7/7f3f8daf2e915ce5cb4d9082fa0322c3802fa35f.jpeg",
@@ -14,21 +9,21 @@
         },
         {
             "name":"yokai",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/5/54ade8d6aadd037d0df4c3419f603710868dd59a.jpeg",
-            "link":"https://twitter.com/yokaiswap/status/1501437632139575299"
+            "image":"https://talk.nervos.org/uploads/default/original/2X/5/5f992b9fee122d478409bd4eb462eb9e12582f08.jpeg",
+            "link":"https://medium.com/@yokaiswap/yok-halving-and-yok-repurchase-program-22327b52eedd"
         },
-       {
+        {
             "name":".bit-brand",
             "image":"https://talk.nervos.org/uploads/default/original/2X/e/e7b263eead2d75c08a256962721f95a0167bcca1.jpeg",
             "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid"
+        },
+        {
+            "name":".bit-release",
+            "image":"https://talk.nervos.org/uploads/default/original/2X/1/1f1995e1f76142446bba68ee8c4cf60e77613770.jpeg",
+            "link":""
         }
     ],
     "en_US":[
-        {
-            "name":"godwoken",
-            "image":"https://oss-cdn1.bihu-static.com/image/20211106/63cbfad7611347fe93db16c2ff7b1ff2_GYYDAKRTGAYA.jpeg",
-            "link":"https://www.nervos.org/godwoken"
-        },
         {
 
             "name":"nervos2022",
@@ -38,13 +33,18 @@
         },
         {
             "name":"yokai",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/5/54ade8d6aadd037d0df4c3419f603710868dd59a.jpeg",
-            "link":"https://twitter.com/yokaiswap/status/1501437632139575299"
+            "image":"https://talk.nervos.org/uploads/default/original/2X/1/1b071e041843c293157fb75a45691c5f89a6b8c6.jpeg",
+            "link":"https://medium.com/@yokaiswap/yok-halving-and-yok-repurchase-program-22327b52eedd"
         },
-       {
+        {
             "name":".bit-brand",
             "image":"https://talk.nervos.org/uploads/default/original/2X/5/56b870f6b80d17aad02dafdd47db1fe53277fe53.jpeg",
             "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid"
+        },
+        {
+            "name":".bit-release",
+            "image":"https://talk.nervos.org/uploads/default/original/2X/1/1f1995e1f76142446bba68ee8c4cf60e77613770.jpeg",
+            "link":""
         }
 
     ]

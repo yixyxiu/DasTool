@@ -1716,7 +1716,6 @@ export default class Index extends React.Component {
         let uintValue = this.toBeUint32(arr);
         let checkOpen = false;
 
-        console.log(DASOPENEPOCH);
         for (let index = 0; index < DASOPENEPOCH.length; index++) {
             const element = DASOPENEPOCH[index];
             if (uintValue <= element.parameters) {
@@ -1789,7 +1788,7 @@ export default class Index extends React.Component {
                     openDate = this.getAccountOpenTime(item);
                     if (openDate) {
                         this.state.accountOpenInfoList[account] = openDate;
-                        console.log(this.state.accountOpenInfoList);
+                        //console.log(this.state.accountOpenInfoList);
                         accountStatus = DASACCOUNTSTATUS.ScheOpen;
                     }
                 }
@@ -1898,7 +1897,7 @@ export default class Index extends React.Component {
             
 
         let value = 4294967295 * percents;
-		console.log(localTime + ' need:' + value)
+		//console.log(localTime + ' need:' + value)
 
         return value;
     }
