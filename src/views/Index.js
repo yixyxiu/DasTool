@@ -36,6 +36,7 @@ das.recommendList = require('../mock/recommendList.json');
 das.banners = require('../mock/banners.json');
 das.linkResources = require('../mock/linkResources.json');
 das.ownerStat = require('../mock/accountsOwner.json');
+das.hotAccounts = require('../mock/hot_accounts.json');
 das.recentRegData = [];
 das.recentOwnerData = [];
 
@@ -719,12 +720,10 @@ class DASWordCloud extends React.Component {
     }
 
     componentDidMount() {
-        console.log('daswordcloud componentDidMount');
         window.addEventListener('resize', this.handleResize.bind(this)) 
     }
 
     componentWillUnmount() { 
-        console.log('daswordcloud componentWillUnmount');
         window.removeEventListener('resize', this.handleResize.bind(this))
     }
 
@@ -1469,8 +1468,6 @@ export default class Index extends React.Component {
         for (let key of Object.keys(dataObject)) {
             this.cacheData[key] = dataObject[key];
         }
-
-        console.log(this.cacheData);
     }
 
     state = {
@@ -1728,12 +1725,13 @@ export default class Index extends React.Component {
         return undefined;
     }
 
-    formatAccountOpenTime = (dateTime) => {
+    formatAccountOpenTime = (dateTime, status, color) => {
         
         let date = dateTime.toLocaleDateString();
         let time = dateTime.toLocaleTimeString();
 
-        let result = this.langConfig("das-will-open-tips").format(date, time);
+        let result = '{0}/{1} {2}'.format(dateTime.getMonth()+1, dateTime.getDate(), 
+                time);
 
         return result;
     }
@@ -1745,6 +1743,7 @@ export default class Index extends React.Component {
         let data = this.state.snsArr;
         let result = [];
         let arr = [];
+        let dateData = {};
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
 
@@ -1790,6 +1789,10 @@ export default class Index extends React.Component {
                         this.state.accountOpenInfoList[account] = openDate;
                         //console.log(this.state.accountOpenInfoList);
                         accountStatus = DASACCOUNTSTATUS.ScheOpen;
+                        if (!dateData[openDate.toLocaleString()]) {
+                            dateData[openDate.toLocaleString()] = []
+                        }
+                        dateData[openDate.toLocaleString()].push(item);
                     }
                 }
 
@@ -1804,7 +1807,6 @@ export default class Index extends React.Component {
                         price: price
                     })
                 }
-                console.log(result);
             }
         }
 
@@ -1822,7 +1824,7 @@ export default class Index extends React.Component {
         }
         let filterList = this.getAccountListByFilter(result, this.state.mainTableFilter)
 
-        //console.log(result)
+        console.log(dateData)
         this.setState({
             list: filterList,
             mainTableDataList: result
@@ -1877,25 +1879,21 @@ export default class Index extends React.Component {
 
     // 获取当前时间可注册的值（前4字节转换成Uint32后）
     getCanRegistValue = (localTime) => {
-        // let localTime = new Date();
-
+    
         let percents = 0.35;
         // 处于中间的区间
-        for (let j = 0; j < DASOPENEPOCH.length; j++) {
-            //console.log(tmp)
-            
-            if ((j < DASOPENEPOCH.length -1 ) && (localTime >= DASOPENEPOCH[j].time) && (localTime < DASOPENEPOCH[j+1]).time) {
+        for (let j = 0; j < DASOPENEPOCH.length; j++) {           
+            if ((j < DASOPENEPOCH.length -1 ) && ((localTime >= DASOPENEPOCH[j].time) && (localTime < DASOPENEPOCH[j+1].time))) {
             	//console.log('find' + j)
-                percents = DASOPENEPOCH[j].percents;
+                percents = DASOPENEPOCH[j].open_percents;
                 break;
             }
         }
 		
         if (localTime > DASOPENEPOCH[DASOPENEPOCH.length-1].time) {
-            percents = DASOPENEPOCH[DASOPENEPOCH.length-1].percents;
+            percents = DASOPENEPOCH[DASOPENEPOCH.length-1].open_percents;
         }
             
-
         let value = 4294967295 * percents;
 		//console.log(localTime + ' need:' + value)
 
@@ -2040,13 +2038,15 @@ export default class Index extends React.Component {
     }
 
     goDASRegister = record => {
-        let url = this.getDASRegisterLink(record.name);
-        this.openLink(url, "DasReg" + record.name);  
+        let account = record.name ? record.name : record;
+        let url = this.getDASRegisterLink(account);
+        this.openLink(url, "DasReg" + account);  
     }
 
     goDeNameRegister = record => {
-        let url = this.getDeNameRegisterLink(record.name);
-        this.openLink(url, "DenameReg" + record.name);
+        let account = record.name ? record.name : record;
+        let url = this.getDeNameRegisterLink(account);
+        this.openLink(url, "DenameReg" + account);
     }
 
     keywordChanged = e => {
@@ -2168,6 +2168,10 @@ export default class Index extends React.Component {
     /*    if (!keyword) {
             return this.GenerateRecommendList();
         }*/
+        if (!keyword) {
+            this.handleTryKeywordSearchClick();
+            return;
+        }
 
         switch (this.state.fix){
             case FIXMETHODS.ASPREFIX:
@@ -2720,37 +2724,6 @@ export default class Index extends React.Component {
         this.refreshRecommendList();
     }
 
-    // 随机加载 10 个账号到精准匹配编辑框中
-    loadRandomFrequentWords = () => {
-        let wordList = require('../mock/wordlist.json');
-
-        let reserved = das.reserved;
-        let registered = das.registered;
-        let result = [];
-
-        let wordString = this.langConfig('wordlist-tips');
-
-        // 最多输出 10个
-        while (result.length < 10) {
-            let index = this.getRandomInt(0, wordList.length);
-            let item = wordList[index];
-            if (item.length > 9)
-                continue;
-                
-            if (this.canRegister(item)) {
-                let account = item + '.bit';
-                // 排除
-                if (!result.includes(account) && !reserved.includes(account) && !registered.includes(account)) {
-                    result.push(item);
-                    wordString = wordString + '\n' + item
-                }
-            }
-        }
-
-        console.log(wordString);
-        return wordString;
-    }
-
     loadAccountList = (wordList) => {
         let reserved = das.reserved;
         let registered = das.registered;
@@ -2781,15 +2754,32 @@ export default class Index extends React.Component {
             this.refreshRecommendList();
         }
 
-        console.log(result)
+        if (result.length > 1) {
+            result.sort((a, b) => {
+                return (a.name.length - b.name.length)
+             });
+        }
+
         this.setState({
             list: result
         });
     } 
 
     loadFrequentWords = () => {
-        let wordList = require('../mock/wordlist.json');
-        
+        let openDate = new Date("2022-03-21 12:00:00 GMT");
+        if (new Date() < openDate) {
+            let tips = this.langConfig("wait-for-open-tips").format(openDate.toLocaleDateString(), openDate.toLocaleTimeString());
+            message.warning({
+                content: tips,
+                style: {
+                  marginTop: '4vh',
+                }
+            })
+
+            return;
+        }
+
+        let wordList = require('../mock/release_0321.json');
         this.loadAccountList(wordList);
     }
 
@@ -3005,6 +2995,7 @@ export default class Index extends React.Component {
                 title: '可选账号',
                 dataIndex: 'name',
                 key: 'name',
+                minWidth:60,
                 /*
                 render: (text, record, index) =>{
                     return (
@@ -3026,6 +3017,7 @@ export default class Index extends React.Component {
                 title: '状态',
                 key: 'status',
                 dataIndex: 'status',
+                width:50,
             /*    defaultSortOrder: 'ascend',
                 sorter: {
                     compare: (a, b) => a.status[0] - b.status[0],
@@ -3038,9 +3030,12 @@ export default class Index extends React.Component {
                         
                         let otherTag = '';
                         if (record.name in this.state.accountOpenInfoList) {
-                            otherTag = <Tag color={color} key={status}>
-                                {this.formatAccountOpenTime(this.state.accountOpenInfoList[record.name])}
-                            </Tag>
+                            otherTag = <><Tag color={color} key={status}>
+                            {this.langConfig("das-will-open-tips")}
+                        </Tag>
+                        <Tag color={color} key={status}>
+                        {this.formatAccountOpenTime(this.state.accountOpenInfoList[record.name])}
+                    </Tag></>
                         }
                         else {
                             otherTag = <Tag color={color} key={status}>
@@ -3314,6 +3309,9 @@ export default class Index extends React.Component {
                         
                     </Card>
                     <br/>
+                    <HotAccounts langConfig={this.langConfig} canRegister={this.canRegister} goDASRegister={this.goDASRegister} goDeNameRegister={this.goDeNameRegister} dasData={das}/>
+                    <br/>
+
                     <Card title={this.langConfig('keyword-title')} bordered={false}>
                         
                         <div style={{position: 'relative', paddingRight: 0}}>
@@ -3322,7 +3320,7 @@ export default class Index extends React.Component {
                             <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between', paddingTop:10, height:35}}>
                                 <div/>
                                  
-                                <div style={{marginLeft:16, verticalAlign: 'middle', height:'100%', display:'flex'}} >
+                                <div style={{verticalAlign: 'middle', height:'100%', display:'flex'}} >
                                     <div className='group-radio' >
                                         <Radio.Group name="radiogroup" onChange={this.onFixGroupChange} defaultValue={this.state.fix}>
                                             <Radio value={FIXMETHODS.ASPREFIX}>{this.langConfig('keyword-as-prefix')}</Radio>
@@ -3593,3 +3591,191 @@ const RichOwnerLeaderboard = (props) => {
                 })}
             </div> 
   };
+
+
+const HotAccounts = (props) => {
+
+    const HotAccountsType = {
+        LETTER: 1,
+        NUMBER: 2,
+        WORD:3,
+    }
+
+    const [accounts, setAccounts] = useState([]);
+    const [focusItem, setFocusItem] = useState({});
+    const [accountType, setAccountType] = useState(HotAccountsType.LETTER);
+  
+    useEffect(() => {
+       refreshHotAccounts()
+    }, {});
+  
+    const columns= [
+        {
+            dataIndex: 'avatar',
+            key: 'name',
+        //    className:'das-table-avatar',
+            width: 50,
+            
+            render: (text, record, index) => {
+                let avatar = "https://identicons.did.id/identicon/" + record.name;
+                let dom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
+                
+                return dom                
+            },
+        },
+        {
+            title: '可选账号',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: '操作',
+            width: 100,
+            key: 'action',
+            align: 'right',
+            render: record => {
+                return <RegisteAccountWrapper account={record.name} isFocus={focusItem === record.name} 
+                        langConfig={props.langConfig} select={select} 
+                        goDeNameRegister={props.goDeNameRegister} goDASRegister={props.goDASRegister}
+                        ></RegisteAccountWrapper>
+            },
+        }
+    ]
+
+    const select = (account) => {
+        setFocusItem(account);
+    }
+
+    // 获取min 到 max 之间的随机数，包含min，不含 max
+    const getRandomInt = (min, max) => {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min)) + min; //不含最大值，含最小值
+    }
+
+    const selectTypeChange = (e) => {
+        setAccountType(e.target.value)
+        generateHotAccounts(e.target.value)
+    }
+
+    const generateHotAccounts =(accountType) => {
+        let result = [];
+        let arr = [];
+
+        let dataSrc = [];
+        if (accountType === HotAccountsType.LETTER) {
+            dataSrc = props.dasData.hotAccounts.letter;
+        }
+        else if (accountType === HotAccountsType.NUMBER) {
+            dataSrc = props.dasData.hotAccounts.number;
+        }
+        else if (accountType === HotAccountsType.WORD) {
+            dataSrc = props.dasData.hotAccounts.words;
+        }
+
+        if (!dataSrc) {
+            return;
+        }
+
+        // 最多输出 10个
+        while (result.length < 10) {
+            let index = getRandomInt(0, dataSrc.length);
+            let item = dataSrc[index];
+            if (item.length > 5)
+                continue;
+                
+            if (props.canRegister(item)) {
+                let account = item + '.bit';
+                // 排除
+                if (!arr.includes(account) && !props.dasData.reserved.includes(account) && !props.dasData.registered.includes(account)) {
+                    arr.push(account);
+                    result.push({
+                        id: result.length + 1,
+                        status: 0,
+                        name: account
+                    })
+                }
+            }
+        }
+
+        setAccounts(result);
+    }
+
+    const refreshHotAccounts = () => {
+        generateHotAccounts(accountType);
+    };
+
+    let localeHotAccounts = {
+        emptyText: (
+          <span>
+              <div><img src={DAS_LA_LOGO} height='48px' alt="" /></div>
+            <p>
+                {props.langConfig('empty-data')}   
+            </p>
+            <Button onClick={refreshHotAccounts}>{props.langConfig('empty-try-recommend-again')}</Button>
+          </span>
+        )
+    };
+
+    return  <div>
+                <Card id="HotAccountList" title={props.langConfig('hot-accounts-title')} bordered={false}>
+                    
+                    <div style={{verticalAlign: 'middle', height:'100%', display:'flex',justifyContent:'flex-end',flexDirection:'row'}} >
+                        
+                        <div className='group-radio' >
+                            <span className='hot-accounts-filter-tips'>{props.langConfig('hot-accounts-filter')}</span>
+                            <Radio.Group name="radiogroup" onChange={selectTypeChange} defaultValue={HotAccountsType.LETTER}>
+                                <Radio value={HotAccountsType.LETTER}>{props.langConfig('hot-accounts-letter')}abcd</Radio>
+                                <Radio value={HotAccountsType.NUMBER}>{props.langConfig('hot-accounts-numeric')}1234</Radio>
+                                <Radio value={HotAccountsType.WORD}>{props.langConfig('hot-accounts-word')}</Radio>
+                            </Radio.Group> 
+                        </div>
+                        <Space size="small">
+                            
+                        </Space>
+                                   
+                    </div>
+                    <br/>
+                    
+                    <Table locale={localeHotAccounts} rowKey={(item) => item.id} dataSource={accounts} columns={columns}
+                        rowClassName='das-account-name noselect' showHeader={false} pagination={false} />
+                    
+                    <br/>
+                    <div style={{verticalAlign: 'middle', height:'100%', display:'flex',justifyContent:'flex-end',flexDirection:'row'}} >
+                        <Button type="primary" shape="round" danger onClick={() => refreshHotAccounts()}>{props.langConfig('hot-accounts-change-list')}</Button>
+                    </div>
+                </Card>
+            </div>
+}
+
+const RegisteAccountWrapper = (props) => {
+    const [isFocus, setFocus] = useState(false);
+    const [focusItem, setFocusItem] = useState({});
+    if (props.isFocus) {
+        return <div className="dasla-register-container">       
+            <div className="dasla-btn-register-wraper">
+            <Tooltip placement="topRight" title={props.langConfig('registry-dename-supprts')}>
+                <Button className="dasla-btn-register-account" size={'normal'} shape="round"
+                onClick={() => props.goDeNameRegister(props.account)}>{props.langConfig('goto-register-btn')}</Button>
+                <img src={REG_DENAME_LOGO}  alt="" className="image-5"/>
+            </Tooltip>
+            
+            </div>
+            <div className="dasla-btn-register-wraper">
+            <Tooltip placement="topRight" title={props.langConfig('registry-das-supprts')}>
+                <Button className="dasla-btn-register-account" size={'normal'} shape="round"
+                    onClick={() => props.goDASRegister(props.account)}>{props.langConfig('goto-register-btn')}</Button>
+                <img src={REG_DAS_LOGO}  alt="" className="image-5"/>
+            </Tooltip>
+            </div>
+        </div>
+    }
+    else {
+        return <Space size="small">
+        <Button className="dasla-btn-select-account" size={'normal'} shape="round"
+                onClick={() => props.select(props.account)}>{props.langConfig('register-btn')}</Button>
+    
+        </Space>
+    }
+    
+}

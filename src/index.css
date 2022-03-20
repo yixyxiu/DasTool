@@ -52,6 +52,14 @@ code {
   }
 }
 
+.hot-accounts-filter-tips {
+  font-size: 14px;
+  margin-right: 1rem;
+  font-weight: 600;
+  color: #11142d;
+  word-break: break-all;
+}
+
 .das-account-price {
   font-size: 12px;
   font-weight: 500;
@@ -157,6 +165,7 @@ code {
   background: #8f8b8b;
   margin: 10px 1px;
 }
+
 
 /*
 .statistic-daily-container {
