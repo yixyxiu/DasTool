@@ -2766,7 +2766,7 @@ export default class Index extends React.Component {
     } 
 
     loadFrequentWords = () => {
-        let openDate = new Date("2022-03-21 12:00:00 GMT");
+        let openDate = new Date(1647864000000);     // 2022-03-21 12:00:00 GMT
         if (new Date() < openDate) {
             let tips = this.langConfig("wait-for-open-tips").format(openDate.toLocaleDateString(), openDate.toLocaleTimeString());
             message.warning({
