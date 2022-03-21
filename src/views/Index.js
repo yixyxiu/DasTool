@@ -1727,7 +1727,7 @@ export default class Index extends React.Component {
 
     formatAccountOpenTime = (dateTime, status, color) => {
         
-        let date = dateTime.toLocaleDateString();
+        //let date = dateTime.toLocaleDateString();
         let time = dateTime.toLocaleTimeString();
 
         let result = '{0}/{1} {2}'.format(dateTime.getMonth()+1, dateTime.getDate(), 

@@ -94,38 +94,44 @@ export function getFigurePaths(domainMd5) {
 
 export const DASOPENEPOCH = [
     {
-        time: new Date('2021-09-17 02:00:00 GMT'), 
+        time: new Date(1631880000000), 
         open_percents: 0.35,
         parameters: 1503238553
     },
     {
         //time: new Date('Mon Mar 21 2022 12:00:00 GMT+0000'), 
-        time: new Date('2022-03-21 12:00:00 GMT'), 
+        //time: new Date('2022-03-21 12:00:00 GMT'), 
+        time: new Date(1647864000000),
         open_percents: 0.40,
         parameters: 1717986918
     },
     {
-        time: new Date('2022-03-28 12:00:00 GMT'), 
+        //time: new Date('2022-03-28 12:00:00 GMT'), 
+        time: new Date(1648468800000), 
         open_percents: 0.45,
         parameters: 1932735282
     },
     {
-        time: new Date('2022-04-04 12:00:00 GMT'), 
+        //time: new Date('2022-04-04 12:00:00 GMT'), 
+        time: new Date(1649073600000), 
         open_percents: 0.50,
         parameters: 2147483647
     },
     {
-        time: new Date('2022-04-11 12:00:00 GMT'), 
+        //time: new Date('2022-04-11 12:00:00 GMT'), 
+        time: new Date(1649678400000), 
         open_percents: 0.55,
         parameters: 2362232012
     },
     {
-        time: new Date('2022-04-18 12:00:00 GMT'), 
+        //time: new Date('2022-04-18 12:00:00 GMT'), 
+        time: new Date(1650283200000), 
         open_percents: 0.60,
         parameters: 2576980377
     },
     {
-        time: new Date('2022-07-18 12:00:00 GMT'), 
+        //time: new Date('2022-07-18 12:00:00 GMT'), 
+        time: new Date(1658145600000), 
         open_percents: 0.60,
         parameters: 2576980377
     }
