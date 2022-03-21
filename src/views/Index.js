@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select, Form, notification} from 'antd';
 import {SearchOutlined, DownOutlined, QuestionCircleFilled} from '@ant-design/icons';
 import { Treemap, Line, WordCloud, Bar } from '@ant-design/charts';
@@ -768,8 +768,22 @@ class DASWordCloud extends React.Component {
 const  DASStatisticSummary = (props) => {
     const [data, setData] = useState({});
   
+    let intervalRef = useRef(null);
+
     useEffect(() => {
       asyncFetch();
+
+      clearInterval(intervalRef.current);
+
+      // 一分钟更新一次数据
+      intervalRef.current = setInterval(() => {
+          asyncFetch();
+      }, 1 * 60 * 1000);
+      
+      return () => {
+          clearInterval(intervalRef.current)
+      }
+
     }, {});
   
     const asyncFetch = () => {
@@ -935,8 +949,21 @@ const  DASStatisticSummary = (props) => {
 const DailyRegCountChart = (props) => {
     const [data, setData] = useState([]);
   
+    let intervalRef = useRef(null);
+
     useEffect(() => {
-      asyncFetch();
+        asyncFetch();
+
+        clearInterval(intervalRef.current);
+
+        // 一分钟更新一次数据
+        intervalRef.current = setInterval(() => {
+            asyncFetch();
+        }, 1 * 60 * 1000);
+        
+        return () => {
+            clearInterval(intervalRef.current)
+        }
     }, []);
   
     const asyncFetch = () => {
@@ -1081,8 +1108,22 @@ const DailyRegCountChart = (props) => {
   const DailyOwnerCountChart = (props) => {
     const [data, setData] = useState([]);
   
+    let intervalRef = useRef(null);
+
     useEffect(() => {
+
       asyncFetch();
+
+      clearInterval(intervalRef.current);
+
+        // 一分钟更新一次数据
+        intervalRef.current = setInterval(() => {
+            asyncFetch();
+        }, 1 * 60 * 1000);
+        
+        return () => {
+            clearInterval(intervalRef.current)
+        }
     }, []);
   
     const asyncFetch = () => {
@@ -2648,7 +2689,7 @@ export default class Index extends React.Component {
         //this.getRegistList();
 
         // 再设置定时器，拉取最新注册账号，1分钟跑一次，之后改成 5 分钟 todo
-        let timerID1 = setInterval(this.getRegistList, 5 * 60 * 1000);
+        let timerID1 = setInterval(this.getRegistList, 1 * 60 * 1000);
         
 
         // 4 秒钟执行一次，查看是否有新注册账号，若有，则提示出来
@@ -3309,7 +3350,7 @@ export default class Index extends React.Component {
                         
                     </Card>
                     <br/>
-                    <HotAccounts langConfig={this.langConfig} canRegister={this.canRegister} goDASRegister={this.goDASRegister} goDeNameRegister={this.goDeNameRegister} dasData={das}/>
+                    <HotAccounts langConfig={this.langConfig} getAvatar={this.getImg} canRegister={this.canRegister} goDASRegister={this.goDASRegister} goDeNameRegister={this.goDeNameRegister} dasData={das}/>
                     <br/>
 
                     <Card title={this.langConfig('keyword-title')} bordered={false}>
@@ -3405,8 +3446,22 @@ export default class Index extends React.Component {
 const InvitesLeaderboard = (props) => {
     const [data, setData] = useState([]);
   
+    let intervalRef = useRef(null);
+
     useEffect(() => {
+
       asyncFetch();
+
+        clearInterval(intervalRef.current);
+  
+        // 一分钟更新一次数据
+        intervalRef.current = setInterval(() => {
+            asyncFetch();
+        }, 1 * 60 * 1000);
+        
+        return () => {
+            clearInterval(intervalRef.current)
+        }
     }, []);
   
     const asyncFetch = () => {
@@ -3488,8 +3543,21 @@ const InvitesLeaderboard = (props) => {
 const RichOwnerLeaderboard = (props) => {
     const [data, setData] = useState([]);
   
+    let intervalRef = useRef(null);
     useEffect(() => {
-      asyncFetch();
+
+        asyncFetch();
+
+        clearInterval(intervalRef.current);
+  
+        // 一分钟更新一次数据
+        intervalRef.current = setInterval(() => {
+            asyncFetch();
+        }, 1 * 60 * 1000);
+        
+        return () => {
+            clearInterval(intervalRef.current)
+        }
     }, []);
   
     const asyncFetch = () => {
@@ -3617,10 +3685,16 @@ const HotAccounts = (props) => {
             width: 50,
             
             render: (text, record, index) => {
-                let avatar = "https://identicons.did.id/identicon/" + record.name;
-                let dom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
-                
-                return dom                
+                //let avatar = "https://identicons.did.id/identicon/" + record.name;
+                //let dom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
+                let nameMD5 = md5(record.name)
+                let id = `img${nameMD5}`
+                let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
+                setTimeout(() => {
+                    props.getAvatar(id, record.name)
+                }, 1000)
+                        
+                return dom
             },
         },
         {
