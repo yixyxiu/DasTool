@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select, Form, notification} from 'antd';
-import {SearchOutlined, DownOutlined, QuestionCircleFilled} from '@ant-design/icons';
+import {SearchOutlined, DownOutlined, QuestionCircleFilled, ConsoleSqlOutlined} from '@ant-design/icons';
 import { Treemap, Line, WordCloud, Bar } from '@ant-design/charts';
 import { Column } from '@ant-design/plots';
 import {Carousel} from "react-responsive-carousel";
@@ -1792,7 +1792,8 @@ export default class Index extends React.Component {
             item = item.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
             //过滤非数字和字母组合
             if (/^[a-zA-Z\d]+$/.test(item)) {
-                if (item.length < 4) {
+                // 大于20位的，das.la 不推荐，小于4位的不支持
+                if (item.length < 4 || item.length > 20) {
                     continue;
                 }
                 
@@ -2071,7 +2072,7 @@ export default class Index extends React.Component {
 
     getDASRegisterLink = (account) => {
 //        return "https://app.gogodas.com/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
-        return "https://app.did.id/account/register/" + account + "?inviter=nervosyixiu.bit&channel=nervosyixiu.bit"
+        return "https://app.did.id/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
     }
 
     getDeNameRegisterLink = (account) => {
