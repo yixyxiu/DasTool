@@ -2758,6 +2758,25 @@ export default class Index extends React.Component {
         this.search();
     }
 
+    searchFromJsonList = (jsonList) => {
+        if (!jsonList){
+            return;
+        }
+
+        let wordList = JSON.stringify(jsonList).match(/[a-z0-9]+/gi);
+
+        if (wordList) {
+            wordList = [...new Set(wordList)].sort(function (a, b) {
+                return a.length - b.length;
+            });
+        }
+
+        this.state.snsArr = (wordList ? wordList : "");
+
+        this.search();
+
+    }
+
     handleTryRecommendListClick = () => {
         let section = document.querySelector('#SuggestedList');
         if (section) {
@@ -2821,8 +2840,9 @@ export default class Index extends React.Component {
             return;
         }
 
-        let wordList = require('../mock/release_0321.json');
-        this.loadAccountList(wordList);
+        let wordList = require('../mock/release_0328.json');
+        //this.loadAccountList(wordList);
+        this.searchFromJsonList(wordList);
     }
 
     getWordCloudList = () => {
@@ -3135,7 +3155,7 @@ export default class Index extends React.Component {
             },*/
             {
                 title: '操作',
-                width: 100,
+                width: this.state.isNarrowScreen ? 100 : undefined,
                 key: 'action',
                 align: 'right',
                 render: record => {
