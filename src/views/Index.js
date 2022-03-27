@@ -1766,6 +1766,38 @@ export default class Index extends React.Component {
         return undefined;
     }
 
+    getAccountOpenTimeString = (account) => {
+        let openTime = DASOPENEPOCH[0].tips;
+
+        if (account.length < 4)
+            return openTime;
+
+        // 虽然 > 10 < 47 位都可以注册，但考虑到太长的账号没意义，在此只用15个字符以内的
+        if (account.length > 9 && account.length < 20)
+            return openTime;
+
+        // 4-9 位的，算法决定
+        account += '.bit';
+        var hash = blake2b(32, null, null, Buffer.from('2021-07-22 12:00'));
+        hash = hash.update(Buffer.from(account));
+        var output = new Uint8Array(32)
+        var out = hash.digest(output);
+        
+        
+        let arr = out.slice(0,4);
+        let uintValue = this.toBeUint32(arr);
+
+        for (let index = 0; index < DASOPENEPOCH.length; index++) {
+            const element = DASOPENEPOCH[index];
+            if (uintValue <= element.parameters) {
+                return element.tips;
+            }
+
+        }
+
+        return undefined;
+    }
+
     formatAccountOpenTime = (dateTime, status, color) => {
         
         //let date = dateTime.toLocaleDateString();
@@ -1826,7 +1858,7 @@ export default class Index extends React.Component {
                 // 如果账户是未开放的，则检查该账号是什么时候开放
                 let openDate = undefined;
                 if (accountStatus === DASACCOUNTSTATUS.NotOpen) {
-                    openDate = this.getAccountOpenTime(item);
+                    openDate = this.getAccountOpenTimeString(item);
                     if (openDate) {
                         this.state.accountOpenInfoList[account] = openDate;
                         //console.log(this.state.accountOpenInfoList);
@@ -3096,8 +3128,8 @@ export default class Index extends React.Component {
                             {this.langConfig("das-will-open-tips")}
                         </Tag>
                         <Tag color={color} key={status}>
-                        {this.formatAccountOpenTime(this.state.accountOpenInfoList[record.name])}
-                    </Tag></>
+                            {this.state.accountOpenInfoList[record.name]}
+                        </Tag></>
                         }
                         else {
                             otherTag = <Tag color={color} key={status}>
@@ -3693,7 +3725,13 @@ const HotAccounts = (props) => {
     const [accounts, setAccounts] = useState([]);
     const [focusItem, setFocusItem] = useState({});
     const [accountType, setAccountType] = useState(HotAccountsType.LETTER);
+    const [accountLen, setAccountLen] = useState(4);
   
+    const lenFilters = [];
+    [4,5,6].forEach((item) => {
+        lenFilters.push(<Option key={item}>{item}</Option>);
+    })
+
     useEffect(() => {
        refreshHotAccounts()
     }, {});
@@ -3750,10 +3788,15 @@ const HotAccounts = (props) => {
 
     const selectTypeChange = (e) => {
         setAccountType(e.target.value)
-        generateHotAccounts(e.target.value)
+        generateHotAccounts(e.target.value, accountLen)
     }
 
-    const generateHotAccounts =(accountType) => {
+    const selectLenthChange = (value, option) => {
+        setAccountLen(option.value);
+        generateHotAccounts(accountType, option.value);
+    }
+
+    const generateHotAccounts =(accountType, letterCount) => {
         let result = [];
         let arr = [];
 
@@ -3772,12 +3815,26 @@ const HotAccounts = (props) => {
             return;
         }
 
+        if (!letterCount) {
+            console.log(letterCount);
+        }
+
+        console.log(letterCount);
+
+        let loopsCount = 0;
         // 最多输出 10个
         while (result.length < 10) {
+            // 避免死循环
+            loopsCount++;
+            if (loopsCount > 10000) {
+                break;
+            }
+
             let index = getRandomInt(0, dataSrc.length);
-            let item = dataSrc[index];
-            if (item.length > 5)
+            let item = dataSrc[index];       
+            if (item.length != letterCount)
                 continue;
+            
                 
             if (props.canRegister(item)) {
                 let account = item + '.bit';
@@ -3797,7 +3854,7 @@ const HotAccounts = (props) => {
     }
 
     const refreshHotAccounts = () => {
-        generateHotAccounts(accountType);
+        generateHotAccounts(accountType, accountLen);
     };
 
     let localeHotAccounts = {
@@ -3826,7 +3883,10 @@ const HotAccounts = (props) => {
                             </Radio.Group> 
                         </div>
                         <Space size="small">
-                            
+                        <span className='hot-accounts-filter-tips'>{props.langConfig('hot-accounts-len')}</span>
+                            <Select value={accountLen} onChange={selectLenthChange}>
+                                {lenFilters}
+                            </Select>
                         </Space>
                                    
                     </div>

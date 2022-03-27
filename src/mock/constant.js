@@ -103,37 +103,43 @@ export const DASOPENEPOCH = [
         //time: new Date('2022-03-21 12:02:00 GMT'), 
         time: new Date(1647864120000),
         open_percents: 0.40,
-        parameters: 1717986918
+        parameters: 1717986918,
+        tips:'03-21 12:00PM(UTC+0)',
     },
     {
         //time: new Date('2022-03-28 12:00:00 GMT'), 
         time: new Date(1648468800000), 
         open_percents: 0.45,
-        parameters: 1932735282
+        parameters: 1932735282,
+        tips:'03-28 12:00PM(UTC+0)',
     },
     {
         //time: new Date('2022-04-04 12:00:00 GMT'), 
         time: new Date(1649073600000), 
         open_percents: 0.50,
-        parameters: 2147483647
+        parameters: 2147483647,
+        tips:'04-04 12:00PM(UTC+0)',
     },
     {
         //time: new Date('2022-04-11 12:00:00 GMT'), 
         time: new Date(1649678400000), 
         open_percents: 0.55,
-        parameters: 2362232012
+        parameters: 2362232012,
+        tips:'04-11 12:00PM(UTC+0)',
     },
     {
         //time: new Date('2022-04-18 12:00:00 GMT'), 
         time: new Date(1650283200000), 
         open_percents: 0.60,
-        parameters: 2576980377
+        parameters: 2576980377,
+        tips:'04-18 12:00PM(UTC+0)',
     },
     {
         //time: new Date('2022-07-18 12:00:00 GMT'), 
         time: new Date(1658145600000), 
         open_percents: 0.60,
-        parameters: 2576980377
+        parameters: 2576980377,
+        tips:'07-18 12:00PM(UTC+0)',
     }
 ];
 
