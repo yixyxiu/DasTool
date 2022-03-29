@@ -249,7 +249,7 @@ class DaslaFooter extends React.Component {
 
 class ForSaleAccountCard extends React.Component {
     formatAddress = (address) => {
-        if (address.len < 10){
+        if (address.length < 10){
             return address;
         }
 
@@ -3329,6 +3329,21 @@ export default class Index extends React.Component {
             )
         };
 
+        const getPagination = (dataSrc) => {
+            
+            let multiPage = false;
+            
+            multiPage = dataSrc && (dataSrc.length > 10);
+            console.log(multiPage)
+            let pagination = {
+                showSizeChanger: multiPage ? true : false,
+                showQuickJumper: multiPage ? true : false,
+            }
+
+            console.log(pagination)
+            return pagination;
+        }
+
         return (
             <div>
             <div className={this.state.animationClass}>
@@ -3399,7 +3414,7 @@ export default class Index extends React.Component {
                         </div>
                         <br/>
                         <Table locale={localeAllMatch} rowKey={(item) => item.id} dataSource={list} columns={this.getTableColumns()}
-                               rowClassName='das-account-name noselect' showHeader={false}/>
+                               rowClassName='das-account-name noselect' showHeader={false} pagination={getPagination(list)} /> 
                         
                     </Card>
                     <br/>
@@ -3647,7 +3662,7 @@ const RichOwnerLeaderboard = (props) => {
     }
 
     const formatAddress = (address) => {
-        if (address.len < 20){
+        if (address.length < 20){
             return address;
         }
 
