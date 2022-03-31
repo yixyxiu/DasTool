@@ -5,9 +5,9 @@
   "homepage": ".",
   "dependencies": {
     "@ant-design/charts": "^1.2.13",
-    "@ant-design/plots": "^1.0.7",
     "@ant-design/compatible": "^1.0.8",
     "@ant-design/icons": "^4.6.2",
+    "@ant-design/plots": "^1.0.7",
     "@babel/core": "7.9.0",
     "@svgr/webpack": "4.3.3",
     "@testing-library/jest-dom": "^4.2.4",
@@ -68,6 +68,7 @@
     "react-app-polyfill": "^1.0.6",
     "react-banner": "^1.0.3",
     "react-copy-to-clipboard": "^5.0.4",
+    "react-csv": "^2.2.2",
     "react-dev-utils": "^10.2.1",
     "react-dom": "^16.13.1",
     "react-image-gallery": "^1.2.7",

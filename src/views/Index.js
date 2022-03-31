@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select, Form, notification} from 'antd';
-import {SearchOutlined, DownOutlined, QuestionCircleFilled, ConsoleSqlOutlined} from '@ant-design/icons';
+import {SearchOutlined, DownOutlined, QuestionCircleFilled, DownloadOutlined, ConsoleSqlOutlined} from '@ant-design/icons';
 import { Treemap, Line, WordCloud, Bar } from '@ant-design/charts';
 import { Column } from '@ant-design/plots';
 import {Carousel} from "react-responsive-carousel";
@@ -20,6 +20,7 @@ import WORDCLOUD_MASK from '../img/wordcloud_mask.png';
 import CERTIFICATE_MASK from '../img/certificate_mask.jpg';
 import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH, DONATEADDRESS, TABLEFILTER} from "../mock/constant"
 import { indexOf } from '@antv/util';
+import { CSVLink } from "react-csv";
 //import { loadConfig } from 'browserslist';
 
 //const {Footer} = Layout
@@ -2947,6 +2948,8 @@ export default class Index extends React.Component {
                 break;
             case DASACCOUNTSTATUS.Reserved: tips = this.langConfig("das-account-status-reserved"); 
                 break;
+            case DASACCOUNTSTATUS.ScheOpen: tips = this.langConfig("das-account-status-wait4open");
+                break;
             case DASACCOUNTSTATUS.Registering: tips = this.langConfig("das-account-status-registering"); 
                 break;
             case DASACCOUNTSTATUS.Registered: tips = this.langConfig("das-account-status-registered"); 
@@ -3344,6 +3347,35 @@ export default class Index extends React.Component {
             return pagination;
         }
 
+        const getDownloadJsonList = (dataSrcList) => {
+            let jsonData = [];
+            for ( let i in dataSrcList) {
+                let account = dataSrcList[i];
+                console.log(account);
+                let json = {};
+                json.name = account.name;
+                json.status = json.status = this.getAccountStatusString(account.status[0]);
+                json["Open⏰"] = "";
+                
+                if (account.name in this.state.accountOpenInfoList) {
+                    json["Open⏰"] = this.state.accountOpenInfoList[account.name];
+                    
+                }
+                
+                if (account.status[0] === DASACCOUNTSTATUS.OnSale) {
+                    json.link = "https://bestdas.com/account/" + account.name + "?inviter=cryptofans.bit&channel=dasdotla.bit"
+                }
+                else {
+                    json.link = "https://app.did.id/account/register/" + account.name + "?inviter=cryptofans.bit&channel=cryptofans.bit"
+                }
+                jsonData.push(json);
+
+            } 
+            
+            return jsonData;
+        
+        }
+
         return (
             <div>
             <div className={this.state.animationClass}>
@@ -3414,7 +3446,17 @@ export default class Index extends React.Component {
                         </div>
                         <br/>
                         <Table locale={localeAllMatch} rowKey={(item) => item.id} dataSource={list} columns={this.getTableColumns()}
-                               rowClassName='das-account-name noselect' showHeader={false} pagination={getPagination(list)} /> 
+                               rowClassName='das-account-name' showHeader={false} pagination={getPagination(list)} />
+                        
+                        <CSVLink
+                            data={getDownloadJsonList(list)}
+                            filename={"Better_bit_accounts(download from das.la).csv"}
+                            className="btn btn-primary"
+                            target="_blank"
+                            >
+                            {list.length > 0 ? 'Download':''}
+                        </CSVLink> 
+                        
                         
                     </Card>
                     <br/>
