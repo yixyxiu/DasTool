@@ -3351,10 +3351,10 @@ export default class Index extends React.Component {
             let jsonData = [];
             for ( let i in dataSrcList) {
                 let account = dataSrcList[i];
-                console.log(account);
                 let json = {};
                 json.name = account.name;
                 json.status = json.status = this.getAccountStatusString(account.status[0]);
+                json.price = "";
                 json["Open⏰"] = "";
                 
                 if (account.name in this.state.accountOpenInfoList) {
@@ -3363,6 +3363,7 @@ export default class Index extends React.Component {
                 }
                 
                 if (account.status[0] === DASACCOUNTSTATUS.OnSale) {
+                    json.price = this.numberFormatter(account.price, 2) + 'CKB';
                     json.link = "https://bestdas.com/account/" + account.name + "?inviter=cryptofans.bit&channel=dasdotla.bit"
                 }
                 else {
