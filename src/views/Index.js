@@ -2873,7 +2873,7 @@ export default class Index extends React.Component {
             return;
         }
 
-        let wordList = require('../mock/release_0328.json');
+        let wordList = require('../mock/release_0404.json');
         //this.loadAccountList(wordList);
         this.searchFromJsonList(wordList);
     }
