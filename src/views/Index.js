@@ -38,6 +38,7 @@ das.banners = require('../mock/banners.json');
 das.linkResources = require('../mock/linkResources.json');
 das.ownerStat = require('../mock/accountsOwner.json');
 das.hotAccounts = require('../mock/hot_accounts.json');
+das.appointments = require('../mock/appointments.json');    // 开放结束后，将其设置为空数组
 das.recentRegData = [];
 das.recentOwnerData = [];
 
@@ -2873,7 +2874,7 @@ export default class Index extends React.Component {
             return;
         }
 
-        let wordList = require('../mock/release_0404.json');
+        let wordList = require('../mock/release_0411.json');
         //this.loadAccountList(wordList);
         this.searchFromJsonList(wordList);
     }
@@ -3002,6 +3003,26 @@ export default class Index extends React.Component {
         return title;
     }
 
+    formatAppointmentsInfo = (count) => {
+        let hot = '🔥';
+        if (count > 3 && count <= 6) {
+            hot = '🔥🔥';
+        }
+        else if (count > 6 && count <= 9) {
+            hot = '🔥🔥🔥';
+        }
+        else if (count > 9 && count <= 12) {
+            hot = '🔥🔥🔥🔥';
+        }
+        else if (count > 12) {
+            hot = '🔥🔥🔥🔥🔥';
+        }
+
+        let info = '{0} {1} {2}'.format(hot, count, this.langConfig('appointment-counts'));
+
+        return info;
+    }
+
     numberFormatter = (num, digits) => {
         var si = [
           { value: 1, symbol: "" },
@@ -3126,18 +3147,27 @@ export default class Index extends React.Component {
                         let color = AccountStatusColors[status];
                         
                         let otherTag = '';
+                        let appointmentsTag = ''
+                        if (record.name in das.appointments) {
+                            appointmentsTag = <Tooltip placement="topRight" title={this.langConfig('appointment-tips')}>
+                            <Tag color='#bfbfbf' key={status}>
+                            {this.formatAppointmentsInfo(das.appointments[record.name])}
+                            </Tag>
+                            </Tooltip>
+                        }
+
                         if (record.name in this.state.accountOpenInfoList) {
                             otherTag = <><Tag color={color} key={status}>
                             {this.langConfig("das-will-open-tips")}
-                        </Tag>
-                        <Tag color={color} key={status}>
-                            {this.state.accountOpenInfoList[record.name]}
-                        </Tag></>
+                            </Tag>
+                            <Tag color={color} key={status}>
+                                {this.state.accountOpenInfoList[record.name]}
+                            </Tag>{appointmentsTag}</>
                         }
                         else {
-                            otherTag = <Tag color={color} key={status}>
+                            otherTag = <><Tag color={color} key={status}>
                                     {this.getAccountStatusString(status)}
-                                    </Tag>
+                                    </Tag>{appointmentsTag}</>
                         }
 
                         // 如果上次查过在市场上挂单，则修改状态
