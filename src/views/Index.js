@@ -2874,7 +2874,7 @@ export default class Index extends React.Component {
             return;
         }
 
-        let wordList = require('../mock/release_0411.json');
+        let wordList = require('../mock/release_0418.json');
         //this.loadAccountList(wordList);
         this.searchFromJsonList(wordList);
     }
