@@ -9,8 +9,8 @@
         },
         {
             "name":"yokai",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/f/fa5351a43b4a757197e2dfe4f323caa7061d116c.jpeg",
-            "link":"https://medium.com/@yokaiswap/darumadao-and-yokaiswap-partnership-more-minting-and-farming-options-6c3760f09eca"
+            "image":"https://talk.nervos.org/uploads/default/original/2X/2/29bbae806267b441bd54c0bf724f2cff63d79da3.jpeg",
+            "link":"https://yokaiswap.com"
         },
         {
             "name":".bit-brand",
@@ -18,9 +18,9 @@
             "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid"
         },
         {
-            "name":".bit-release",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/e/e53fde90dd0c21a4a2d0d7eb05d504bd1803c93b.jpeg",
-            "link":""
+            "name":"nervos2022",
+            "image":"https://talk.nervos.org/uploads/default/original/2X/5/5ddd53d71fea43c1931125b102ea022d249ee235.png",
+            "link":"https://mirana.ckbapp.dev"
         }
     ],
     "en_US":[
@@ -33,8 +33,8 @@
         },
         {
             "name":"yokai",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/f/fa5351a43b4a757197e2dfe4f323caa7061d116c.jpeg",
-            "link":"https://medium.com/@yokaiswap/darumadao-and-yokaiswap-partnership-more-minting-and-farming-options-6c3760f09eca"
+            "image":"https://talk.nervos.org/uploads/default/original/2X/2/29bbae806267b441bd54c0bf724f2cff63d79da3.jpeg",
+            "link":"https://yokaiswap.com"
         },
         {
             "name":".bit-brand",
@@ -42,9 +42,9 @@
             "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid"
         },
         {
-            "name":".bit-release",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/e/e53fde90dd0c21a4a2d0d7eb05d504bd1803c93b.jpeg",
-            "link":""
+            "name":"nervos2022",
+            "image":"https://talk.nervos.org/uploads/default/original/2X/a/ada20147480c6c576dd14597f726047c23c9f4ad.png",
+            "link":"https://mirana.ckbapp.dev/"
         }
 
     ]
