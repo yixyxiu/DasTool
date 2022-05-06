@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, Divider, message, Tooltip, Tag, Select, Form, notification} from 'antd';
+import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, 
+    Divider, message, Tooltip, Tag, Select, Form, notification,Spin} from 'antd';
 import {SearchOutlined, DownOutlined, QuestionCircleFilled, DownloadOutlined, ConsoleSqlOutlined} from '@ant-design/icons';
 import { Treemap, Line, WordCloud, Bar } from '@ant-design/charts';
 import { Column } from '@ant-design/plots';
@@ -289,7 +290,7 @@ class ForSaleAccountCard extends React.Component {
                 method: 'POST', 
             }
 
-            let url = 'https://tx-api.bestdas.com/v1/sell/account/detail'
+            let url = 'https://tx-api.did.top/v1/sell/account/detail'
 
             fetch(url, optionParam)
             .then(function(response){
@@ -477,8 +478,8 @@ class ForSaleAccountCard extends React.Component {
     }
 
     viewMarketAccount = () => {
-        let url = "https://bestdas.com/account/" + this.state.account + "?inviter=cryptofans.bit&channel=dasdotla.bit";
-                                    https://bestdas.com/account/oline.bit?inviter=00711.bit&
+        let url = "https://did.top/account/" + this.state.account + "?inviter=cryptofans.bit&channel=dasdotla.bit";
+                                    https://did.top/account/oline.bit?inviter=00711.bit&
         this.props.parent.openLink(url, 'view_market_' + this.state.account);
     }
     
@@ -786,7 +787,7 @@ const  DASStatisticSummary = (props) => {
           clearInterval(intervalRef.current)
       }
 
-    }, {});
+    }, []);
   
     const asyncFetch = () => {
         const headers = {
@@ -1531,6 +1532,7 @@ export default class Index extends React.Component {
 
         loginTime: new Date(),
         dataUpdateFlag: false,
+        isLoadingMain: false,
         focusItem: '',
         isNarrowScreen: document.body.clientWidth < 640,
         columns: [
@@ -1769,6 +1771,10 @@ export default class Index extends React.Component {
     }
 
     getAccountOpenTimeString = (account) => {
+        // 开放结束，返回null
+        return undefined;// todo，再开放时再打开。
+
+
         let openTime = DASOPENEPOCH[0].tips;
 
         if (account.length < 4)
@@ -1819,6 +1825,10 @@ export default class Index extends React.Component {
         let result = [];
         let arr = [];
         let dateData = {};
+        let test = [];
+
+        this.setState({isLoadingMain: true});
+
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
 
@@ -1882,6 +1892,8 @@ export default class Index extends React.Component {
                         openDate: openDate,
                         price: price
                     })
+
+                    test.push(item);
                 }
             }
         }
@@ -1900,10 +1912,11 @@ export default class Index extends React.Component {
         }
         let filterList = this.getAccountListByFilter(result, this.state.mainTableFilter)
 
-        console.log(dateData)
+        //console.log(test);
         this.setState({
             list: filterList,
-            mainTableDataList: result
+            mainTableDataList: result,
+            isLoadingMain: false
         });
     }
 
@@ -2077,14 +2090,14 @@ export default class Index extends React.Component {
             case DASACCOUNTSTATUS.Registered: 
             //    url = "https://" + record.name + this.langConfig("dascc-host");
             //    this.openLink(url, 'view_host_'+record.name);
-                url = "https://bestdas.com/account/" + record.name + "?inviter=cryptofans.bit";
+                url = "https://did.top/account/" + record.name + "?inviter=cryptofans.bit";
                 this.openLink(url, 'make_offer_'+record.name);
                 break;
             case DASACCOUNTSTATUS.ScheOpen: 
                 this.openLink(this.langConfig("das-limit-link"));
                 break;
             case DASACCOUNTSTATUS.OnSale: 
-                url = "https://bestdas.com/account/" + record.name + "?inviter=cryptofans.bit";
+                url = "https://did.top/account/" + record.name + "?inviter=cryptofans.bit";
                 this.openLink(url, 'view_market_'+record.name);
                 break;
             case DASACCOUNTSTATUS.Reserved: 
@@ -2106,7 +2119,7 @@ export default class Index extends React.Component {
 
     getDASRegisterLink = (account) => {
 //        return "https://app.gogodas.com/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
-        return "https://app.did.id/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
+        return "https://app.did.id/account/register/" + account + "?inviter=nervosyixiu.bit&channel=nervosyixiu.bit"
     }
 
     getDeNameRegisterLink = (account) => {
@@ -2503,7 +2516,7 @@ export default class Index extends React.Component {
                 method: 'POST', 
             }
 
-            let url = 'https://tx-api.bestdas.com/v1/sell/account/search'
+            let url = 'https://tx-api.did.top/v1/sell/account/search'
 
             fetch(url, optionParam)
             .then(function(response){
@@ -2874,7 +2887,7 @@ export default class Index extends React.Component {
             return;
         }
 
-        let wordList = require('../mock/release_0418.json');
+        let wordList = require('../mock/numbericIDs.json');
         //this.loadAccountList(wordList);
         this.searchFromJsonList(wordList);
     }
@@ -3367,13 +3380,11 @@ export default class Index extends React.Component {
             let multiPage = false;
             
             multiPage = dataSrc && (dataSrc.length > 10);
-            console.log(multiPage)
             let pagination = {
                 showSizeChanger: multiPage ? true : false,
                 showQuickJumper: multiPage ? true : false,
             }
 
-            console.log(pagination)
             return pagination;
         }
 
@@ -3394,7 +3405,7 @@ export default class Index extends React.Component {
                 
                 if (account.status[0] === DASACCOUNTSTATUS.OnSale) {
                     json.price = this.numberFormatter(account.price, 2) + 'CKB';
-                    json.link = "https://bestdas.com/account/" + account.name + "?inviter=cryptofans.bit&channel=dasdotla.bit"
+                    json.link = "https://did.top/account/" + account.name + "?inviter=cryptofans.bit&channel=dasdotla.bit"
                 }
                 else {
                     json.link = "https://app.did.id/account/register/" + account.name + "?inviter=cryptofans.bit&channel=cryptofans.bit"
@@ -3476,9 +3487,10 @@ export default class Index extends React.Component {
                             </Space>
                         </div>
                         <br/>
+                        <Spin spinning={this.state.isLoadingMain}>
                         <Table locale={localeAllMatch} rowKey={(item) => item.id} dataSource={list} columns={this.getTableColumns()}
                                rowClassName='das-account-name' showHeader={false} pagination={getPagination(list)} />
-                        
+                        </Spin>
                         <CSVLink
                             data={getDownloadJsonList(list)}
                             filename={"Better_bit_accounts(download from das.la).csv"}
@@ -3722,7 +3734,8 @@ const RichOwnerLeaderboard = (props) => {
                 setData(json.owner_order)
             })
             .catch((error) => {
-            console.log('fetch data failed', error);
+                console.log('fetch data failed', error);
+                setData([]);
             });
     };
 
@@ -3822,7 +3835,7 @@ const HotAccounts = (props) => {
 
     useEffect(() => {
        refreshHotAccounts()
-    }, {});
+    }, []);
   
     const columns= [
         {
@@ -3994,9 +4007,9 @@ const HotAccounts = (props) => {
 const RegisteAccountWrapper = (props) => {
     const [isFocus, setFocus] = useState(false);
     const [focusItem, setFocusItem] = useState({});
-    if (props.isFocus) {
-        return <div className="dasla-register-container">       
-            <div className="dasla-btn-register-wraper">
+    /**
+     * 
+     * <div className="dasla-btn-register-wraper">
             <Tooltip placement="topRight" title={props.langConfig('registry-dename-supprts')}>
                 <Button className="dasla-btn-register-account" size={'normal'} shape="round"
                 onClick={() => props.goDeNameRegister(props.account)}>{props.langConfig('goto-register-btn')}</Button>
@@ -4004,10 +4017,14 @@ const RegisteAccountWrapper = (props) => {
             </Tooltip>
             
             </div>
+     */
+    if (props.isFocus) {
+        return <div className="dasla-register-container">       
+            
             <div className="dasla-btn-register-wraper">
             <Tooltip placement="topRight" title={props.langConfig('registry-das-supprts')}>
                 <Button className="dasla-btn-register-account" size={'normal'} shape="round"
-                    onClick={() => props.goDASRegister(props.account)}>{props.langConfig('goto-register-btn')}</Button>
+                    onClick={() => props.goDASRegister(props.account)}>🔥{props.langConfig('goto-register-btn')}</Button>
                 <img src={REG_DAS_LOGO}  alt="" className="image-5"/>
             </Tooltip>
             </div>
