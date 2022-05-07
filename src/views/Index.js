@@ -2119,7 +2119,8 @@ export default class Index extends React.Component {
 
     getDASRegisterLink = (account) => {
 //        return "https://app.gogodas.com/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
-        return "https://app.did.id/account/register/" + account + "?inviter=nervosyixiu.bit&channel=nervosyixiu.bit"
+        //return "https://app.did.id/account/register/" + account + "?inviter=nervosyixiu.bit&channel=nervosyixiu.bit"
+        return "https://app.did.id/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
     }
 
     getDeNameRegisterLink = (account) => {
