@@ -51,6 +51,18 @@ code {
     font-weight: 500;
   }
 }
+.suggest-list-wrapper {
+  display:flex;
+  flex-wrap: wrap;
+  width:100%;
+  justify-content: space-around;
+  flex-direction:row;
+}
+
+.suggest-list-btn {
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
 
 .hot-accounts-filter-tips {
   font-size: 14px;

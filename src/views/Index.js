@@ -2893,6 +2893,56 @@ export default class Index extends React.Component {
         this.searchFromJsonList(wordList);
     }
 
+    loadSysAccount_Year = () => {
+        let wordList = require('../mock/year.json');
+        this.searchFromJsonList(wordList);
+    }
+
+    loadSysAccount_Date = () => {
+        let wordList = require('../mock/dateMMDD.json');
+        this.searchFromJsonList(wordList);
+    }
+
+    loadSysAccount_Time = () => {
+        let wordList = require('../mock/time00h00.json');
+        this.searchFromJsonList(wordList);
+    }
+
+    loadSysAccount_Birthday = () => {
+        let wordList = require('../mock/birthday.json');
+        this.searchFromJsonList(wordList);
+    }
+
+    loadSysAccount_0x99 = () => {
+        let wordList = require('../mock/0x99.json');
+        this.searchFromJsonList(wordList);
+    }
+
+    loadSysAccount_0x999 = () => {
+        let wordList = require('../mock/0x999.json');
+        this.searchFromJsonList(wordList);
+    }
+
+    loadSysAccount_4number= () => {
+        let wordList = require('../mock/4number.json');
+        this.searchFromJsonList(wordList);
+    }
+
+    loadSysAccount_00012= () => {
+        let wordList = require('../mock/00012.json');
+        this.searchFromJsonList(wordList);
+    }
+
+    loadSysAccount_10002= () => {
+        let wordList = require('../mock/10002.json');
+        this.searchFromJsonList(wordList);
+    }
+
+    loadSysAccount_12000= () => {
+        let wordList = require('../mock/12000.json');
+        this.searchFromJsonList(wordList);
+    }
+
     getWordCloudList = () => {
         return das['cloudWord'];
     }
@@ -3345,11 +3395,8 @@ export default class Index extends React.Component {
               <span>
                   <div><img src={DAS_LA_LOGO} height='48px' alt="" /></div>
                 <p>
-                    {this.langConfig('empty-data')}                  
+                    {this.langConfig('empty-data-main')}                  
                 </p>
-                {loadFavListBtnDom}
-                <Divider type="vertical"/>
-                <Button type="primary" size={'normal'} shape="round" onClick={this.loadFrequentWords}>{this.langConfig('empty-try-load-default')}</Button>
               </span>
             )
         };
@@ -3498,9 +3545,45 @@ export default class Index extends React.Component {
                             className="btn btn-primary"
                             target="_blank"
                             >
-                            {list.length > 0 ? 'Download':''}
-                        </CSVLink> 
-                        
+                            {list.length === -1 ? 'Download':''}
+                        </CSVLink>
+                        <div className="suggest-list-wrapper">
+                            
+                            <div className="suggest-list-btn" >
+                                <Button type="primary" size={'normal'} shape="round" onClick={this.loadSysAccount_Year}>🚀{this.langConfig('load-account-year')}</Button>
+                            </div>
+                            <div className="suggest-list-btn" >
+                                <Button type="primary" size={'normal'} shape="round" onClick={this.loadSysAccount_Date}>📅{this.langConfig('load-account-date')}</Button>
+                            </div>
+                            <div className="suggest-list-btn" >
+                                <Button type="primary" size={'normal'} shape="round" onClick={this.loadSysAccount_Time}>⏰{this.langConfig('load-account-time')}</Button>
+                            </div>
+                            <div className="suggest-list-btn" >
+                                <Button type="primary" size={'normal'} shape="round" onClick={this.loadSysAccount_0x99}>💯{this.langConfig('load-account-0x99')}</Button>
+                            </div>
+                            <div className="suggest-list-btn" >
+                                <Button type="primary" size={'normal'} shape="round" onClick={this.loadSysAccount_0x999}>🔥{this.langConfig('load-account-0x999')}</Button>
+                            </div>
+                            <div className="suggest-list-btn" >
+                                <Button type="primary" size={'normal'} shape="round" onClick={this.loadSysAccount_4number}>🔥🔥9999</Button>
+                            </div>
+                            <div className="suggest-list-btn" >
+                                <Button type="primary" size={'normal'} shape="round" onClick={this.loadSysAccount_00012}>🔢00012</Button>
+                            </div>
+                            <div className="suggest-list-btn" >
+                                <Button type="primary" size={'normal'} shape="round" onClick={this.loadSysAccount_12000}>🔢12000</Button>
+                            </div>
+                            <div className="suggest-list-btn" >
+                                <Button type="primary" size={'normal'} shape="round" onClick={this.loadSysAccount_10002}>🔢10002</Button>
+                            </div>
+                            <div className="suggest-list-btn" >
+                                <Button type="primary" size={'normal'} shape="round" onClick={this.loadSysAccount_Birthday}>🎂{this.langConfig('load-account-birthday')}</Button>
+                            </div>
+
+                            <div className="suggest-list-btn" >
+                                {loadFavListBtnDom}
+                            </div>
+                        </div>
                         
                     </Card>
                     <br/>
