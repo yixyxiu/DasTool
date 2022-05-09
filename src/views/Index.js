@@ -3909,7 +3909,7 @@ const HotAccounts = (props) => {
 
     const [accounts, setAccounts] = useState([]);
     const [focusItem, setFocusItem] = useState({});
-    const [accountType, setAccountType] = useState(HotAccountsType.LETTER);
+    const [accountType, setAccountType] = useState(HotAccountsType.NUMBER);
     const [accountLen, setAccountLen] = useState(4);
   
     const lenFilters = [];
@@ -4061,9 +4061,9 @@ const HotAccounts = (props) => {
                         
                         <div className='group-radio' >
                             <span className='hot-accounts-filter-tips'>{props.langConfig('hot-accounts-filter')}</span>
-                            <Radio.Group name="radiogroup" onChange={selectTypeChange} defaultValue={HotAccountsType.LETTER}>
-                                <Radio value={HotAccountsType.LETTER}>{props.langConfig('hot-accounts-letter')}abcd</Radio>
+                            <Radio.Group name="radiogroup" onChange={selectTypeChange} defaultValue={HotAccountsType.NUMBER}>
                                 <Radio value={HotAccountsType.NUMBER}>{props.langConfig('hot-accounts-numeric')}1234</Radio>
+                                <Radio value={HotAccountsType.LETTER}>{props.langConfig('hot-accounts-letter')}abcd</Radio>
                                 <Radio value={HotAccountsType.WORD}>{props.langConfig('hot-accounts-word')}</Radio>
                             </Radio.Group> 
                         </div>
