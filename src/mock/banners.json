@@ -16,11 +16,6 @@
             "name":".bit-brand",
             "image":"https://talk.nervos.org/uploads/default/original/2X/e/e7b263eead2d75c08a256962721f95a0167bcca1.jpeg",
             "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid"
-        },
-        {
-            "name":"nervos2022",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/5/59e6eeec49a64817b44dd2eaa6080c9ad8d31e4d.jpeg",
-            "link":"https://mirana.ckbapp.dev"
         }
     ],
     "en_US":[
@@ -40,11 +35,6 @@
             "name":".bit-brand",
             "image":"https://talk.nervos.org/uploads/default/original/2X/e/e7b263eead2d75c08a256962721f95a0167bcca1.jpeg",
             "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid"
-        },
-        {
-            "name":"nervos2022",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/c/c8bd65aa2775d90f90490e03f5b44cecff010313.jpeg",
-            "link":"https://mirana.ckbapp.dev/"
         }
 
     ]

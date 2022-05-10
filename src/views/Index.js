@@ -1584,15 +1584,6 @@ export default class Index extends React.Component {
                     console.log('record add:' + record.name)
                     if (this.state.focusItem === record.name) {
                         return <div className="dasla-register-container">
-                            
-                            <div className="dasla-btn-register-wraper">
-                            <Tooltip placement="topRight" title={this.langConfig('registry-dename-supprts')}>
-                                <Button className="dasla-btn-register-account" size={'normal'} shape="round"
-                                onClick={() => this.goDeNameRegister(record)}>{this.langConfig('goto-register-btn')}</Button>
-                                <img src={REG_DENAME_LOGO}  alt="" className="image-5"/>
-                            </Tooltip>
-                            
-                            </div>
                             <div className="dasla-btn-register-wraper">
                             <Tooltip placement="topRight" title={this.langConfig('registry-das-supprts')}>
                                 <Button className="dasla-btn-register-account" size={'normal'} shape="round"
@@ -3207,7 +3198,7 @@ export default class Index extends React.Component {
                 render: (text, record, index) => (
                   <>
 
-                    {record.status.map(status => {
+                    {record.status?.map(status => {
                         let color = AccountStatusColors[status];
                         
                         let otherTag = '';
@@ -3295,14 +3286,7 @@ export default class Index extends React.Component {
                         // 状态可用，且当前帐号是用户此前选择的账号   
                         if (this.state.focusItem === record.name) {
                             return <div className="dasla-register-container">
-                                <div className="dasla-btn-register-wraper">
-                            <Tooltip placement="topRight" title={this.langConfig('registry-dename-supprts')}>
-                                <Button className="dasla-btn-register-account" size={'normal'} shape="round"
-                                onClick={() => this.goDeNameRegister(record)}>{this.langConfig('goto-register-btn')}</Button>
-                                <img src={REG_DENAME_LOGO}  alt="" className="image-5"/>
-                            </Tooltip>
-                            
-                            </div>
+                                
                             <div className="dasla-btn-register-wraper">
                             <Tooltip placement="topRight" title={this.langConfig('registry-das-supprts')}>
                                 <Button className="dasla-btn-register-account" size={'normal'} shape="round"
@@ -3731,11 +3715,23 @@ const InvitesLeaderboard = (props) => {
         props.openLink(url, 'view_bitcc_' + account);
     }
 
+    const formatAccount = (address) => {
+        if (address.length < 17){
+            return address;
+        }
+
+        let begin = address.substring(0,6);
+        let end = address.substring(address.length-8);
+        let str = begin + '...' + end;
+
+        return str;
+    }
+
     return  <div className="leader-board-wrapper"> 
                 <span className="leader-board-title">{props.langConfig('invites-leaderboard-title')}</span> 
                 
                 
-                {data.map((item, index) => {
+                {data?.map((item, index) => {
                     let avatar = "https://identicons.did.id/identicon/" + item.account;
                     let avatarDom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
 
@@ -3744,7 +3740,7 @@ const InvitesLeaderboard = (props) => {
                         return  <div className="leader-board-item-row gold" onClick={() => onItemClicked(item.account)}>
                                     <span className="leader-board-rank-index-top3" >🥇</span>
                                     { avatarDom }
-                                    <div className="leader-board-item-name">{item.account}</div>
+                                    <div className="leader-board-item-name">{formatAccount(item.account)}</div>
                                     <div className="leader-board-rank-value">{item.invitee_num}</div>
                                 </div>
                     }
@@ -3752,7 +3748,7 @@ const InvitesLeaderboard = (props) => {
                         return  <div className="leader-board-item-row silver" onClick={() => onItemClicked(item.account)}>
                                     <span className="leader-board-rank-index-top3">🥈</span>
                                     { avatarDom }
-                                    <div className="leader-board-item-name">{item.account}</div>
+                                    <div className="leader-board-item-name">{formatAccount(item.account)}</div>
                                     <div className="leader-board-rank-value">{item.invitee_num}</div>
                                 </div>
                     }
@@ -3760,7 +3756,7 @@ const InvitesLeaderboard = (props) => {
                         return  <div className="leader-board-item-row bronze" onClick={() => onItemClicked(item.account)}>
                                     <span className="leader-board-rank-index-top3">🥉</span>
                                     { avatarDom }
-                                    <div className="leader-board-item-name">{item.account}</div>
+                                    <div className="leader-board-item-name">{formatAccount(item.account)}</div>
                                     <div className="leader-board-rank-value">{item.invitee_num}</div>
                                 </div>
                     }
@@ -3768,7 +3764,7 @@ const InvitesLeaderboard = (props) => {
                         return  <div className="leader-board-item-row" onClick={() => onItemClicked(item.account)}>
                                     <span className="leader-board-rank-index">{index+1}</span>
                                     { avatarDom }
-                                    <div className="leader-board-item-name">{item.account}</div>
+                                    <div className="leader-board-item-name">{formatAccount(item.account)}</div>
                                     <div className="leader-board-rank-value">{item.invitee_num}</div>
                                 </div>
                     }
@@ -3857,7 +3853,7 @@ const RichOwnerLeaderboard = (props) => {
                 <span className="leader-board-title">{props.langConfig('rich-owner-leaderboard-title')}</span> 
                 
                 
-                {data.map((item, index) => {
+                {data?.map((item, index) => {
                     let avatar = "https://identicons.did.id/identicon/" + formatDisplayName(item);
                     let avatarDom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
 
