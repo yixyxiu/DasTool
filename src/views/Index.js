@@ -722,8 +722,24 @@ class DASWordCloud extends React.Component {
         clientWidth: document.body.clientWidth 
     }
 
+    fetchData = () => {
+        let url = 'https://api.das.la/api/v1/das_accounts/cloud_word'
+
+        fetch(url)
+            .then((response) => response.json())
+            .then((json) => {
+                this.setState({wordCloudData: json })
+            })
+            .catch((error) => {
+            console.log('fetch data failed', error);
+            });
+    }
+
     componentDidMount() {
         window.addEventListener('resize', this.handleResize.bind(this)) 
+        setTimeout(() => {
+            this.fetchData()
+        }, 1000)
     }
 
     componentWillUnmount() { 
@@ -744,9 +760,9 @@ class DASWordCloud extends React.Component {
     }
     render() {
         var config = {
-            data: this.props.dataCallback(),
+            data: this.state.wordCloudData,
             wordField: 'name',
-            weightField: 'count',
+            weightField: 'num',
             padding:[0, -20, 0, -20],
             colorField: 'name',
             height: this.state.clientWidth > 500 ? 500 : this.state.clientWidth,
@@ -2408,6 +2424,52 @@ export default class Index extends React.Component {
         return inviter;
     }
 
+    /**
+     * 
+     * @param {
+            "account": "bitching.bit",
+            "registered_at": 1652099681,
+            "expired_at": 1683635681,
+            "inviter_account": ""
+        } item 
+     */
+    addNewBornDAS = (item) => {
+        let account = item.account;
+        let inviter = item.inviter_account;
+        if (das.registered.indexOf(account) < 0) {
+            das.registered.push(account);
+            
+            // 只显示新增的，上次本地已经显示过了，就不再显示
+            let msgTime = item.registered_at;
+            let lastNewDASTipsTime = localStorage.getItem('das-born-showed')
+            if (!lastNewDASTipsTime || msgTime > lastNewDASTipsTime) {
+                let tipsInfo = {};
+                tipsInfo['msgTime'] = msgTime;
+                tipsInfo['account'] = account;
+                tipsInfo['isFromDasla'] = false;
+                if (inviter === 'cryptofans.bit') {
+                    tipsInfo['isFromDasla'] = true;
+                }
+                newDASBornList.push(tipsInfo);
+            }
+         /*   if (lastNewDASTipsTime) {
+                if (msgTime > new Date(lastNewDASTipsTime)) {
+                    let tipsInfo = {};
+                    tipsInfo['msgTime'] = msgTime;
+                    tipsInfo['account'] = account;
+                    newDASBornList.push(tipsInfo);
+                }
+            }
+            else {
+                let tipsInfo = {};
+                tipsInfo['msgTime'] = msgTime;
+                tipsInfo['account'] = account;
+                newDASBornList.push(tipsInfo);
+            } */  
+        }
+        //console.log(account);
+    }
+/*
     addNewBornDAS = (item, msgTime) => {
         //console.log(item, msgTime)
         let account = this.getMidString(item, '** ', ' **');
@@ -2443,48 +2505,36 @@ export default class Index extends React.Component {
         }
         //console.log(account);
     }
-
+*/
     getRegistList = async () => {
         let that = this;
         return new Promise((resolve) => {
-            const headers = {
-                //'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
-                'authorization': 'ODY3ODA0ODU1MjMwMDA1MzA4.YPmcVg.iRQmn4cB0o_T6CRsoI-fymQKER0',
-                'cookie': '__dcfduid=4c76a7a70895b91877e29c9534d5fa30; __sdcfduid=b31379a6f3ff11eb96d242010a0a02bc0e534fe0d6b719f4db746cfff96889994a9b543e4bb06bb57942c430e90bd14b'
-            }
-
-            let url = 'https://discord.com/api/v9/channels/831429673115451395/messages?limit=100&after=' + das.lastRegiseredId
-            fetch(url, { headers })
+            let url = 'https://api.das.la/api/v1/das_accounts/latest_bit_accounts?direction=after&limit=100&timestamp=' + (das.fetchListTimestamp-1).toString()
+            console.log(url);
+            fetch(url)
             .then(function(response){
                 return response.json();  
-              })
-              .then(function(json){
-                  // 先排序，顺序，时间最小的在最前面
-                  json.reverse();
-                  json.forEach(item => {
-                      //console.log(item)
-                      // 考虑到一次content里可能会来多笔数据，以\n分割
-                      if (item['content'].indexOf('\n') > 0) {
-                            let accountList = item['content'].split('\n')
-                            //console.log(accountList)
-                            for ( let it in accountList) {
-                                that.addNewBornDAS(accountList[it], item['timestamp']);
-                            }
-                      }
-                      else {
-                        that.addNewBornDAS(item['content'], item['timestamp']);
-                      }
-                  });
+                })
+                .then(function(json){
+                    // 时间最小的在最前面
 
-                  if (json.length > 0) {
-                      das.lastRegiseredId = json[json.length-1].id;
-                      das.lastUpdateTime = json[json.length-1].timestamp;
-                      //that.setState({dataUpdateFlag: true});
-                      // 如果有数据，继续拉取
-                      setTimeout(() => {
-                          that.getRegistList();
-                      }, 1000);
-                  }
+                    let accounts = json.accounts;
+                    accounts.forEach(item => {
+                        that.addNewBornDAS(item);
+                    });
+
+                    if (accounts?.length > 0) {
+                        das.fetchListTimestamp = accounts[accounts.length-1].registered_at;
+                        //that.setState({dataUpdateFlag: true});
+                        console.log(das.fetchListTimestamp);
+                    }
+
+                    if (accounts?.length === 100) {
+                        // 如果数据等于分页的条数，说明可能还有数据，继续拉取
+                        setTimeout(() => {
+                            that.getRegistList();
+                        }, 1000);
+                    }
               })
               .catch(function(err){
                 console.log(err); 
@@ -2984,7 +3034,7 @@ export default class Index extends React.Component {
 
         return rankList;
     }
-
+    /*
     loadDailyStatUpdatedTime = () => {
         let defTitle = this.langConfig('dailystat-title');
         let updateTime = '';
@@ -2994,7 +3044,7 @@ export default class Index extends React.Component {
         }
             
         return defTitle + updateTime;
-    }
+    }*/
 
     // 显示标签时用到
     getAccountStatusString = (status) => {
@@ -3639,8 +3689,9 @@ export default class Index extends React.Component {
                             {this.langConfig('account-length-distribution-title')}
                             <a href={this.langConfig('das-limit-link')} target="_blank" rel="noopener noreferrer" >{this.langConfig('das-limit-info')}</a>
                         </div>
-                        <DASTreemap loadConfigCallback={this.langConfig} dataCallback={this.getAccountLenStatList} ></DASTreemap>
-                       
+                        
+                        <DotBitTree loadConfigCallback={this.langConfig} ></DotBitTree>
+                        
                     </Card>
                     <br/>
                     
@@ -3892,7 +3943,7 @@ const RichOwnerLeaderboard = (props) => {
                     }
                 })}
             </div> 
-  };
+};
 
 
 const HotAccounts = (props) => {
@@ -4118,4 +4169,71 @@ const RegisteAccountWrapper = (props) => {
         </Space>
     }
     
+}
+
+const DotBitTree = (props) => {
+    const [data, setData] = useState([]);
+  
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const langConfig = (key) => {
+        return props.loadConfigCallback(key)
+    }
+
+    const fetchData = () => {
+        console.log('get account-length')
+        let url = 'https://api.das.la/api/v1/das_accounts/account_length'
+
+        fetch(url)
+            .then((response) => response.json())
+            .then((json) => {
+                setData(json)
+            })
+            .catch((error) => {
+            console.log('fetch data failed', error);
+            });
+    }
+
+    const treeData = {
+            name: 'root',
+            children: data
+    }
+
+    const config = {
+            data: treeData,
+            colorField: 'length',
+            fontFamily: 'Montserrat',
+            renderer:'svg',
+            padding:[8, 0, 34, 0], // [bottom,left]
+            interactions: [{ type: 'legend-filter', enable: false }],
+            label: {
+            formatter: (datum) => {
+                return datum.length + langConfig('letters') + '\n'+ datum.value ;
+            },
+         
+            style:{
+                opacity: 0.9,
+                fontSize: 16,
+                
+            },
+            rotate: false
+            },
+            tooltip: {
+            formatter: (datum: Datum) => {
+                return { name: datum.length + langConfig('letters'), value: datum.value};
+            },
+            style: {
+                opacity: 0.6,
+                fontSize: 24
+            }
+            },
+            
+            theme: { "styleSheet": { "brandColor": "#F8D4A4", 
+                "paletteQualitative10":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62'], 
+                "paletteQualitative20":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62']}},
+            };
+    console.log(config);
+    return <Treemap {...config} />;
 }
