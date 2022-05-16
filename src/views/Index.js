@@ -2477,8 +2477,15 @@ export default class Index extends React.Component {
                 tipsInfo['isFromDasla'] = false;
                 if (inviter === 'cryptofans.bit') {
                     tipsInfo['isFromDasla'] = true;
+                    newDASBornList.push(tipsInfo);
                 }
-                newDASBornList.push(tipsInfo);
+                else {
+                    // 5 分钟之内的可以提示
+                    if (Date.now() - msgTime < 5 * 60) {
+                        newDASBornList.push(tipsInfo);
+                    }
+                }
+                
             }
          /*   if (lastNewDASTipsTime) {
                 if (msgTime > new Date(lastNewDASTipsTime)) {
