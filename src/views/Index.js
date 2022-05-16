@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {Card, Space, Input, Button, Table, Alert, Menu, Dropdown, Radio, 
+import {Card, Space, Input, Button, Table, Alert, Menu, Radio, 
     Divider, message, Tooltip, Tag, Select, Form, notification,Spin} from 'antd';
-import {SearchOutlined, DownOutlined, QuestionCircleFilled, DownloadOutlined, ConsoleSqlOutlined} from '@ant-design/icons';
+import {SearchOutlined, ShoppingCartOutlined, DownOutlined, QuestionCircleFilled, DownloadOutlined, ConsoleSqlOutlined} from '@ant-design/icons';
 import { Treemap, Line, WordCloud, Bar } from '@ant-design/charts';
 import { Column } from '@ant-design/plots';
 import {Carousel} from "react-responsive-carousel";
@@ -15,13 +15,17 @@ import md5 from 'blueimp-md5'
 import img from "../img/logo.png"
 import DAS_LA_LOGO from '../img/dasla_logo.png';
 import CKB_QRCODE from '../img/ckb_qrcode.png';
-import REG_DENAME_LOGO from '../img/ic-registrar-dename.png';
+//import REG_DENAME_LOGO from '../img/ic-registrar-dename.png';
 import REG_DAS_LOGO from '../img/ic-registrar-das.png';
 import WORDCLOUD_MASK from '../img/wordcloud_mask.png';
 import CERTIFICATE_MASK from '../img/certificate_mask.jpg';
-import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH, DONATEADDRESS, TABLEFILTER} from "../mock/constant"
+import DOT_BIT_LOGO from '../img/dotbit_logo-dark.svg';
+import {FIGURE_PATHS, COLORS, getColors, getPositions, getFigurePaths, DASOPENEPOCH, DONATEADDRESS, TABLEFILTER, DASLA_CLIENTID} from "../mock/constant"
 import { indexOf } from '@antv/util';
 import { CSVLink } from "react-csv";
+import Marquee from "react-fast-marquee";
+import Dropdown from '../components/dropdown/Dropdown';
+
 //import { loadConfig } from 'browserslist';
 
 //const {Footer} = Layout
@@ -1824,6 +1828,30 @@ export default class Index extends React.Component {
         return result;
     }
 
+    isAvailable = (name) => {
+        if (/^[a-zA-Z\d]+$/.test(name)) {
+            // 大于20位的，das.la 不推荐，小于4位的不支持
+            if (name.length < 4) {
+                return false;
+            }
+
+            let account = name + '.bit';
+            if (das.reserved.includes(account)) {
+                return false;
+            }
+
+            if (das.registered.includes(account)) {
+                return false;
+            }
+
+            if (this.canRegister(name)) {
+                return true;                 
+            }
+        }        
+
+        return false;
+    }
+
     search = () => {
 
         let reserved = das.reserved;
@@ -2510,7 +2538,6 @@ export default class Index extends React.Component {
         let that = this;
         return new Promise((resolve) => {
             let url = 'https://api.das.la/api/v1/das_accounts/latest_bit_accounts?direction=after&limit=100&timestamp=' + (das.fetchListTimestamp-1).toString()
-            console.log(url);
             fetch(url)
             .then(function(response){
                 return response.json();  
@@ -2526,7 +2553,7 @@ export default class Index extends React.Component {
                     if (accounts?.length > 0) {
                         das.fetchListTimestamp = accounts[accounts.length-1].registered_at;
                         //that.setState({dataUpdateFlag: true});
-                        console.log(das.fetchListTimestamp);
+                        //console.log(das.fetchListTimestamp);
                     }
 
                     if (accounts?.length === 100) {
@@ -3410,6 +3437,45 @@ export default class Index extends React.Component {
             </Menu>
         );
 
+        const lang_menus_data = [
+            {"icon":"🇨🇳", "key":"zh_CN", "caption":"简体中文"},
+            {"icon":"🇬🇧", "key":"en_US", "caption":"English"},
+        ]
+
+        const getLanguageMenu = (locale) => {
+            let config = {};
+            lang_menus_data.forEach(element => {
+                if (element.key === locale) {
+                    config = element;
+                }
+            });
+
+            return config;
+        }
+
+        const renderLanguageItem = (item, index) => (
+            <Button type="link" size={'normal'} onClick={() => this.changeLanguage(item.key)}>
+                <span className="das-account-name"> {item.icon}</span><span className="ens-link">{item.caption}</span>
+            </Button>
+        )
+
+        const renderCurrentLanguage = (lang) => { 
+            let config = getLanguageMenu(lang);
+            console.log(config.icon + ''+ config.key);
+            if (config) {
+                return (<div>
+                    <span className="change-lang-caption"> {config.icon} {config.caption}</span>
+                </div>)
+            }
+            else {
+                return (<div>
+                    <span className="das-account-name"> 🇬🇧 English</span>
+                </div>)
+            }            
+            
+        }
+
+
         // 精准匹配搜索结果筛选的下拉菜单
         const tableFilters = [];
         TABLEFILTER[this.state.locale].forEach((item) => {
@@ -3533,19 +3599,25 @@ export default class Index extends React.Component {
                         />
                         
                     </div>
+                    
                     <Card title={this.langConfig('match-all')} bordered={false} tabBarExtraContent= {<QuestionCircleFilled />}> 
                         <div style={{
                                 display: 'inline-block',
                                 position: 'absolute',
                                 right: 15,
-                                top: 18,
+                                top: 14,
                                 textAlign: 'right'
                             }}>
-                                <Dropdown overlay={menu}>
+                              {/*  <Dropdown overlay={menu}>
                                     <a className="ant-dropdown-link" onClick={e => e.preventDefault()}>
                                         {this.langConfig('lang')} <DownOutlined/>
                                     </a>
-                                </Dropdown>
+                                    </Dropdown>*/}
+                                <Dropdown
+                                    customToggle={() => renderCurrentLanguage(this.state.locale)}
+                                    contentData={lang_menus_data}
+                                    renderItems={(item, index) => renderLanguageItem(item, index)}
+                                ></Dropdown>
                         </div>
                         <div style={{display: 'flex'}}>
                             
@@ -3618,7 +3690,7 @@ export default class Index extends React.Component {
                                 {loadFavListBtnDom}
                             </div>
                         </div>
-                        
+                        <EnsMarketKeeper langConfig={this.langConfig} openLink={this.openLink} availableChecker={this.isAvailable}/>
                     </Card>
                     <br/>
                     <HotAccounts langConfig={this.langConfig} getAvatar={this.getImg} canRegister={this.canRegister} goDASRegister={this.goDASRegister} goDeNameRegister={this.goDeNameRegister} dasData={das}/>
@@ -4237,3 +4309,223 @@ const DotBitTree = (props) => {
     console.log(config);
     return <Treemap {...config} />;
 }
+
+
+const EnsMarketKeeper = (props) => {
+    const [showData, setShowData] = useState([]);
+    const [allData, setAllData] = useState([]);
+    const [miniData, setMiniData] = useState([]);
+    const [isShowAll, setShowAll] = useState(false);
+
+   
+    let intervalRef = useRef(null);
+    useEffect(() => {
+
+        asyncFetch();
+
+        clearInterval(intervalRef.current);
+  
+        // 一分钟更新一次数据
+        intervalRef.current = setInterval(() => {
+            asyncFetch();
+        }, 1 * 60 * 1000);
+        
+        return () => {
+            clearInterval(intervalRef.current)
+        }
+    }, []);
+  
+    const asyncFetch = () => {
+        const headers = {
+            'content-type': 'application/json;charset=UTF-8',
+          }
+
+        //const data = {"keyword": account,"page":1,"size":50}
+
+        const optionParam = {
+            headers: headers,
+        //    body: JSON.stringify(data),
+            method: 'GET', 
+        }
+
+        let t = Date.now();
+        let s = md5(t + DASLA_CLIENTID);
+        let url = 'https://api.das.la/api/v1/das_accounts/get_recent_ens_order?t=' + t +'&s=' + s;
+
+        fetch(url, optionParam)
+            .then((response) => response.json())
+            .then((json) => {
+                let validData = [];
+                if (json) {
+                    json.forEach(item => {
+                        // 只处理数字字母
+                        let account = getAccountName(item.name)
+                        if (props.availableChecker(account)) {
+                            validData.push(item);
+                        }
+                    })
+                }
+                setAllData(validData);
+
+                let mini = validData.slice(0,10);
+                setMiniData(mini);
+
+                if (isShowAll) {
+                    setShowData(validData);
+                }
+                else {
+                    setShowData(mini);
+                }
+            })
+            .catch((error) => {
+                console.log('get_recent_ens_order data failed', error);
+                setAllData([]);
+            });
+    };
+
+    const formatAddress = (address) => {
+        if (address.length < 20){
+            return address;
+        }
+
+        let begin = address.substring(0,6);
+        let end = address.substring(address.length-6);
+        let str = begin + '...' + end;
+
+        return str;
+    }
+
+    const getItemContent = (item) => {
+        let content = ""
+        if (item) {
+            //        "ens-sold-info":"{0} sold at {1}{2}(${3})🎉",
+            let formatString = props.langConfig('ens-sold-info');
+            content = formatString.format(item.name, item.total_price, item.symbol, (item.total_price*item.usd_price).toFixed(2));
+        }
+
+        return content;
+    }
+
+    // 1234.ens -> 1234
+    const getAccountName = (ensName) => {
+        let account = ''
+        if (ensName) {
+            account = ensName.substring(0, ensName.length-4);
+        }
+
+        return account;
+    }
+
+    const registerBit = (item) => {
+        let account = getAccountName(item.name);
+        if (account) {
+            let url = "https://app.did.id/account/register/" + account + ".bit?inviter=cryptofans.bit&channel=cryptofans.bit"
+            props.openLink(url, 'registery_' + account);
+        }
+    }
+
+    const getRegisterBitBtnCaption = (item) => {
+        let content = ""
+        if (item) {
+            //        "reg-dot-bit-by-ens":"GRAB {0}",
+            let formatString = props.langConfig('reg-dot-bit-by-ens');
+            content = formatString.format(getAccountName(item.name));
+        }
+
+        return content;
+    }
+
+    const getOpenSeaLink = (item) => {
+        let url = ""
+        if (item) {
+            url = "https://opensea.io/assets/{0}/{1}".format(item.address, item.token_id);
+        }
+
+        return url;
+    }
+
+    const renderOrderItem = (item) => {
+        let avatarDom = <img style={{height: "32px", width: "32px",borderRadius: "32px",marginLeft:"10px",marginRight:"10px"}} src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNzIuNTIgODAuOTUiPjxkZWZzPjxzdHlsZT4uY2xzLTN7ZmlsbDojYTBhOGQ0fTwvc3R5bGU+PGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQiIHgxPSI0MS45NSIgeTE9IjIuNTciIHgyPSIxMi41NyIgeTI9IjM0LjQyIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIuNTgiIHN0b3AtY29sb3I9IiNhMGE4ZDQiLz48c3RvcCBvZmZzZXQ9Ii43MyIgc3RvcC1jb2xvcj0iIzg3OTFjNyIvPjxzdG9wIG9mZnNldD0iLjkxIiBzdG9wLWNvbG9yPSIjNjQ3MGI0Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudC0yIiB4MT0iNDIuNTciIHkxPSI4MS42NiIgeDI9IjcxLjk2IiB5Mj0iNDkuODEiIHhsaW5rOmhyZWY9IiNsaW5lYXItZ3JhZGllbnQiLz48bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudC0zIiB4MT0iNDIuMjYiIHkxPSIxLjI0IiB4Mj0iNDIuMjYiIHkyPSI4Mi44NCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzUxM2VmZiIvPjxzdG9wIG9mZnNldD0iLjE4IiBzdG9wLWNvbG9yPSIjNTE1N2ZmIi8+PHN0b3Agb2Zmc2V0PSIuNTciIHN0b3AtY29sb3I9IiM1Mjk4ZmYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM1MmU1ZmYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48ZyBzdHlsZT0iaXNvbGF0aW9uOmlzb2xhdGUiPjxnIGlkPSJMYXllcl8xIiBkYXRhLW5hbWU9IkxheWVyIDEiPjxwYXRoIGQ9Ik0xNS4yOCAzNC4zOWMuOCAxLjcxIDIuNzggNS4wOSAyLjc4IDUuMDlMNDAuOTUgMS42NGwtMjIuMzQgMTUuNmE5Ljc1IDkuNzUgMCAwIDAtMy4xOCAzLjUgMTYuMTkgMTYuMTkgMCAwIDAtLjE1IDEzLjY1eiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYgLTEuNjQpIiBmaWxsPSJ1cmwoI2xpbmVhci1ncmFkaWVudCkiLz48cGF0aCBjbGFzcz0iY2xzLTMiIGQ9Ik02LjIxIDQ2Ljg1YTI1LjQ3IDI1LjQ3IDAgMCAwIDEwIDE4LjUxbDI0LjcxIDE3LjIzcy0xNS40Ni0yMi4yOC0yOC41LTQ0LjQ1YTIyLjM5IDIyLjM5IDAgMCAxLTIuNjItNy41NiAxMi4xIDEyLjEgMCAwIDEgMC0zLjYzYy0uMzQuNjMtMSAxLjkyLTEgMS45MmEyOS4zNSAyOS4zNSAwIDAgMC0yLjY3IDguNTUgNTIuMjggNTIuMjggMCAwIDAgLjA4IDkuNDN6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNiAtMS42NCkiLz48cGF0aCBkPSJNNjkuMjUgNDkuODRjLS44LTEuNzEtMi43OC01LjA5LTIuNzgtNS4wOUw0My41OCA4Mi41OSA2NS45MiA2N2E5Ljc1IDkuNzUgMCAwIDAgMy4xOC0zLjUgMTYuMTkgMTYuMTkgMCAwIDAgLjE1LTEzLjY2eiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYgLTEuNjQpIiBmaWxsPSJ1cmwoI2xpbmVhci1ncmFkaWVudC0yKSIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTc4LjMyIDM3LjM4YTI1LjQ3IDI1LjQ3IDAgMCAwLTEwLTE4LjUxTDQzLjYxIDEuNjRzMTUuNDUgMjIuMjggMjguNSA0NC40NWEyMi4zOSAyMi4zOSAwIDAgMSAyLjYxIDcuNTYgMTIuMSAxMi4xIDAgMCAxIDAgMy42M2MuMzQtLjYzIDEtMS45MiAxLTEuOTJhMjkuMzUgMjkuMzUgMCAwIDAgMi42Ny04LjU1IDUyLjI4IDUyLjI4IDAgMCAwLS4wNy05LjQzeiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYgLTEuNjQpIi8+PHBhdGggZD0iTTE1LjQzIDIwLjc0YTkuNzUgOS43NSAwIDAgMSAzLjE4LTMuNWwyMi4zNC0xNS42LTIyLjg5IDM3Ljg1cy0yLTMuMzgtMi43OC01LjA5YTE2LjE5IDE2LjE5IDAgMCAxIC4xNS0xMy42NnpNNi4yMSA0Ni44NWEyNS40NyAyNS40NyAwIDAgMCAxMCAxOC41MWwyNC43MSAxNy4yM3MtMTUuNDYtMjIuMjgtMjguNS00NC40NWEyMi4zOSAyMi4zOSAwIDAgMS0yLjYyLTcuNTYgMTIuMSAxMi4xIDAgMCAxIDAtMy42M2MtLjM0LjYzLTEgMS45Mi0xIDEuOTJhMjkuMzUgMjkuMzUgMCAwIDAtMi42NyA4LjU1IDUyLjI4IDUyLjI4IDAgMCAwIC4wOCA5LjQzem02MyAzYy0uOC0xLjcxLTIuNzgtNS4wOS0yLjc4LTUuMDlMNDMuNTggODIuNTkgNjUuOTIgNjdhOS43NSA5Ljc1IDAgMCAwIDMuMTgtMy41IDE2LjE5IDE2LjE5IDAgMCAwIC4xNS0xMy42NnptOS4wNy0xMi40NmEyNS40NyAyNS40NyAwIDAgMC0xMC0xOC41MUw0My42MSAxLjY0czE1LjQ1IDIyLjI4IDI4LjUgNDQuNDVhMjIuMzkgMjIuMzkgMCAwIDEgMi42MSA3LjU2IDEyLjEgMTIuMSAwIDAgMSAwIDMuNjNjLjM0LS42MyAxLTEuOTIgMS0xLjkyYTI5LjM1IDI5LjM1IDAgMCAwIDIuNjctOC41NSA1Mi4yOCA1Mi4yOCAwIDAgMC0uMDctOS40M3oiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC02IC0xLjY0KSIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOmNvbG9yIiBmaWxsPSJ1cmwoI2xpbmVhci1ncmFkaWVudC0zKSIvPjwvZz48L2c+PC9zdmc+" alt="ENS Logo"></img>
+        return  <div className="ens-latest-order-item">
+                                
+                { avatarDom }
+                                
+                <a href={getOpenSeaLink(item)} target="_blank" rel="noopener noreferrer"><span className="ens-link">{item.name} </span></a>
+                <span className="leader-board-rank-index">{getItemContent(item)}</span>
+                <Button type="link" size={'normal'} onClick={() => registerBit(item)}><span className="ens-link">{getRegisterBitBtnCaption(item)}</span></Button>
+            </div>
+    }
+
+    const renderItem = (item, index) => {
+        let avatarDom = <img style={{height: "20px", width: "20px",borderRadius: "20px",marginLeft:"10px",marginRight:"10px"}} src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNzIuNTIgODAuOTUiPjxkZWZzPjxzdHlsZT4uY2xzLTN7ZmlsbDojYTBhOGQ0fTwvc3R5bGU+PGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQiIHgxPSI0MS45NSIgeTE9IjIuNTciIHgyPSIxMi41NyIgeTI9IjM0LjQyIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIuNTgiIHN0b3AtY29sb3I9IiNhMGE4ZDQiLz48c3RvcCBvZmZzZXQ9Ii43MyIgc3RvcC1jb2xvcj0iIzg3OTFjNyIvPjxzdG9wIG9mZnNldD0iLjkxIiBzdG9wLWNvbG9yPSIjNjQ3MGI0Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudC0yIiB4MT0iNDIuNTciIHkxPSI4MS42NiIgeDI9IjcxLjk2IiB5Mj0iNDkuODEiIHhsaW5rOmhyZWY9IiNsaW5lYXItZ3JhZGllbnQiLz48bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudC0zIiB4MT0iNDIuMjYiIHkxPSIxLjI0IiB4Mj0iNDIuMjYiIHkyPSI4Mi44NCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzUxM2VmZiIvPjxzdG9wIG9mZnNldD0iLjE4IiBzdG9wLWNvbG9yPSIjNTE1N2ZmIi8+PHN0b3Agb2Zmc2V0PSIuNTciIHN0b3AtY29sb3I9IiM1Mjk4ZmYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM1MmU1ZmYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48ZyBzdHlsZT0iaXNvbGF0aW9uOmlzb2xhdGUiPjxnIGlkPSJMYXllcl8xIiBkYXRhLW5hbWU9IkxheWVyIDEiPjxwYXRoIGQ9Ik0xNS4yOCAzNC4zOWMuOCAxLjcxIDIuNzggNS4wOSAyLjc4IDUuMDlMNDAuOTUgMS42NGwtMjIuMzQgMTUuNmE5Ljc1IDkuNzUgMCAwIDAtMy4xOCAzLjUgMTYuMTkgMTYuMTkgMCAwIDAtLjE1IDEzLjY1eiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYgLTEuNjQpIiBmaWxsPSJ1cmwoI2xpbmVhci1ncmFkaWVudCkiLz48cGF0aCBjbGFzcz0iY2xzLTMiIGQ9Ik02LjIxIDQ2Ljg1YTI1LjQ3IDI1LjQ3IDAgMCAwIDEwIDE4LjUxbDI0LjcxIDE3LjIzcy0xNS40Ni0yMi4yOC0yOC41LTQ0LjQ1YTIyLjM5IDIyLjM5IDAgMCAxLTIuNjItNy41NiAxMi4xIDEyLjEgMCAwIDEgMC0zLjYzYy0uMzQuNjMtMSAxLjkyLTEgMS45MmEyOS4zNSAyOS4zNSAwIDAgMC0yLjY3IDguNTUgNTIuMjggNTIuMjggMCAwIDAgLjA4IDkuNDN6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNiAtMS42NCkiLz48cGF0aCBkPSJNNjkuMjUgNDkuODRjLS44LTEuNzEtMi43OC01LjA5LTIuNzgtNS4wOUw0My41OCA4Mi41OSA2NS45MiA2N2E5Ljc1IDkuNzUgMCAwIDAgMy4xOC0zLjUgMTYuMTkgMTYuMTkgMCAwIDAgLjE1LTEzLjY2eiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYgLTEuNjQpIiBmaWxsPSJ1cmwoI2xpbmVhci1ncmFkaWVudC0yKSIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTc4LjMyIDM3LjM4YTI1LjQ3IDI1LjQ3IDAgMCAwLTEwLTE4LjUxTDQzLjYxIDEuNjRzMTUuNDUgMjIuMjggMjguNSA0NC40NWEyMi4zOSAyMi4zOSAwIDAgMSAyLjYxIDcuNTYgMTIuMSAxMi4xIDAgMCAxIDAgMy42M2MuMzQtLjYzIDEtMS45MiAxLTEuOTJhMjkuMzUgMjkuMzUgMCAwIDAgMi42Ny04LjU1IDUyLjI4IDUyLjI4IDAgMCAwLS4wNy05LjQzeiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYgLTEuNjQpIi8+PHBhdGggZD0iTTE1LjQzIDIwLjc0YTkuNzUgOS43NSAwIDAgMSAzLjE4LTMuNWwyMi4zNC0xNS42LTIyLjg5IDM3Ljg1cy0yLTMuMzgtMi43OC01LjA5YTE2LjE5IDE2LjE5IDAgMCAxIC4xNS0xMy42NnpNNi4yMSA0Ni44NWEyNS40NyAyNS40NyAwIDAgMCAxMCAxOC41MWwyNC43MSAxNy4yM3MtMTUuNDYtMjIuMjgtMjguNS00NC40NWEyMi4zOSAyMi4zOSAwIDAgMS0yLjYyLTcuNTYgMTIuMSAxMi4xIDAgMCAxIDAtMy42M2MtLjM0LjYzLTEgMS45Mi0xIDEuOTJhMjkuMzUgMjkuMzUgMCAwIDAtMi42NyA4LjU1IDUyLjI4IDUyLjI4IDAgMCAwIC4wOCA5LjQzem02MyAzYy0uOC0xLjcxLTIuNzgtNS4wOS0yLjc4LTUuMDlMNDMuNTggODIuNTkgNjUuOTIgNjdhOS43NSA5Ljc1IDAgMCAwIDMuMTgtMy41IDE2LjE5IDE2LjE5IDAgMCAwIC4xNS0xMy42NnptOS4wNy0xMi40NmEyNS40NyAyNS40NyAwIDAgMC0xMC0xOC41MUw0My42MSAxLjY0czE1LjQ1IDIyLjI4IDI4LjUgNDQuNDVhMjIuMzkgMjIuMzkgMCAwIDEgMi42MSA3LjU2IDEyLjEgMTIuMSAwIDAgMSAwIDMuNjNjLjM0LS42MyAxLTEuOTIgMS0xLjkyYTI5LjM1IDI5LjM1IDAgMCAwIDIuNjctOC41NSA1Mi4yOCA1Mi4yOCAwIDAgMC0uMDctOS40M3oiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC02IC0xLjY0KSIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOmNvbG9yIiBmaWxsPSJ1cmwoI2xpbmVhci1ncmFkaWVudC0zKSIvPjwvZz48L2c+PC9zdmc+" alt="ENS Logo"></img>
+        let dotbitLogoDom = <img style={{height: "17px",marginLeft:"10px",marginTop:"-0px"}} src={DOT_BIT_LOGO} alt=".bit Logo"></img>
+        let cartDom = <img style={{height: "19px", marginTop:"-0px"}} src='data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjU0IiB2aWV3Qm94PSIwIDAgNjIgNTQiIHdpZHRoPSI2MiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJtMjUuMzMzMzMzMyAxNi4zMzMzMzMzYy0xLjQ3Mjc1OTMgMC0yLjY2NjY2NjYtMS4xOTM5MDczLTIuNjY2NjY2Ni0yLjY2NjY2NjYgMC0xLjQ3Mjc1OTQgMS4xOTM5MDczLTIuNjY2NjY2NyAyLjY2NjY2NjYtMi42NjY2NjY3aDh2LThjMC0xLjQ3Mjc1OTMzIDEuMTkzOTA3NC0yLjY2NjY2NjY3IDIuNjY2NjY2Ny0yLjY2NjY2NjY3czIuNjY2NjY2NyAxLjE5MzkwNzM0IDIuNjY2NjY2NyAyLjY2NjY2NjY3djhoOGMxLjQ3Mjc1OTMgMCAyLjY2NjY2NjYgMS4xOTM5MDczIDIuNjY2NjY2NiAyLjY2NjY2NjcgMCAxLjQ3Mjc1OTMtMS4xOTM5MDczIDIuNjY2NjY2Ni0yLjY2NjY2NjYgMi42NjY2NjY2aC04djhjMCAxLjQ3Mjc1OTQtMS4xOTM5MDc0IDIuNjY2NjY2Ny0yLjY2NjY2NjcgMi42NjY2NjY3cy0yLjY2NjY2NjctMS4xOTM5MDczLTIuNjY2NjY2Ny0yLjY2NjY2Njd2LTh6bS0xNi43MDM0NTU1NC04aC01Ljk2MzIxMTA5Yy0xLjQ3Mjc1OTM0IDAtMi42NjY2NjY2Ny0xLjE5MzkwNzMtMi42NjY2NjY2Ny0yLjY2NjY2NjYgMC0xLjQ3Mjc1OTM3IDEuMTkzOTA3MzMtMi42NjY2NjY3IDIuNjY2NjY2NjctMi42NjY2NjY3aDguMDAwMDAwMDNjMS4yMDI1MzYxIDAgMi4yNTYyOTUzLjgwNDg1Njg4IDIuNTcyNzAzNSAxLjk2NTAyMDI1bDcuNDY0MDg1NCAyNy4zNjgzMTMwNWgzMC41NDc4MDczbDQuODI4MzU3MS0xOS4zMTM0MjgzYy4zNTcxOTY2LTEuNDI4Nzg2NCAxLjgwNTAyMTktMi4yOTc0ODE2IDMuMjMzODA4My0xLjk0MDI4NSAxLjQyODc4NjUuMzU3MTk2NiAyLjI5NzQ4MTYgMS44MDUwMjE5IDEuOTQwMjg1IDMuMjMzODA4M2wtNS4zMzMzMzMzIDIxLjMzMzMzMzRjLS4yOTY3NzggMS4xODcxMTItMS4zNjMzOTk2IDIuMDE5OTA1LTIuNTg3MDQ2NyAyLjAxOTkwNWgtMzQuNjY2NjY2NmMtMS4yMDI1MzYyIDAtMi4yNTYyOTU0LS44MDQ4NTY5LTIuNTcyNzAzNi0xLjk2NTAyMDN6bTQ0LjcwMzQ1NTU0IDQ1LjMzMzMzMzRjLTIuOTQ1NTE4NiAwLTUuMzMzMzMzMy0yLjM4NzgxNDctNS4zMzMzMzMzLTUuMzMzMzMzNCAwLTIuOTQ1NTE4NiAyLjM4NzgxNDctNS4zMzMzMzMzIDUuMzMzMzMzMy01LjMzMzMzMzMgMi45NDU1MTg3IDAgNS4zMzMzMzM0IDIuMzg3ODE0NyA1LjMzMzMzMzQgNS4zMzMzMzMzIDAgMi45NDU1MTg3LTIuMzg3ODE0NyA1LjMzMzMzMzQtNS4zMzMzMzM0IDUuMzMzMzMzNHptLTMyIDBjLTIuOTQ1NTE4NiAwLTUuMzMzMzMzMy0yLjM4NzgxNDctNS4zMzMzMzMzLTUuMzMzMzMzNCAwLTIuOTQ1NTE4NiAyLjM4NzgxNDctNS4zMzMzMzMzIDUuMzMzMzMzMy01LjMzMzMzMzMgMi45NDU1MTg3IDAgNS4zMzMzMzM0IDIuMzg3ODE0NyA1LjMzMzMzMzQgNS4zMzMzMzMzIDAgMi45NDU1MTg3LTIuMzg3ODE0NyA1LjMzMzMzMzQtNS4zMzMzMzM0IDUuMzMzMzMzNHoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=' alt="cart"></img>
+        return (<div className="ens-order-listview-item" key={index}>
+            <i>{ avatarDom }</i>
+            <div className="ens-latest-order-item">                                
+                <a href={getOpenSeaLink(item)} target="_blank" rel="noopener noreferrer"><span className="ens-link">{item.name} </span></a>
+                <span className="ens-order-listview-item-content">{getItemContent(item)}</span>
+            </div>
+            <Button className='dasla-btn-register-account' icon={cartDom} size={'normal'} onClick={() => registerBit(item)}><i>{ dotbitLogoDom }</i></Button>
+        </div>)
+    }
+
+    const renderCustomToggle = () => (
+        <Button type="primary" size={'normal'} shape="round">{props.langConfig('more')}</Button>
+    )
+
+    const renderShowAll = () => {
+        if (isShowAll) {
+            return <Button type="link" size={'normal'} onClick={() => showMini()}>
+                <span className="ens-link">{props.langConfig('show-latest10')}</span>
+            </Button>
+        }
+        else {
+            return <Button type="link" size={'normal'} onClick={() => showAll()}>
+                <span className="ens-link">{props.langConfig('show-all')}</span>
+            </Button>
+        }
+        
+    }
+
+    const showAll = () => {
+        setShowAll(true);
+        setShowData(allData);
+    }
+
+    const showMini = () => {
+        setShowAll(false);
+        setShowData(miniData);
+    }
+
+    return  <div className='ens-latest-order-marquee-container'>
+            <div className='ens-latest-order-marquee'>
+            <Marquee className='ens-latest-order-marquee' pauseOnHover='true' pauseOnClick='true' speed='35'>            
+                {showData?.map((item, index) => {
+                    //let avatar = "https://identicons.did.id/identicon/" + item.name;
+                    //let avatarDom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px",marginLeft:"10px",marginRight:"10px"}}></img>;
+                    let avatarDom = <img style={{height: "32px", width: "32px",borderRadius: "32px",marginLeft:"10px",marginRight:"10px"}} src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2aWV3Qm94PSIwIDAgNzIuNTIgODAuOTUiPjxkZWZzPjxzdHlsZT4uY2xzLTN7ZmlsbDojYTBhOGQ0fTwvc3R5bGU+PGxpbmVhckdyYWRpZW50IGlkPSJsaW5lYXItZ3JhZGllbnQiIHgxPSI0MS45NSIgeTE9IjIuNTciIHgyPSIxMi41NyIgeTI9IjM0LjQyIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIuNTgiIHN0b3AtY29sb3I9IiNhMGE4ZDQiLz48c3RvcCBvZmZzZXQ9Ii43MyIgc3RvcC1jb2xvcj0iIzg3OTFjNyIvPjxzdG9wIG9mZnNldD0iLjkxIiBzdG9wLWNvbG9yPSIjNjQ3MGI0Ii8+PC9saW5lYXJHcmFkaWVudD48bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudC0yIiB4MT0iNDIuNTciIHkxPSI4MS42NiIgeDI9IjcxLjk2IiB5Mj0iNDkuODEiIHhsaW5rOmhyZWY9IiNsaW5lYXItZ3JhZGllbnQiLz48bGluZWFyR3JhZGllbnQgaWQ9ImxpbmVhci1ncmFkaWVudC0zIiB4MT0iNDIuMjYiIHkxPSIxLjI0IiB4Mj0iNDIuMjYiIHkyPSI4Mi44NCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzUxM2VmZiIvPjxzdG9wIG9mZnNldD0iLjE4IiBzdG9wLWNvbG9yPSIjNTE1N2ZmIi8+PHN0b3Agb2Zmc2V0PSIuNTciIHN0b3AtY29sb3I9IiM1Mjk4ZmYiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiM1MmU1ZmYiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48ZyBzdHlsZT0iaXNvbGF0aW9uOmlzb2xhdGUiPjxnIGlkPSJMYXllcl8xIiBkYXRhLW5hbWU9IkxheWVyIDEiPjxwYXRoIGQ9Ik0xNS4yOCAzNC4zOWMuOCAxLjcxIDIuNzggNS4wOSAyLjc4IDUuMDlMNDAuOTUgMS42NGwtMjIuMzQgMTUuNmE5Ljc1IDkuNzUgMCAwIDAtMy4xOCAzLjUgMTYuMTkgMTYuMTkgMCAwIDAtLjE1IDEzLjY1eiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYgLTEuNjQpIiBmaWxsPSJ1cmwoI2xpbmVhci1ncmFkaWVudCkiLz48cGF0aCBjbGFzcz0iY2xzLTMiIGQ9Ik02LjIxIDQ2Ljg1YTI1LjQ3IDI1LjQ3IDAgMCAwIDEwIDE4LjUxbDI0LjcxIDE3LjIzcy0xNS40Ni0yMi4yOC0yOC41LTQ0LjQ1YTIyLjM5IDIyLjM5IDAgMCAxLTIuNjItNy41NiAxMi4xIDEyLjEgMCAwIDEgMC0zLjYzYy0uMzQuNjMtMSAxLjkyLTEgMS45MmEyOS4zNSAyOS4zNSAwIDAgMC0yLjY3IDguNTUgNTIuMjggNTIuMjggMCAwIDAgLjA4IDkuNDN6IiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtNiAtMS42NCkiLz48cGF0aCBkPSJNNjkuMjUgNDkuODRjLS44LTEuNzEtMi43OC01LjA5LTIuNzgtNS4wOUw0My41OCA4Mi41OSA2NS45MiA2N2E5Ljc1IDkuNzUgMCAwIDAgMy4xOC0zLjUgMTYuMTkgMTYuMTkgMCAwIDAgLjE1LTEzLjY2eiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYgLTEuNjQpIiBmaWxsPSJ1cmwoI2xpbmVhci1ncmFkaWVudC0yKSIvPjxwYXRoIGNsYXNzPSJjbHMtMyIgZD0iTTc4LjMyIDM3LjM4YTI1LjQ3IDI1LjQ3IDAgMCAwLTEwLTE4LjUxTDQzLjYxIDEuNjRzMTUuNDUgMjIuMjggMjguNSA0NC40NWEyMi4zOSAyMi4zOSAwIDAgMSAyLjYxIDcuNTYgMTIuMSAxMi4xIDAgMCAxIDAgMy42M2MuMzQtLjYzIDEtMS45MiAxLTEuOTJhMjkuMzUgMjkuMzUgMCAwIDAgMi42Ny04LjU1IDUyLjI4IDUyLjI4IDAgMCAwLS4wNy05LjQzeiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYgLTEuNjQpIi8+PHBhdGggZD0iTTE1LjQzIDIwLjc0YTkuNzUgOS43NSAwIDAgMSAzLjE4LTMuNWwyMi4zNC0xNS42LTIyLjg5IDM3Ljg1cy0yLTMuMzgtMi43OC01LjA5YTE2LjE5IDE2LjE5IDAgMCAxIC4xNS0xMy42NnpNNi4yMSA0Ni44NWEyNS40NyAyNS40NyAwIDAgMCAxMCAxOC41MWwyNC43MSAxNy4yM3MtMTUuNDYtMjIuMjgtMjguNS00NC40NWEyMi4zOSAyMi4zOSAwIDAgMS0yLjYyLTcuNTYgMTIuMSAxMi4xIDAgMCAxIDAtMy42M2MtLjM0LjYzLTEgMS45Mi0xIDEuOTJhMjkuMzUgMjkuMzUgMCAwIDAtMi42NyA4LjU1IDUyLjI4IDUyLjI4IDAgMCAwIC4wOCA5LjQzem02MyAzYy0uOC0xLjcxLTIuNzgtNS4wOS0yLjc4LTUuMDlMNDMuNTggODIuNTkgNjUuOTIgNjdhOS43NSA5Ljc1IDAgMCAwIDMuMTgtMy41IDE2LjE5IDE2LjE5IDAgMCAwIC4xNS0xMy42NnptOS4wNy0xMi40NmEyNS40NyAyNS40NyAwIDAgMC0xMC0xOC41MUw0My42MSAxLjY0czE1LjQ1IDIyLjI4IDI4LjUgNDQuNDVhMjIuMzkgMjIuMzkgMCAwIDEgMi42MSA3LjU2IDEyLjEgMTIuMSAwIDAgMSAwIDMuNjNjLjM0LS42MyAxLTEuOTIgMS0xLjkyYTI5LjM1IDI5LjM1IDAgMCAwIDIuNjctOC41NSA1Mi4yOCA1Mi4yOCAwIDAgMC0uMDctOS40M3oiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC02IC0xLjY0KSIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOmNvbG9yIiBmaWxsPSJ1cmwoI2xpbmVhci1ncmFkaWVudC0zKSIvPjwvZz48L2c+PC9zdmc+" alt="ENS Logo"></img>
+                    return  <div className="ens-latest-order-item">
+                                
+                                { avatarDom }
+                                
+                                <a href={getOpenSeaLink(item)} target="_blank" rel="noopener noreferrer"><span className="ens-link">{item.name} </span></a>
+                                <span className="leader-board-rank-index">{getItemContent(item)}</span>
+                                <Button type="link" size={'normal'} onClick={() => registerBit(item)}>
+                                    <span className="ens-link">{getRegisterBitBtnCaption(item)}</span>
+                                </Button>
+                            </div>
+                    })}
+            </Marquee>
+            </div>
+            <div>
+                <Dropdown
+                    customToggle={() => renderCustomToggle()}
+                    contentData={showData}
+                    renderItems={(item, index) => renderItem(item,index)}
+                    renderFooter={() => renderShowAll()}
+                ></Dropdown>
+            </div>
+            </div> 
+};
+

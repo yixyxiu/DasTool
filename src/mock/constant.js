@@ -233,3 +233,4 @@ export const TABLEFILTER =
 };
 
 export const DONATEADDRESS = 'ckb1qyqv6sge6as66xz2clgd8ffkjwgcaqv8t5asrghkn4';
+export const DASLA_CLIENTID = '36b61db1c0210f05793f2105f38e6d9cdf9617c7';

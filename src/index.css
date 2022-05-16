@@ -13,6 +13,62 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+
+/*+ ----ens跑马灯开始*/
+
+.ens-latest-order-marquee-container {
+  display: flex;
+  flex-flow: row;
+  width: 100%;
+  justify-content: flex-end;
+  list-style: none;
+  margin: 0;
+}
+
+.ens-link {
+  color:#1890ff;
+  font-weight: bold;
+}
+
+/*- -----ens跑马灯结束*/
+
+
+/*+ ----ens 交易记录开始*/
+
+.ens-order-listview-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.ens-order-listview-item:hover {
+  background-color: #e6f7ff;
+}
+
+.ens-order-listview-item > i {
+  margin-right: 10px;
+  font-size: 1.3rem;
+}
+
+.ens-order-listview-item-content {
+  color: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  text-shadow: 2px 2px 3px rgba(255, 255, 255, 0.2);
+  text-align: left;
+}
+
+.ens-order-listview-bit-btn {
+  
+  text-align: left;
+}
+/*- -----ens 交易记录结束*/
+
+
+
+.change-lang-caption {
+  margin-top: 4px;
+}
+
 @media(max-width: 800px) {
   .das-table-avatar {
     display: none;
@@ -301,7 +357,7 @@ display: flex;
 text {
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
-  /* font-size: 10px; */
+  font-size: 10px;
   font-weight: 600;
 }
 
