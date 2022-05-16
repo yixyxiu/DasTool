@@ -3465,9 +3465,10 @@ export default class Index extends React.Component {
         }
 
         const renderLanguageItem = (item, index) => (
-            <Button type="link" size={'normal'} onClick={() => this.changeLanguage(item.key)}>
-                <span className="das-account-name"> {item.icon}</span><span className="ens-link">{item.caption}</span>
-            </Button>
+            <div className="language-list-container" size={'normal'} onClick={() => this.changeLanguage(item.key)}>
+                <span className="das-account-name"> {item.icon}</span>
+                <span className="ens-link right-align language-item-text">{item.caption}</span>
+            </div>
         )
 
         const renderCurrentLanguage = (lang) => { 

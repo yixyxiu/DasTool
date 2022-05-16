@@ -83,6 +83,17 @@ code {
   margin-top: 4px;
 }
 
+.language-list-container {
+  width: 120px;
+}
+
+.language-item-text {
+  margin-right: 20px;
+  margin-left: 5px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 @media(max-width: 800px) {
   .das-table-avatar {
     display: none;
