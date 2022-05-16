@@ -28,6 +28,15 @@ code {
 .ens-link {
   color:#1890ff;
   font-weight: bold;
+  cursor: pointer;
+}
+
+.right-align {
+  text-align: right;
+}
+
+.bold {
+  font-weight: bold;
 }
 
 /*- -----ens跑马灯结束*/
@@ -57,6 +66,11 @@ code {
   text-align: left;
 }
 
+.ens-latest-order-item-reg-tip {
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+}
 .ens-order-listview-bit-btn {
   
   text-align: left;
