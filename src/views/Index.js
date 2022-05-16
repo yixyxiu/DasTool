@@ -3475,14 +3475,14 @@ export default class Index extends React.Component {
             let config = getLanguageMenu(lang);
             console.log(config.icon + ''+ config.key);
             if (config) {
-                return (<div>
+                return (<Button type="link">
                     <span className="change-lang-caption"> {config.icon} {config.caption}</span>
-                </div>)
+                </Button>)
             }
             else {
-                return (<div>
+                return (<Button  type="link">
                     <span className="das-account-name"> 🇬🇧 English</span>
-                </div>)
+                </Button>)
             }            
             
         }
