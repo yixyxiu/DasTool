@@ -4,12 +4,18 @@ import './dropdown.css'
 
 const clickOutsideRef = (content_ref, toggle_ref) => {
     document.addEventListener('mousedown', (e) => {
+        console.log('content_ref');
+        console.log(content_ref);
+        console.log(e.target)
         // user click toggle
         if (toggle_ref.current && toggle_ref.current.contains(e.target)) {
+            console.log('add active -1111111')
             content_ref.current.classList.toggle('active')
         } else {
+            console.log(2222222)
             // user click outside toggle and content
             if (content_ref.current && !content_ref.current.contains(e.target)) {
+                console.log('remove 3333333')
                 content_ref.current.classList.remove('active')
             }
         }

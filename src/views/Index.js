@@ -1862,7 +1862,7 @@ export default class Index extends React.Component {
         let dateData = {};
         let test = [];
 
-        this.setState({isLoadingMain: true});
+        //this.setState({isLoadingMain: true});
 
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
@@ -4318,7 +4318,7 @@ const DotBitTree = (props) => {
                 "paletteQualitative10":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62'], 
                 "paletteQualitative20":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62']}},
             };
-    console.log(config);
+    
     return <Treemap {...config} />;
 }
 
