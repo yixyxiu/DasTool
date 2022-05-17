@@ -361,7 +361,7 @@ class ForSaleAccountCard extends React.Component {
             })
             .then(function(json){                     
                 let reverse_data = json['result']['data']
-                console.log('reverse_data:' + reverse_data)
+            //    console.log('reverse_data:' + reverse_data)
                 
                 if (json['result']['errno'] === 0) {     
                     accountDetail.reverse_record = reverse_data.account   
