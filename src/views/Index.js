@@ -779,6 +779,7 @@ class DASWordCloud extends React.Component {
                 fontFamily: 'Verdana',
                 fontSize: [8, this.calcFontSize()],
             },
+            //theme: 'dark'
             theme: { "styleSheet": { "brandColor": "#F8D4A4", 
                 "paletteQualitative10":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62'], 
                 "paletteQualitative20":['#338CFF','#FFDA23','#C123FF','#FFC12D','#8221FF','#D49742','#FB23FF','#009CFF','#FF5423','#07BF8B','#2336FF','#DE2E8F','#FF2323','#00C8BB','#6500FF','#DE2E62']}},
@@ -1035,6 +1036,36 @@ const DailyRegCountChart = (props) => {
             });
     };
 
+    const numberFormatter = (num, digits, locale) => {
+        var si = [
+          { value: 1, symbol: "" },
+          { value: 1E3, symbol: "K" },
+          { value: 1E6, symbol: "M" },
+          { value: 1E9, symbol: "G" },
+          { value: 1E12, symbol: "T" },
+          { value: 1E15, symbol: "P" },
+          { value: 1E18, symbol: "E" }
+        ];
+
+        // 中文的习惯，使用万，百万。。
+        if (locale.indexOf("zh") !== -1) {
+            si = [
+                { value: 1, symbol: "" },
+                { value: 1E4, symbol: "万" },
+                { value: 99999900, symbol: "亿" }
+              ];
+        }
+
+        var rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+        var i;
+        for (i = si.length - 1; i > 0; i--) {
+          if (num >= si[i].value) {
+            break;
+          }
+        }
+        return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
+    }
+
     const lineConfig = {
         data,
         renderer:'svg',
@@ -1043,7 +1074,9 @@ const DailyRegCountChart = (props) => {
         height: 288,
         smooth: "true",
         color: ['#C6304F','#FAA219'],
-        theme: { "styleSheet": { "brandColor": "#C6304F", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
+        //theme: {"background":"#313131","styleSheet": { "brandColor": "#C6304F", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
+        theme: {"styleSheet": { "brandColor": "#C6304F", "paletteQualitative10": ["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1"], "paletteQualitative20":["#f94144","#f3722c","#f8961e","#f9844a","#f9c74f","#90be6d","#43aa8b","#4d908e","#577590","#277da1","#0E4D64"]}},
+
         lineStyle: {
             fillOpacity: 0.5,
             lineWidth: 2,
@@ -1060,12 +1093,15 @@ const DailyRegCountChart = (props) => {
             },
             label: {
                 formatter: function formatter(v) {
-                  let value = ""
-                    .concat(v)
-                    .replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
-                      return "".concat(s, ",");
-                    });
-                  return value;
+                    let value = ""
+                        .concat(v)
+                        .replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+                        return "".concat(s, ",");
+                        });
+                    
+                    value = numberFormatter(v, 0, 'en');    
+                    
+                    return value;
                 }
               }
             }
@@ -2114,7 +2150,7 @@ export default class Index extends React.Component {
         // window.open("https://app.did.id/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
         let status = record.status[0];
         if (status === DASACCOUNTSTATUS.Registered) {
-            if (-1 != indexOf(record.status, DASACCOUNTSTATUS.OnSale)) {
+            if (-1 != record.status.indexOf(DASACCOUNTSTATUS.OnSale)) {
                 status = DASACCOUNTSTATUS.OnSale;
             }
         }
@@ -2364,8 +2400,6 @@ export default class Index extends React.Component {
     }
 
     onTimeShowNewDASInfo = () => {
-        //console.log(newDASBornList);
-        console.log(das.registered.length);
         if (newDASBornList.length > 0) {
             let tipsInfo = newDASBornList.shift();
             let newDAS = tipsInfo['account'];
@@ -2480,8 +2514,8 @@ export default class Index extends React.Component {
                     newDASBornList.push(tipsInfo);
                 }
                 else {
-                    // 5 分钟之内的可以提示
-                    if (Date.now() - msgTime < 5 * 60 * 1000) {
+                    // 10 分钟之内的可以提示
+                    if (Date.now() - msgTime * 1000 < 10 * 60 * 1000) {
                         newDASBornList.push(tipsInfo);
                     }
                     else {

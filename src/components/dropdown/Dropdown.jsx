@@ -54,7 +54,6 @@ const Dropdown = props => {
         clickOutsideRef(dropdown_content_el, dropdown_toggle_el);
 
         return () => {
-            console.log(9999999999999999999);
             clearRef(dropdown_content_el, dropdown_toggle_el);
         };
     }, []);

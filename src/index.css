@@ -378,7 +378,57 @@ display: flex;
   padding: 16px 0px 16px 0px;
   overflow-wrap: break-word;
 }
+/*
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid #ff00f0;
+  transition: background 0.3s;
+}
 
+.ant-table-tbody > tr.ant-table-row:hover > td,
+.ant-table-tbody > tr > td.ant-table-cell-row-hover {
+  background: #ffbbdd;
+}
+
+.ant-tag {
+  background: #fafafa;
+  border: 1px solid #d9d9d9;
+  border-radius: 20px;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.ant-pagination-item-active {
+  font-weight: 600;
+  background: #a21f1f;
+  border-color: #a21f1f;
+}
+
+.ant-pagination-item {
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 32px;
+}
+
+.ant-pagination-jump-next,
+.ant-pagination-jump-prev,
+.ant-pagination-next,
+.ant-pagination-prev {
+  color: rgba(0, 0, 0, 0.85);
+  font-family: inherit;
+  border-radius: 32px;
+}
+
+.ant-pagination-disabled .ant-pagination-item-link, .ant-pagination-disabled:hover .ant-pagination-item-link {
+  color: rgba(0, 0, 0, 0.25);
+  border-color: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.ant-pagination-prev .ant-pagination-item-link, .ant-pagination-next .ant-pagination-item-link {
+  background-color: #fff;
+  border: 1px solid #d9d9d9;
+  border-radius: 32px;
+}
+*/
 text {
   font-family: 'Montserrat', sans-serif;
   font-style: normal;
