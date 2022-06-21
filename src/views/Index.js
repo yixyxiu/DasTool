@@ -1772,7 +1772,7 @@ export default class Index extends React.Component {
 
     textAreaChange = e => {
         let article = e.target.value
-        let wordList = article.match(/[a-z0-9]+/gi);
+        let wordList = article.match(/[a-z0-9\-]+/gi);
 
         if (wordList) {
             wordList = [...new Set(wordList)].sort(function (a, b) {
@@ -1865,7 +1865,7 @@ export default class Index extends React.Component {
     }
 
     isAvailable = (name) => {
-        if (/^[a-zA-Z\d]+$/.test(name)) {
+        if (/^[a-zA-Z\d\-]+$/.test(name)) {
             // 大于20位的，das.la 不推荐，小于4位的不支持
             if (name.length < 4) {
                 return false;
@@ -1904,9 +1904,10 @@ export default class Index extends React.Component {
             let item = data[i];
 
             //去标点符号并转小写
-            item = item.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+            //item = item.replace(/\s/g, "").replace(/[^a-zA-Z0-9\-]/g, "").toLowerCase();
+            item = item.replace(/\s/g, "").toLowerCase();
             //过滤非数字和字母组合
-            if (/^[a-zA-Z\d]+$/.test(item)) {
+            if (/^[a-zA-Z\d\-]+$/.test(item)) {
                 // 大于20位的，das.la 不推荐，小于4位的不支持
                 if (item.length < 4 || item.length > 20) {
                     continue;
@@ -2213,7 +2214,7 @@ export default class Index extends React.Component {
     keywordChanged = e => {
         let snsArr = e.target.value
 
-        snsArr = snsArr.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+        snsArr = snsArr.replace(/\s/g, "").replace(/[^a-zA-Z0-9\-]/g, "").toLowerCase();
         console.log(snsArr)
 
         //this.setState({keyword: snsArr});
@@ -2324,7 +2325,7 @@ export default class Index extends React.Component {
     keywordSearch = () => {
         let keyword = this.state.keyword;
 
-        keyword = keyword.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+        keyword = keyword.replace(/\s/g, "").replace(/[^a-zA-Z0-9\-]/g, "").toLowerCase();
 
     /*    if (!keyword) {
             return this.GenerateRecommendList();
@@ -2955,9 +2956,9 @@ export default class Index extends React.Component {
             let item = wordList[i];
 
             //去标点符号并转小写
-            item = item.replace(/\s/g, "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+            item = item.replace(/\s/g, "").replace(/[^a-zA-Z0-9\-]/g, "").toLowerCase();
             //过滤非数字和字母组合
-            if (/^[a-zA-Z\d]+$/.test(item)) {
+            if (/^[a-zA-Z\d\-]+$/.test(item)) {
                 if (this.canRegister(item)) {
                     let account = item + '.bit';
                     if (!arr.includes(account) && !reserved.includes(account) && !registered.includes(account)) {
