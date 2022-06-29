@@ -46,6 +46,7 @@ das.hotAccounts = require('../mock/hot_accounts.json');
 das.appointments = require('../mock/appointments.json');    // 开放结束后，将其设置为空数组
 das.recentRegData = [];
 das.recentOwnerData = [];
+das.marketData_didtop = require('../mock/sell_list_short.json');
 
 let localeConfig = require('../mock/lang.json');
 let iconMap = new Map();
@@ -482,7 +483,7 @@ class ForSaleAccountCard extends React.Component {
     }
 
     viewMarketAccount = () => {
-        let url = "https://did.top/account/" + this.state.account + "?inviter=cryptofans.bit&channel=dasdotla.bit";
+        let url = "https://did.top/account/" + this.state.account + "?inviter=cryptofans.bit&channel=cryptofans.bit";
                                     https://did.top/account/oline.bit?inviter=00711.bit&
         this.props.parent.openLink(url, 'view_market_' + this.state.account);
     }
@@ -3740,6 +3741,9 @@ export default class Index extends React.Component {
                         <EnsMarketKeeper langConfig={this.langConfig} openLink={this.openLink} availableChecker={this.isAvailable}/>
                     </Card>
                     <br/>
+                    <MarketPlaceContainer langConfig={this.langConfig} getAvatar={this.getImg} marketData={das.marketData_didtop} numberFormatter={this.numberFormatter} getPagination={getPagination} isNarrowScreen={this.state.isNarrowScreen} parent={this}/>
+                    <br/>
+                    <br/>
                     <HotAccounts langConfig={this.langConfig} getAvatar={this.getImg} canRegister={this.canRegister} goDASRegister={this.goDASRegister} goDeNameRegister={this.goDeNameRegister} dasData={das}/>
                     <br/>
 
@@ -4064,6 +4068,149 @@ const RichOwnerLeaderboard = (props) => {
             </div> 
 };
 
+const MarketPlaceContainer = (props) => {
+
+    const CharacterSet = {
+        LETTER: 1,          // 字母
+        DIGIT: 2,           // 数字
+        ALPHANUMERIC:3,     // 数字字母组合
+        EMOJI:4,            // emoji
+        MIXED:5,            // 不限
+    }
+
+    const filter = {
+        characterSet: CharacterSet.NUMBER,
+        accountLengh: 4,
+    }
+
+    const [accounts, setAccounts] = useState([]);
+    const [accountType, setCharacterSet] = useState(CharacterSet.NUMBER);
+    const [accountLen, setAccountLen] = useState(4);
+    
+  
+    /*
+    useEffect(() => {
+       refreshMarketAccounts();
+    }, []);*/
+  
+    const initColumns = () => {
+        const columns = [];
+        if (!props.isNarrowScreen) {
+            columns.push(
+                {
+                    dataIndex: 'avatar',
+                    key: 'name',
+                    width: 50,
+                    
+                    render: (text, record, index) => {
+                        //let avatar = "https://identicons.did.id/identicon/" + record.name;
+                        //let dom = <img src={avatar}  style={{height: "32px", width: "32px",borderRadius: "32px"}}></img>;
+                                      
+                        let nameMD5 = md5(record.account)
+                        let id = `img${nameMD5}`
+                        let dom = <div id={id} style={{width: "32px", height: "32px"}}></div>
+                        setTimeout(() => {
+                            props.getAvatar(id, record.account)
+                        }, 1000)
+                                    
+                        return dom
+                    },
+                }
+            )
+        }
+    
+        columns.push(
+        {
+            title: '可选账号',
+            dataIndex: 'account',
+            key: 'name',
+        },
+        {
+            title: '状态',
+            key: 'status',
+            dataIndex: 'status',
+            width:50,
+            render: (text, record, index) => {
+                if (record.price_ckb) {
+                    let value = props.numberFormatter(record.price_ckb/100000000, 2);
+                    let sale_info = ''
+                    if (!props.isNarrowScreen) {
+                        sale_info = <span>{props.langConfig('das-account-status-onsale')} 🍔 </span>
+                    }
+                    return (
+                        <Tag color='#aa00cc' key={1}>
+                        {sale_info}<span className="das-account-price">{value} CKB</span>
+                        </Tag>
+                    );
+                }  
+            }
+        },
+        {
+            title: '操作',
+            width: 100,
+            key: 'action',
+            align: 'right',
+            render: record => {
+                return <Button className="dasla-btn-select-account" size={'normal'} shape="round"
+                onClick={() => viewMarketAccount(record.account)}>{props.langConfig('btn-title-buy')}</Button>
+            }
+        }
+        )
+
+        return columns;
+    }
+
+    const viewMarketAccount = (account) => {
+        let url = "https://did.top/account/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit";
+        props.parent.openLink(url, 'view_market_' + account);
+    }
+
+    const loadMarketAccounts =(letterCount) => {
+        let result = [];
+        let arr = [];
+
+        if (!props.marketData) {
+            return;
+        }
+
+        if (letterCount === 0) {
+            result = props.marketData;
+        }
+        else {
+            for (let item in props.marketData) {
+                if (props.marketData[item].account.length === (letterCount+4)) {
+                    result.push(props.marketData[item]);
+                }
+            }
+        }
+        
+        setAccounts(result);
+    }
+
+    const refreshMarketAccounts = () => {
+        loadMarketAccounts(accountLen);
+    };
+
+    
+
+    return  <div>
+                <Card id="MarketAccountList" title={props.langConfig('market-accounts-title')} bordered={false}>
+                    
+                    <div style={{verticalAlign: 'middle', height:'100%', display:'flex',justifyContent:'flex-end',flexDirection:'row'}} >
+                        
+                        <div className='suggest-list-wrapper' >
+                            <Button type="primary" shape="round" danger onClick={() => loadMarketAccounts(4)}>{props.langConfig('character-4-length')}</Button>
+                            <Button type="primary" shape="round" danger onClick={() => loadMarketAccounts(5)}>{props.langConfig('character-5-length')}</Button>
+                            <Button type="primary" shape="round" danger onClick={() => loadMarketAccounts(0)}>{props.langConfig('morethan-5-length')}</Button>
+                        </div>         
+                    </div>
+                    <br/>
+                    
+                    <Table rowKey={(item) => item.id} dataSource={accounts} columns={initColumns()}
+                        rowClassName='das-account-name noselect' showHeader={false} pagination={props.getPagination(accounts)} />
+                </Card>
+            </div>
+}
 
 const HotAccounts = (props) => {
 
