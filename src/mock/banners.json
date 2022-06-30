@@ -3,39 +3,38 @@
         {
 
             "name":"nervos2022",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/7/7f3f8daf2e915ce5cb4d9082fa0322c3802fa35f.jpeg",
-            "link":"https://talk.nervos.org/t/nervos-network-2022/6536"
+            "image":"godwoken.jpg",
+            "link":"https://www.nervos.org/godwoken"
             
         },
         {
             "name":"yokai",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/2/29bbae806267b441bd54c0bf724f2cff63d79da3.jpeg",
+            "image":"yokai-pool.jpg",
             "link":"https://yokaiswap.com"
         },
         {
-            "name":".bit-brand",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/e/e7b263eead2d75c08a256962721f95a0167bcca1.jpeg",
-            "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid"
+            "name":".bit-opensea",
+            "image":"bit-opensea.jpg",
+            "link":"https://opensea.io/collection/dotbit"
         }
     ],
     "en_US":[
         {
 
             "name":"nervos2022",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/7/7f3f8daf2e915ce5cb4d9082fa0322c3802fa35f.jpeg",
-            "link":"https://www.nervos.org/blog/nervos-network-2022-roadmap"
+            "image":"godwoken.jpg",
+            "link":"https://www.nervos.org/godwoken"
             
         },
         {
             "name":"yokai",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/2/29bbae806267b441bd54c0bf724f2cff63d79da3.jpeg",
+            "image":"yokai-pool.jpg",
             "link":"https://yokaiswap.com"
         },
         {
-            "name":".bit-brand",
-            "image":"https://talk.nervos.org/uploads/default/original/2X/e/e7b263eead2d75c08a256962721f95a0167bcca1.jpeg",
-            "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid"
+            "name":".bit-opensea",
+            "image":"bit-opensea.jpg",
+            "link":"https://opensea.io/collection/dotbit"
         }
-
     ]
 }

@@ -3629,9 +3629,12 @@ export default class Index extends React.Component {
                             swipeable
                             centerSlidePercentage={50}
                             onClickItem={onClickCarouselItem}
-                        >
+                        >   
                             {this.state.banners[this.state.locale].map((value, index) => {
-                                return <div key={index}><img alt="" src={value.image}/></div>;
+                                return <div key={index}><img className="bannerImage"
+                                src={`/images/banners/${value.image.toLowerCase()}`}
+                                onError={(e)=>{ (e.target).src='/images/banners/placeholder.jpg' }}
+                              /></div>;
                             })}
                         </Carousel>
                     </div>

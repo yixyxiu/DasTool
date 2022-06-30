@@ -328,6 +328,19 @@ code {
     border-radius: .4rem;
     margin-bottom: 10px;
 }
+
+.carousel .slider-wrapper.axis-horizontal .slider {
+  -ms-box-orient: horizontal;
+  display: -moz-flex;
+  display: flex;
+  grid-gap: 0.5rem;
+  cursor: pointer;
+}
+
+.bannerImage {
+  border-radius: 0.5rem;
+}
+
 /*
 .dasAnimation {
     width: 100wh;
