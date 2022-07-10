@@ -2581,10 +2581,10 @@ export default class Index extends React.Component {
         //console.log(account);
     }
 */
-    getRegistList = async () => {
+    getRegistList = async (timestamp, page_index) => {
         let that = this;
         return new Promise((resolve) => {
-            let url = 'https://api.das.la/api/v1/das_accounts/latest_bit_accounts?direction=after&limit=100&timestamp=' + (das.fetchListTimestamp-1).toString()
+            let url = `https://api.das.la/api/v1/das_accounts/latest_bit_accounts?direction=after&limit=100&timestamp=${timestamp}&page_index=${page_index}`
             fetch(url)
             .then(function(response){
                 return response.json();  
@@ -2599,14 +2599,13 @@ export default class Index extends React.Component {
 
                     if (accounts?.length > 0) {
                         das.fetchListTimestamp = accounts[accounts.length-1].registered_at;
-                        //that.setState({dataUpdateFlag: true});
-                        //console.log(das.fetchListTimestamp);
+                  
                     }
 
                     if (accounts?.length === 100) {
                         // 如果数据等于分页的条数，说明可能还有数据，继续拉取
                         setTimeout(() => {
-                            that.getRegistList();
+                            that.getRegistList(timestamp, json.page_index+1);
                         }, 1000);
                     }
               })
@@ -2847,13 +2846,15 @@ export default class Index extends React.Component {
             console.log('getRegistList');
             const {Sprite} = spritejs;
             const logoSprite = new Sprite(img);
-            this.getRegistList();
+            this.getRegistList(das.fetchListTimestamp, 1);
         }, 1000);
         
         //this.getRegistList();
 
         // 再设置定时器，拉取最新注册账号，1分钟跑一次，之后改成 5 分钟 todo
-        let timerID1 = setInterval(this.getRegistList, 1 * 60 * 1000);
+        let timerID1 = setInterval( () => {
+                this.getRegistList(das.fetchListTimestamp, 1)
+            }, 1 * 60 * 1000);
         
 
         // 4 秒钟执行一次，查看是否有新注册账号，若有，则提示出来
