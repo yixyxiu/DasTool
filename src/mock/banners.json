@@ -8,6 +8,11 @@
             
         },
         {
+            "name":"seekdid",
+            "image":"seekdid.jpg",
+            "link":"https://seekdid.com"
+        },
+        {
             "name":"yokai",
             "image":"yokai-pool.jpg",
             "link":"https://yokaiswap.com"
@@ -25,6 +30,11 @@
             "image":"godwoken.jpg",
             "link":"https://www.nervos.org/godwoken"
             
+        },
+        {
+            "name":"seekdid",
+            "image":"seekdid.jpg",
+            "link":"https://seekdid.com"
         },
         {
             "name":"yokai",
