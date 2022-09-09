@@ -2582,6 +2582,8 @@ export default class Index extends React.Component {
     }
 */
     getRegistList = async (timestamp, page_index) => {
+        return;
+        
         let that = this;
         return new Promise((resolve) => {
             let url = `https://api.das.la/api/v1/das_accounts/latest_bit_accounts?direction=after&limit=100&timestamp=${timestamp}&page_index=${page_index}`
