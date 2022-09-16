@@ -31,6 +31,7 @@ import Dropdown from '../components/dropdown/Dropdown';
 //const {Footer} = Layout
 const { Option } = Select;
 
+const INVITER = 'nervosyixiu.bit';
 
 var blake2b = require('blake2b');
 //const { TextArea } = Input;
@@ -483,8 +484,8 @@ class ForSaleAccountCard extends React.Component {
     }
 
     viewMarketAccount = () => {
-        let url = "https://did.top/account/" + this.state.account + "?inviter=cryptofans.bit&channel=cryptofans.bit";
-                                    https://did.top/account/oline.bit?inviter=00711.bit&
+        let url = `https://did.top/account/${this.state.account}?inviter=${INVITER}&channel=${INVITER}`;
+        
         this.props.parent.openLink(url, 'view_market_' + this.state.account);
     }
     
@@ -547,7 +548,6 @@ class DASMarketCardList extends React.Component {
                 <a href={this.props.langConfig('become-our-sponsor-url')} target="_blank" rel="noopener noreferrer" >{this.props.langConfig('become-a-sponsor')}</a>
             </div>
             <div className="mini-card-grid">
-                <ForSaleAccountCard account="gate" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
                 <ForSaleAccountCard account="ponzischeme" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[1]} />
                 <ForSaleAccountCard account="adopt" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[5]} />                
                 <ForSaleAccountCard account="guard" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />
@@ -573,15 +573,11 @@ class DASPopularCardList extends React.Component {
                 <h2 className="header-card-title">{this.props.langConfig('popular-das-list')}<br /></h2>
             </div>
             <div className="mini-card-grid">
-                <ForSaleAccountCard account="delete" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
-                <ForSaleAccountCard account="qrcode" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[1]} />
+                <ForSaleAccountCard account="arbitrum" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[0]} />
+                <ForSaleAccountCard account="react" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[1]} />
                 <ForSaleAccountCard account="namecoin" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />                
-                <ForSaleAccountCard account="333333" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[3]} />
-                <ForSaleAccountCard account="0038" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[4]} />
+                <ForSaleAccountCard account="qrcode" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[2]} />                
                 <ForSaleAccountCard account="superx" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[5]} />
-                <ForSaleAccountCard account="modify" parent={this.props.parent} getDASAvata={this.props.getDASAvata} langConfig={this.props.langConfig} color={colors[6]} />
-                <ForSaleAccountCard account="whiteman" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[8]} />
-                <ForSaleAccountCard account="glorious" parent={this.props.parent} getDASAvata={this.props.getDASAvata}  langConfig={this.props.langConfig}  color={colors[9]} />
             </div>
         </div>
         
@@ -2149,7 +2145,6 @@ export default class Index extends React.Component {
         }
     }
     select = record => {
-        // window.open("https://app.did.id/account/register/" + record.name + "?inviter=cryptofans.bit&channel=cryptofans.bit", "newW")
         let status = record.status[0];
         if (status === DASACCOUNTSTATUS.Registered) {
             if (-1 != record.status.indexOf(DASACCOUNTSTATUS.OnSale)) {
@@ -2161,16 +2156,14 @@ export default class Index extends React.Component {
         let url = "";
         switch (status) {
             case DASACCOUNTSTATUS.Registered: 
-            //    url = "https://" + record.name + this.langConfig("dascc-host");
-            //    this.openLink(url, 'view_host_'+record.name);
-                url = "https://did.top/account/" + record.name + "?inviter=cryptofans.bit";
+                url = `https://did.top/account/${record.name}?inviter=${INVITER}&channel=${INVITER}`;
                 this.openLink(url, 'make_offer_'+record.name);
                 break;
             case DASACCOUNTSTATUS.ScheOpen: 
                 this.openLink(this.langConfig("das-limit-link"));
                 break;
             case DASACCOUNTSTATUS.OnSale: 
-                url = "https://did.top/account/" + record.name + "?inviter=cryptofans.bit";
+                url = `https://did.top/account/${record.name}?inviter=${INVITER}&channel=${INVITER}`;
                 this.openLink(url, 'view_market_'+record.name);
                 break;
             case DASACCOUNTSTATUS.Reserved: 
@@ -2191,9 +2184,8 @@ export default class Index extends React.Component {
     }
 
     getDASRegisterLink = (account) => {
-//        return "https://app.gogodas.com/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
-        //return "https://app.did.id/account/register/" + account + "?inviter=nervosyixiu.bit&channel=nervosyixiu.bit"
-        return "https://app.did.id/account/register/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit"
+        let url = `https://app.did.id/account/register/${account}?inviter=${INVITER}&channel=${INVITER}`;
+        return url;
     }
 
     getDeNameRegisterLink = (account) => {
@@ -2583,7 +2575,7 @@ export default class Index extends React.Component {
 */
     getRegistList = async (timestamp, page_index) => {
         return;
-        
+
         let that = this;
         return new Promise((resolve) => {
             let url = `https://api.das.la/api/v1/das_accounts/latest_bit_accounts?direction=after&limit=100&timestamp=${timestamp}&page_index=${page_index}`
@@ -3604,10 +3596,11 @@ export default class Index extends React.Component {
                 
                 if (account.status[0] === DASACCOUNTSTATUS.OnSale) {
                     json.price = this.numberFormatter(account.price, 2) + 'CKB';
-                    json.link = "https://did.top/account/" + account.name + "?inviter=cryptofans.bit&channel=dasdotla.bit"
+                    let url = `https://did.top/account/${account.name}?inviter=${INVITER}&channel=${INVITER}`;
+                    json.link = url;
                 }
                 else {
-                    json.link = "https://app.did.id/account/register/" + account.name + "?inviter=cryptofans.bit&channel=cryptofans.bit"
+                    json.link = `https://app.did.id/account/register/${account.name}?inviter=${INVITER}&channel=${INVITER}`; 
                 }
                 jsonData.push(json);
 
@@ -4167,7 +4160,7 @@ const MarketPlaceContainer = (props) => {
     }
 
     const viewMarketAccount = (account) => {
-        let url = "https://did.top/account/" + account + "?inviter=cryptofans.bit&channel=cryptofans.bit";
+        let url = `https://did.top/account/${account}?inviter=${INVITER}&channel=${INVITER}`;
         props.parent.openLink(url, 'view_market_' + account);
     }
 
@@ -4632,7 +4625,7 @@ const EnsMarketKeeper = (props) => {
     const registerBit = (item) => {
         let account = getAccountName(item.name);
         if (account) {
-            let url = "https://app.did.id/account/register/" + account + ".bit?inviter=cryptofans.bit&channel=cryptofans.bit"
+            let url = `https://app.did.id/account/register/${account}.bit?inviter=${INVITER}&channel=${INVITER}`;
             props.openLink(url, 'registery_' + account);
         }
     }
