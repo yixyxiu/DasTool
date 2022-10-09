@@ -31,7 +31,7 @@ import Dropdown from '../components/dropdown/Dropdown';
 //const {Footer} = Layout
 const { Option } = Select;
 
-const INVITER = 'nervosyixiu.bit';
+const INVITER = 'cryptofans.bit';
 
 var blake2b = require('blake2b');
 //const { TextArea } = Input;
