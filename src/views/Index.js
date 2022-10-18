@@ -848,6 +848,7 @@ const  DASStatisticSummary = (props) => {
     }
 
     const loadDailyStatUpdatedTime = () => {
+        return;
         let defTitle = props.langConfig('dailystat-title');
         let updateTime = '...';
         if (data.update_time) {
