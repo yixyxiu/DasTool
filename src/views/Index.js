@@ -3738,7 +3738,7 @@ export default class Index extends React.Component {
                                 {loadFavListBtnDom}
                             </div>
                         </div>
-                        <EnsMarketKeeper langConfig={this.langConfig} openLink={this.openLink} availableChecker={this.isAvailable}/>
+                        {/*<EnsMarketKeeper langConfig={this.langConfig} openLink={this.openLink} availableChecker={this.isAvailable}/>*/}
                     </Card>
                     <br/>
                     <MarketPlaceContainer langConfig={this.langConfig} getAvatar={this.getImg} marketData={das.marketData_didtop} numberFormatter={this.numberFormatter} getPagination={getPagination} isNarrowScreen={this.state.isNarrowScreen} parent={this}/>
