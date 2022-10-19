@@ -2096,8 +2096,16 @@ export default class Index extends React.Component {
             return false;
 
         // 虽然 > 10 < 47 位都可以注册，但考虑到太长的账号没意义，在此只用15个字符以内的
-        if (text.length > 9 && text.length < 20)
+        if (text.length > 9 && text.length < 43)
             return true;
+        
+        if(!isNaN(text)) {
+            return true;
+        }
+
+        if (/[0-9]+/.test(text)) {
+            return true;
+        }    
 
         // 4-9 位的，算法决定
         text += '.bit';
