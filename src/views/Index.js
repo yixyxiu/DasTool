@@ -248,7 +248,7 @@ class DaslaFooter extends React.Component {
          </div> 
          <Divider type="horizontal" className="footer-divider"/>
          <p className="footer-copyright">
-            © 2021-2022 DASLA Limited. All rights reserved.
+            © 2021-2023 DASLA Limited. All rights reserved.
          </p> 
          </div> 
         
