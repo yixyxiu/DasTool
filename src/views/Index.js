@@ -3643,7 +3643,7 @@ export default class Index extends React.Component {
                             })}
                         </Carousel>
                     </div>
-
+                    {/*     
                     <div >
                         <Alert style={{
                             marginBottom: 8,
@@ -3654,7 +3654,7 @@ export default class Index extends React.Component {
                         closable
                         />
                         
-                    </div>
+                    </div> */}  
                     
                     <Card title={this.langConfig('match-all')} bordered={false} tabBarExtraContent= {<QuestionCircleFilled />}> 
                         <div style={{
