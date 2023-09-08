@@ -135,7 +135,7 @@
         "zh_CN":[
             {
                 "name":".bit 官网",
-                "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid",
+                "link":"https://d.id/products/bit?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid",
                 "iconClassName":"foot-link-icon-das"
             },
             {
@@ -167,7 +167,7 @@
         "en_US":[
             {
                 "name":".bit Official",
-                "link":"https://did.id/?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid",
+                "link":"https://d.id/products/bit?inviter=cryptofans.bit&channel=cryptofans.bit&locale=zh-CN&utm_source=seekdid",
                 "iconClassName":"foot-link-icon-das"
             },
             {
