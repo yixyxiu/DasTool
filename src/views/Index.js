@@ -2193,7 +2193,7 @@ export default class Index extends React.Component {
     }
 
     getDASRegisterLink = (account) => {
-        let url = `https://d.id/bit/account/register/${account}?inviter=${INVITER}&channel=${INVITER}`;
+        let url = `https://d.id/bit/account/create/${account}?inviter=${INVITER}&channel=${INVITER}`;
         return url;
     }
 
@@ -3609,7 +3609,7 @@ export default class Index extends React.Component {
                     json.link = url;
                 }
                 else {
-                    json.link = `https://d.id/bit/account/register/${account.name}?inviter=${INVITER}&channel=${INVITER}`; 
+                    json.link = `https://d.id/bit/account/create/${account.name}?inviter=${INVITER}&channel=${INVITER}`; 
                 }
                 jsonData.push(json);
 
@@ -4634,7 +4634,7 @@ const EnsMarketKeeper = (props) => {
     const registerBit = (item) => {
         let account = getAccountName(item.name);
         if (account) {
-            let url = `https://d.id/bit/account/register/${account}.bit?inviter=${INVITER}&channel=${INVITER}`;
+            let url = `https://d.id/bit/account/create/${account}.bit?inviter=${INVITER}&channel=${INVITER}`;
             props.openLink(url, 'registery_' + account);
         }
     }
